@@ -25,6 +25,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.haptic_intensity.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.haptic_intensity.value(),self.ui.haptic_int_text))
         self.ui.pulse_freq.valueChanged.connect(lambda:self.ui.pulse_freq_text.setText("Pulse Frequency: {} units".format(self.ui.pulse_freq.value())))
         self.ui.pulse_sensitivity.valueChanged.connect(lambda:self.ui.pulse_sens_text.setText("Pulse Sensitivity: {} units".format(self.ui.pulse_sensitivity.value())))
+        self.ui.connect_button.clicked.connect(lambda:self.vr.connect())
+        self.ui.disconnect.clicked.connect(lambda:self.vr.disconnect())
 
 
 
