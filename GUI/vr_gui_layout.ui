@@ -1814,7 +1814,7 @@ Mode</string>
           </rect>
          </property>
          <property name="text">
-          <string>Read UUID</string>
+          <string>Read UID</string>
          </property>
         </widget>
        </widget>

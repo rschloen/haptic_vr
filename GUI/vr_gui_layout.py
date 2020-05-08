@@ -597,7 +597,7 @@ class Ui_MainWindow(object):
         self.disconnect.setText(_translate("MainWindow", "Disconnect"))
         self.UUID.setText(_translate("MainWindow", "Device XXXXX"))
         self.rf_power_text.setText(_translate("MainWindow", "4 Watts"))
-        self.read_uuid.setText(_translate("MainWindow", "Read UUID"))
+        self.read_uuid.setText(_translate("MainWindow", "Read UID"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Settings), _translate("MainWindow", "Settings"))
 
 

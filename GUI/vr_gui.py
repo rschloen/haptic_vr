@@ -27,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pulse_sensitivity.valueChanged.connect(lambda:self.ui.pulse_sens_text.setText("Pulse Sensitivity: {} units".format(self.ui.pulse_sensitivity.value())))
         self.ui.connect_button.clicked.connect(lambda:self.vr.connect())
         self.ui.disconnect.clicked.connect(lambda:self.vr.disconnect())
+        self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
 
 
 
