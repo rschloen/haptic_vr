@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 
-# import usb
+
+"""TODO:
+    - Activate actuators implement all modes for protocol
+    - Work on StyleSheets, see what's needed image wise (png,jpeg,size limits)
+    - Keep in mind expansion up to 128 actuator arrays
+    - Keep in mind thermal actuators
+    - Keep in mind PWM frequency to set intensity
+    - Work on deployment (pyqtdeploy, alternatives?) """
+
 import serial
 import sys,time
 
 class VR_PRTCL:
     """Library for Haptic VR device NFC communication"""
-    UUID = []
+    UID = []
     device = None
     current_connection = None
     OP_Mode = 0x00
@@ -14,77 +22,67 @@ class VR_PRTCL:
     ACT_BLKS = 1
     ACT_state = [0]*32*ACT_BLKS
     active = 0
-
+    MAX_PACKET_SIZE = 64
+    nAttempts = 5
 
     def __init__(self):
-        pass
         # Device initialization here: usb/bluetooth
-        # try:
-        #     ser = serial.Serial('/dev/ttyUSB0')  # open serial port
-        #     print(ser.name)         # check which port was really used
-        #     # ser.close()             #
-        # except:
-        #     print('NFC board not plugged in.')
+        self.device = serial.Serial(None,115200,timeout=1,parity=serial.PARITY_NONE,dsrdtr=False)  # open serial port, 115200 baudrate, 1 sec timeout
 
-        ### pyusb code
-        # dev = usb.core.find(find_all=True)
-        # for cfg in dev:
-        #     if cfg.idVendor == 4292:
-        #         self.device = [cfg.idVendor, cfg.idProduct]
-        # print(self.device)
-
-    def connect(self):
-        # connect to nfc board (0x10c4,0xea60) (Adapted from Abraham's Optogenetics example)
+    def connect(self,port_label):
+        # connect to nfc board (0x10c4,0xea60)
         try:
-            self.device = serial.Serial('/dev/ttyUSB0')  # open serial port
-            print(self.device.name)         # check which port was really used
-            self.device.baudrate = 115200
+            self.device.port = '/dev/ttyUSB0'
+            self.device.open()
             self.active_flag = True
-            print('Connected to {}'.format(self.device.name))
+            cmd = '010A0003041001210000' #Register write request
+            rep = self.send(cmd)
+
+            cmd = '010C00030410002101060000' #Register write request
+            rep = self.send(cmd)
+
+            cmd = '0109000304F0000000' #AGC Toggle
+            rep = self.send(cmd)
+
+            cmd = '0109000304F1FF0000' #AM PM Toggle
+            rep = self.send(cmd)
+
+            if self.device.is_open:
+                print('Connected to {}'.format(self.device.name))
+                port_label.setText('{}'.format(self.device.name))
+            # print(self.device)         # check which port was really used
+
         except:
             print('NFC board not connected.')
 
 
-        ### pyusb code
-        # try:
-        #     self.current_connection = usb.core.find(idVendor=self.device[0],idProduct=self.device[1])
-        #     self.current_connection.reset()
-        #     if self.current_connection == None:
-        #         print('Device not connected')
-        #     for cfg in self.current_connection:
-        #         print(cfg)
-        #         for i in range(cfg.bNumInterfaces):
-        #             if self.current_connection.is_kernel_driver_active(i):
-        #                 self.current_connection.detach_kernel_driver(i)
-        #                 usb.util.claim_interface(self.current_connection, i)
-        #     print('Device Connected')
-        #     self.current_connection.set_configuration()
-        #     self.current_connection.baudrate = 115200
-        #     print(self.current_connection)
-        #     # self.current_connection.default_timeout = 100
-        #     self.active_flag = True
-        #     return True
-        # except:
-        #     print('Connection failed')
-        #     return False
-
-    def disconnect(self):
+    def disconnect(self,port_label,UID_label):
         # disconnect from NFC board,(Adapted from Abraham's Optogenetics example)
         self.active_flag = False
         self.device.close()
         if self.device.is_open:
             print('Port not closed!!')
+        port_label.setText(' ')
+        UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
         print('Disconnected')
-        # self.active_flag = False
-        # if self.current_connection is not None:
-        #     usb.util.dispose_resources(self.current_connection)
-        # self.current_connection = None
-        # print('Disconnected')
 
-    def get_inventory(self):
+
+    def get_inventory(self,UID_label):
         # Get UID
-        cmd = b'\x01\x0B\x00\x03\x04\x14\x26\x01\x00\x00\x00' # read uid
-        self.send(cmd)
+        # cmd = b'\x01\x0B\x00\x03\x04\x14\x06\x01\x00\x00\x00' # read uid
+        cmd = '010B000304140601000000' # read uid
+        # cmd = bytes(bytearray.fromhex(cmd))
+        # print(cmd)
+        uid = self.send(cmd)
+        uid = uid[13:29]
+        self.UID = uid
+        temp = ''
+        for i in range(0,len(uid),2):
+            temp += uid[len(uid)-(i+2)]
+            temp += uid[len(uid)-(i+1)]
+        self.UID_corrected = temp
+        UID_label.setText('UID:  {}'.format(self.UID_corrected)) #requires some bit shifting to get in right order
+
 
     def read_RFpower(self): #reading from device?
         # return Watts
@@ -97,27 +95,23 @@ class VR_PRTCL:
         text.setText(("{} Watts").format(value))
 
 
-
     def send(self,cmd):
-        self.device.write(cmd)
-        time.sleep(.5)
-        data = self.device.read(64).decode('ascii')
-        print(data)
+        # self.device.reset_input_buffer()
+        for i in range(self.nAttempts):
+            # self.device.reset_output_buffer()
+            print('|Sent>       {}'.format(cmd))
+            self.device.write(cmd.encode())
+            time.sleep(.5)
+            data = self.device.read(size=self.MAX_PACKET_SIZE).strip().decode()
+            self.device.reset_input_buffer()
+            if data:
+                print('<Recieved|   {}'.format(str(data)))
+                return data
+            else:
+                print('No data recieved')
+        print('No data recieved in {} attempts'.format(self.nAttempts))
+        return data
 
-
-
-        ### pyusb code
-        # msg = 'test'
-        # print('Writing...')
-        # msg = [1, 11, 0, 3, 4, 20, 38, 1, 0, 0, 0]
-        # msg = '010B000304180220020000' #read blk
-        # msg = '010B000304142601000000' # read uid
-        # self.current_connection.write(1, msg)
-        # print('Reading...')
-        # assert len(self.current_connection.write(1, msg, 100)) == len(msg)
-
-        # data = self.current_connection.read(0x81, 64,1000)
-        # print(data)
 
     def read(self):
         # assemble and display data returned from device
@@ -160,6 +154,11 @@ class VR_PRTCL:
         self.ACT_intensity = value
         text.setText("Haptic Intensity: {} units".format(value))
 
-    def set_ACT_state(self,act):
+    def set_ACT_state(self):
         # turn on/off actuators. ARGS: act:pair/list of pairs of actiuator(s) and state to set them to
-        pass
+        cmd = '01170003041862219552D9D0F35902E000010002000000'
+        cmd = bytes(bytearray.fromhex(cmd))
+        print(cmd)
+        # cmd = b'\x01\x0B\x00\x03\x04\x18\x02\x20\x02\x00\x00'
+        state = self.send(cmd)
+        print(state)

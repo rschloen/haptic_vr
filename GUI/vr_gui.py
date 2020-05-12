@@ -17,17 +17,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
 
-        self.ui.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; width: 267px;}")
-        self.ui.tab_position.setStyleSheet("QTabBar::tab { height: 100px; width: 100px;}")
+        # self.ui.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; width: 267px;}")
+        # self.ui.tab_position.setStyleSheet("QTabBar::tab { height: 100px; width: 100px;}")
 
         self.vr = VR_PRTCL()
         self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
         self.ui.haptic_intensity.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.haptic_intensity.value(),self.ui.haptic_int_text))
         self.ui.pulse_freq.valueChanged.connect(lambda:self.ui.pulse_freq_text.setText("Pulse Frequency: {} units".format(self.ui.pulse_freq.value())))
         self.ui.pulse_sensitivity.valueChanged.connect(lambda:self.ui.pulse_sens_text.setText("Pulse Sensitivity: {} units".format(self.ui.pulse_sensitivity.value())))
-        self.ui.connect_button.clicked.connect(lambda:self.vr.connect())
-        self.ui.disconnect.clicked.connect(lambda:self.vr.disconnect())
-        self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
+        self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT))
+        self.ui.disconnect.clicked.connect(lambda:self.vr.disconnect(self.ui.PORT,self.ui.UID))
+        self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory(self.ui.UID))
+        self.ui.pushButton.clicked.connect(lambda:self.vr.set_ACT_state())
 
 
 

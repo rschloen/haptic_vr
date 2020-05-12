@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>410</height>
+    <width>810</width>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>801</width>
+      <width>811</width>
       <height>411</height>
      </rect>
     </property>
@@ -45,7 +45,17 @@
         <bool>true</bool>
        </property>
        <property name="autoFillBackground">
-        <bool>true</bool>
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTabBar::tab {
+	border: 1px solid black;
+	height: 30px; 
+	width: 267px; 
+	background-color: rgb(149, 27, 218);}
+
+QTabWidget{
+	background-color: rgb(149, 27, 218);}</string>
        </property>
        <property name="tabPosition">
         <enum>QTabWidget::North</enum>
@@ -728,11 +738,14 @@ Mode</string>
            <height>541</height>
           </rect>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QTabBar::tab { height: 100px; width: 100px;background_color: white;}</string>
+         </property>
          <property name="tabPosition">
           <enum>QTabWidget::West</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="elideMode">
           <enum>Qt::ElideLeft</enum>
@@ -1689,17 +1702,17 @@ Mode</string>
         <attribute name="title">
          <string>Settings</string>
         </attribute>
-        <widget class="QLabel" name="label_7">
+        <widget class="QLabel" name="PORT">
          <property name="geometry">
           <rect>
-           <x>130</x>
-           <y>60</y>
-           <width>181</width>
+           <x>250</x>
+           <y>20</y>
+           <width>241</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>Detected Device:</string>
+          <string/>
          </property>
         </widget>
         <widget class="QSlider" name="rf_power">
@@ -1768,7 +1781,7 @@ Mode</string>
         <widget class="QPushButton" name="disconnect">
          <property name="geometry">
           <rect>
-           <x>140</x>
+           <x>130</x>
            <y>20</y>
            <width>91</width>
            <height>25</height>
@@ -1778,17 +1791,17 @@ Mode</string>
           <string>Disconnect</string>
          </property>
         </widget>
-        <widget class="QLabel" name="UUID">
+        <widget class="QLabel" name="UID">
          <property name="geometry">
           <rect>
-           <x>260</x>
+           <x>130</x>
            <y>60</y>
-           <width>151</width>
+           <width>301</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>Device XXXXX</string>
+          <string>UID:  XX XX XX XX XX XX XX XX</string>
          </property>
         </widget>
         <widget class="QLabel" name="rf_power_text">

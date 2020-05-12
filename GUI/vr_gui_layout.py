@@ -12,13 +12,13 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.WindowModal)
-        MainWindow.resize(800, 410)
+        MainWindow.resize(810, 409)
         MainWindow.setAutoFillBackground(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setAutoFillBackground(True)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 801, 411))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 811, 411))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
@@ -27,7 +27,15 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.tabWidget = QtWidgets.QTabWidget(self.gridLayoutWidget)
         self.tabWidget.setEnabled(True)
-        self.tabWidget.setAutoFillBackground(True)
+        self.tabWidget.setAutoFillBackground(False)
+        self.tabWidget.setStyleSheet("QTabBar::tab {\n"
+"    border: 1px solid black;\n"
+"    height: 30px; \n"
+"    width: 267px; \n"
+"    background-color: rgb(149, 27, 218);}\n"
+"\n"
+"QTabWidget{\n"
+"    background-color: rgb(149, 27, 218);}")
         self.tabWidget.setTabPosition(QtWidgets.QTabWidget.North)
         self.tabWidget.setObjectName("tabWidget")
         self.Manual = QtWidgets.QWidget()
@@ -233,6 +241,7 @@ class Ui_MainWindow(object):
         self.Automatic.setObjectName("Automatic")
         self.tab_position = QtWidgets.QTabWidget(self.Automatic)
         self.tab_position.setGeometry(QtCore.QRect(0, 0, 801, 541))
+        self.tab_position.setStyleSheet("QTabBar::tab { height: 100px; width: 100px;background_color: white;}")
         self.tab_position.setTabPosition(QtWidgets.QTabWidget.West)
         self.tab_position.setElideMode(QtCore.Qt.ElideLeft)
         self.tab_position.setObjectName("tab_position")
@@ -533,9 +542,10 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.Automatic, "")
         self.Settings = QtWidgets.QWidget()
         self.Settings.setObjectName("Settings")
-        self.label_7 = QtWidgets.QLabel(self.Settings)
-        self.label_7.setGeometry(QtCore.QRect(130, 60, 181, 21))
-        self.label_7.setObjectName("label_7")
+        self.PORT = QtWidgets.QLabel(self.Settings)
+        self.PORT.setGeometry(QtCore.QRect(250, 20, 241, 21))
+        self.PORT.setText("")
+        self.PORT.setObjectName("PORT")
         self.rf_power = QtWidgets.QSlider(self.Settings)
         self.rf_power.setGeometry(QtCore.QRect(40, 170, 160, 21))
         self.rf_power.setMinimum(4)
@@ -555,11 +565,11 @@ class Ui_MainWindow(object):
         self.connect_button.setGeometry(QtCore.QRect(20, 20, 89, 25))
         self.connect_button.setObjectName("connect_button")
         self.disconnect = QtWidgets.QPushButton(self.Settings)
-        self.disconnect.setGeometry(QtCore.QRect(140, 20, 91, 25))
+        self.disconnect.setGeometry(QtCore.QRect(130, 20, 91, 25))
         self.disconnect.setObjectName("disconnect")
-        self.UUID = QtWidgets.QLabel(self.Settings)
-        self.UUID.setGeometry(QtCore.QRect(260, 60, 151, 21))
-        self.UUID.setObjectName("UUID")
+        self.UID = QtWidgets.QLabel(self.Settings)
+        self.UID.setGeometry(QtCore.QRect(130, 60, 301, 21))
+        self.UID.setObjectName("UID")
         self.rf_power_text = QtWidgets.QLabel(self.Settings)
         self.rf_power_text.setGeometry(QtCore.QRect(120, 140, 67, 21))
         self.rf_power_text.setObjectName("rf_power_text")
@@ -572,7 +582,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(2)
-        self.tab_position.setCurrentIndex(1)
+        self.tab_position.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -591,11 +601,10 @@ class Ui_MainWindow(object):
         self.tab_position.setTabText(self.tab_position.indexOf(self.Position1), _translate("MainWindow", "Position 1"))
         self.tab_position.setTabText(self.tab_position.indexOf(self.Position2), _translate("MainWindow", "Position 2"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Automatic), _translate("MainWindow", "Automatic"))
-        self.label_7.setText(_translate("MainWindow", "Detected Device:"))
         self.label_8.setText(_translate("MainWindow", "RF Power:"))
         self.connect_button.setText(_translate("MainWindow", "Connect"))
         self.disconnect.setText(_translate("MainWindow", "Disconnect"))
-        self.UUID.setText(_translate("MainWindow", "Device XXXXX"))
+        self.UID.setText(_translate("MainWindow", "UID:  XX XX XX XX XX XX XX XX"))
         self.rf_power_text.setText(_translate("MainWindow", "4 Watts"))
         self.read_uuid.setText(_translate("MainWindow", "Read UID"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Settings), _translate("MainWindow", "Settings"))
