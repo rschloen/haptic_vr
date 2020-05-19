@@ -24,7 +24,8 @@
 	color: blue;
 	background-color: rgb(48, 50, 198);
 	border: 1px solid black;
-}</string>
+}
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="autoFillBackground">
@@ -99,28 +100,14 @@ QTabWidget{
          <widget class="QSlider" name="pulse_mode">
           <property name="geometry">
            <rect>
-            <x>110</x>
-            <y>50</y>
-            <width>16</width>
+            <x>50</x>
+            <y>150</y>
+            <width>21</width>
             <height>50</height>
            </rect>
           </property>
           <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical{
-	position: absolute;
-	left: 4px; right: 4px;
-}
-QSlider::add-page:vertical{
-	background: white;
-}
-QSlider::sub-page:vertical{
-	background: rgb(48, 50, 198);
-}
-QSlider::handle:vertical{
-	height: 10px;
-	margin: 0 -4px;
-	backgound: rgb(218, 58, 245);
-}</string>
+           <string notr="true"/>
           </property>
           <property name="maximum">
            <number>1</number>
@@ -145,17 +132,23 @@ QSlider::handle:vertical{
            <enum>Qt::Vertical</enum>
           </property>
          </widget>
-         <widget class="QSlider" name="haptic_intensity">
+         <widget class="QSlider" name="h_dc">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>290</y>
-            <width>160</width>
-            <height>16</height>
+            <x>60</x>
+            <y>280</y>
+            <width>201</width>
+            <height>31</height>
            </rect>
           </property>
           <property name="autoFillBackground">
            <bool>false</bool>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="sliderPosition">
+           <number>50</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -170,8 +163,8 @@ QSlider::handle:vertical{
          <widget class="QPushButton" name="Act1">
           <property name="geometry">
            <rect>
-            <x>400</x>
-            <y>40</y>
+            <x>450</x>
+            <y>50</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -185,12 +178,15 @@ QSlider::handle:vertical{
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act2">
           <property name="geometry">
            <rect>
-            <x>460</x>
-            <y>40</y>
+            <x>510</x>
+            <y>50</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -201,6 +197,9 @@ QSlider::handle:vertical{
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QLabel" name="label">
           <property name="geometry">
@@ -230,14 +229,17 @@ Modal</string>
 Touch</string>
           </property>
          </widget>
-         <widget class="QSlider" name="pulse_freq">
+         <widget class="QSlider" name="pulse_Hfreq">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>350</y>
-            <width>160</width>
-            <height>16</height>
+            <x>60</x>
+            <y>340</y>
+            <width>201</width>
+            <height>31</height>
            </rect>
+          </property>
+          <property name="value">
+           <number>10</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -249,14 +251,23 @@ Touch</string>
            <number>10</number>
           </property>
          </widget>
-         <widget class="QSlider" name="pulse_sensitivity">
+         <widget class="QSlider" name="pulse_duration">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>410</y>
-            <width>160</width>
-            <height>16</height>
+            <x>100</x>
+            <y>140</y>
+            <width>201</width>
+            <height>31</height>
            </rect>
+          </property>
+          <property name="maximum">
+           <number>5000</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>500</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -265,14 +276,14 @@ Touch</string>
            <enum>QSlider::TicksBelow</enum>
           </property>
           <property name="tickInterval">
-           <number>10</number>
+           <number>500</number>
           </property>
          </widget>
          <widget class="QLabel" name="label_2">
           <property name="geometry">
            <rect>
-            <x>100</x>
-            <y>0</y>
+            <x>40</x>
+            <y>100</y>
             <width>67</width>
             <height>61</height>
            </rect>
@@ -282,50 +293,50 @@ Touch</string>
 Pulse</string>
           </property>
          </widget>
-         <widget class="QLabel" name="haptic_int_text">
+         <widget class="QLabel" name="h_dc_text">
           <property name="geometry">
            <rect>
-            <x>40</x>
+            <x>60</x>
             <y>260</y>
             <width>191</width>
             <height>17</height>
            </rect>
           </property>
           <property name="text">
-           <string>Haptic Intensity: 0 units</string>
+           <string>Intensity: 50 %</string>
           </property>
          </widget>
-         <widget class="QLabel" name="pulse_freq_text">
+         <widget class="QLabel" name="pulse_Hfreq_text">
           <property name="geometry">
            <rect>
-            <x>40</x>
+            <x>60</x>
             <y>320</y>
             <width>201</width>
             <height>17</height>
            </rect>
           </property>
           <property name="text">
-           <string>Pulse Frequency: 0 units</string>
+           <string>Pulsing Frequency: 10 Hz</string>
           </property>
          </widget>
-         <widget class="QLabel" name="pulse_sens_text">
+         <widget class="QLabel" name="single_pulse_dur_label">
           <property name="geometry">
            <rect>
-            <x>40</x>
-            <y>380</y>
-            <width>211</width>
-            <height>17</height>
+            <x>100</x>
+            <y>110</y>
+            <width>181</width>
+            <height>25</height>
            </rect>
           </property>
           <property name="text">
-           <string>Pulse Sensitivity: 0 units</string>
+           <string>Single Pulse Duration(ms): </string>
           </property>
          </widget>
          <widget class="QPushButton" name="Act7">
           <property name="geometry">
            <rect>
-            <x>480</x>
-            <y>90</y>
+            <x>530</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -336,12 +347,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act3">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>40</y>
+            <x>620</x>
+            <y>50</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -352,12 +366,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act9">
           <property name="geometry">
            <rect>
-            <x>600</x>
-            <y>90</y>
+            <x>650</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -368,12 +385,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act4">
           <property name="geometry">
            <rect>
-            <x>630</x>
-            <y>40</y>
+            <x>680</x>
+            <y>50</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -384,12 +404,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act6">
           <property name="geometry">
            <rect>
-            <x>420</x>
-            <y>90</y>
+            <x>470</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -400,12 +423,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act12">
           <property name="geometry">
            <rect>
-            <x>450</x>
-            <y>140</y>
+            <x>500</x>
+            <y>150</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -419,12 +445,15 @@ Pulse</string>
           <property name="checked">
            <bool>false</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act8">
           <property name="geometry">
            <rect>
-            <x>540</x>
-            <y>90</y>
+            <x>590</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -435,12 +464,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act36">
           <property name="geometry">
            <rect>
-            <x>630</x>
-            <y>340</y>
+            <x>680</x>
+            <y>350</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -451,12 +483,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act5">
           <property name="geometry">
            <rect>
-            <x>360</x>
-            <y>90</y>
+            <x>410</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -467,12 +502,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act14">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>140</y>
+            <x>620</x>
+            <y>150</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -483,12 +521,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act10">
           <property name="geometry">
            <rect>
-            <x>660</x>
-            <y>90</y>
+            <x>710</x>
+            <y>100</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -499,12 +540,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act35">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>340</y>
+            <x>620</x>
+            <y>350</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -515,12 +559,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act11">
           <property name="geometry">
            <rect>
-            <x>390</x>
-            <y>140</y>
+            <x>440</x>
+            <y>150</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -531,12 +578,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act13">
           <property name="geometry">
            <rect>
-            <x>510</x>
-            <y>140</y>
+            <x>560</x>
+            <y>150</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -547,12 +597,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act15">
           <property name="geometry">
            <rect>
-            <x>630</x>
-            <y>140</y>
+            <x>680</x>
+            <y>150</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -563,12 +616,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act18">
           <property name="geometry">
            <rect>
-            <x>480</x>
-            <y>190</y>
+            <x>530</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -579,12 +635,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act20">
           <property name="geometry">
            <rect>
-            <x>600</x>
-            <y>190</y>
+            <x>650</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -595,12 +654,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act17">
           <property name="geometry">
            <rect>
-            <x>420</x>
-            <y>190</y>
+            <x>470</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -611,12 +673,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act19">
           <property name="geometry">
            <rect>
-            <x>540</x>
-            <y>190</y>
+            <x>590</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -627,12 +692,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act21">
           <property name="geometry">
            <rect>
-            <x>660</x>
-            <y>190</y>
+            <x>710</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -643,12 +711,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act23">
           <property name="geometry">
            <rect>
-            <x>450</x>
-            <y>240</y>
+            <x>500</x>
+            <y>250</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -659,12 +730,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act25">
           <property name="geometry">
            <rect>
-            <x>570</x>
-            <y>240</y>
+            <x>620</x>
+            <y>250</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -675,12 +749,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act22">
           <property name="geometry">
            <rect>
-            <x>390</x>
-            <y>240</y>
+            <x>440</x>
+            <y>250</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -691,12 +768,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act28">
           <property name="geometry">
            <rect>
-            <x>420</x>
-            <y>290</y>
+            <x>470</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -707,12 +787,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act29">
           <property name="geometry">
            <rect>
-            <x>480</x>
-            <y>290</y>
+            <x>530</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -723,12 +806,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act24">
           <property name="geometry">
            <rect>
-            <x>510</x>
-            <y>240</y>
+            <x>560</x>
+            <y>250</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -739,12 +825,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act31">
           <property name="geometry">
            <rect>
-            <x>600</x>
-            <y>290</y>
+            <x>650</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -755,12 +844,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act26">
           <property name="geometry">
            <rect>
-            <x>630</x>
-            <y>240</y>
+            <x>680</x>
+            <y>250</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -771,12 +863,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act30">
           <property name="geometry">
            <rect>
-            <x>540</x>
-            <y>290</y>
+            <x>590</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -787,12 +882,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act32">
           <property name="geometry">
            <rect>
-            <x>660</x>
-            <y>290</y>
+            <x>710</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -803,12 +901,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act27">
           <property name="geometry">
            <rect>
-            <x>360</x>
-            <y>290</y>
+            <x>410</x>
+            <y>300</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -819,12 +920,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act16">
           <property name="geometry">
            <rect>
-            <x>360</x>
-            <y>190</y>
+            <x>410</x>
+            <y>200</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -835,12 +939,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act33">
           <property name="geometry">
            <rect>
-            <x>390</x>
-            <y>340</y>
+            <x>440</x>
+            <y>350</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -851,12 +958,15 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="Act34">
           <property name="geometry">
            <rect>
-            <x>450</x>
-            <y>340</y>
+            <x>500</x>
+            <y>350</y>
             <width>51</width>
             <height>41</height>
            </rect>
@@ -867,11 +977,14 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
          </widget>
          <widget class="QPushButton" name="all_off">
           <property name="geometry">
            <rect>
-            <x>498</x>
+            <x>540</x>
             <y>10</y>
             <width>91</width>
             <height>25</height>
@@ -884,14 +997,181 @@ Pulse</string>
          <widget class="QLabel" name="label_4">
           <property name="geometry">
            <rect>
-            <x>80</x>
-            <y>90</y>
+            <x>20</x>
+            <y>190</y>
             <width>91</width>
             <height>41</height>
            </rect>
           </property>
           <property name="text">
            <string>Continuous</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="hf_mod">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>230</y>
+            <width>241</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Pulsing (High Freq modulation)</string>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="lf_mod">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>380</y>
+            <width>241</width>
+            <height>40</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Repeated Pulse
+(Low Freq modulation)</string>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="single_pulse_dur_text">
+          <property name="geometry">
+           <rect>
+            <x>280</x>
+            <y>110</y>
+            <width>61</width>
+            <height>25</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>500</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="pulse_Lfreq_text">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>490</y>
+            <width>241</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Repeated Pulse Frequency: 2 Hz</string>
+          </property>
+         </widget>
+         <widget class="QSlider" name="pulse_Lfreq">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>510</y>
+            <width>201</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>2</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="geometry">
+           <rect>
+            <x>320</x>
+            <y>400</y>
+            <width>111</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="title">
+           <string/>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="verticalLayoutWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>111</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QRadioButton" name="radioButton">
+              <property name="text">
+               <string>Single Pulse</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton_2">
+              <property name="text">
+               <string>Continuous</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+         <widget class="QSlider" name="l_dc">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>450</y>
+            <width>201</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>50</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="l_dc_text">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>430</y>
+            <width>191</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Intensity: 50 %</string>
           </property>
          </widget>
         </widget>
@@ -926,7 +1206,7 @@ QTabBar::tab:last {
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideLeft</enum>
@@ -1515,6 +1795,19 @@ QTabBar::tab:last {
             </property>
             <property name="checkable">
              <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="preset_button1">
+            <property name="geometry">
+             <rect>
+              <x>30</x>
+              <y>50</y>
+              <width>131</width>
+              <height>61</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Activate Preset</string>
             </property>
            </widget>
           </widget>
@@ -2122,4 +2415,7 @@ QTabBar::tab:last {
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

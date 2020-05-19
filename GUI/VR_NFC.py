@@ -3,10 +3,11 @@
 
 """TODO:
     - Activate actuators implement all modes for protocol
-    - Work on StyleSheets, see what's needed image wise (png,jpeg,size limits)
+    - Work on StyleSheets, Different shapes for buttons
     - Keep in mind expansion up to 128 actuator arrays
+    - Implement multi-touch (selecting multiple actuators at the same time)
     - Keep in mind thermal actuators
-    - Keep in mind PWM frequency to set intensity
+    - Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
     - Work on deployment (pyqtdeploy, alternatives?) """
 
 import serial
@@ -17,7 +18,7 @@ class VR_PRTCL:
     UID = ''
     device = None
     current_connection = None
-    OP_Mode = '80'#'01'
+    OP_Mode = '01'
     ACT_Mode = '00'
     ACT_BLKS = '02'
     # ACT_state = [0]*32*ACT_BLKS #may be redundant
@@ -25,6 +26,15 @@ class VR_PRTCL:
     active = False
     MAX_PACKET_SIZE = 64
     nAttempts = 5
+    cnt=0
+    pulse_mode = 1
+    hf_mod = 0
+    lf_mod = 0
+    t_pulse = 'F4010000'
+    T_high = '6400'
+    T_low = 'F401'
+    DC_high = '3200'
+    DC_low = 'FA00'
 
     def __init__(self):
         # Device initialization here: usb/bluetooth
@@ -88,7 +98,8 @@ class VR_PRTCL:
             temp += uid[len(uid)-(i+2)]
             temp += uid[len(uid)-(i+1)]
         self.UID_corrected = temp
-        UID_label.setText('UID:  {}'.format(self.UID_corrected)) #requires some bit shifting to get in right order
+        UID_label.setText('UID:  {}'.format(self.UID_corrected))
+        self.set_Timing()
 
 
     def read_RFpower(self): #reading from device?
@@ -103,13 +114,11 @@ class VR_PRTCL:
 
 
     def send(self,cmd):
-        # self.device.reset_input_buffer()
         self.device.reset_input_buffer()
         self.device.reset_output_buffer()
         for i in range(self.nAttempts):
             print('|Sent>       {}'.format(cmd))
             self.device.write(cmd.encode())
-            # time.sleep(.1)
             data = self.device.read(size=self.MAX_PACKET_SIZE).strip().decode()
 
             if data:
@@ -141,9 +150,27 @@ class VR_PRTCL:
         msg.extend(data)
         return msg
 
-    def set_OP_Mode(self):
-        # Set operating mode (i.e. All off, turn on/off, single pulse, continous?)
-        pass
+    def set_OP_Mode(self,value,level):
+        # Set operating mode (i.e. All off, turn on/off, single pulse, continous)
+        if level == 1:
+            if value == 1:
+                self.pulse_mode = 4
+            else:
+                self.pulse_mode = 1
+        elif level == 2:
+            if value == 1:
+                self.hf_mod = 1
+            else:
+                self.hf_mod = 0
+        elif level == 3:
+            if value == 1:
+                self.lf_mod = 1
+            else:
+                self.lf_mod = 0
+        self.OP_mode = '%0*X'%(2,self.pulse_mode+self.hf_mod+self.lf_mod)
+        # print(self.OP_mode)
+
+
 
     def set_ACT_Mode(self):
         # Set actuation mode (i.e.Unipolar, bipolar)
@@ -153,29 +180,69 @@ class VR_PRTCL:
         # set number of blocks of 32 actuators
         pass
 
+    def set_one_pulse_duration(self,time):
+        try:
+            time = int(time)
+        except ValueError:
+            print('Must enter a number')
+        t = '%0*X'%(8,time)
+        self.t_pulse = t[6:]+t[4:6]+t[2:4]+t[0:2]
+        # print(self.t_pulse)
+        self.set_Timing()
+
+    def set_pulse_freq(self,freq,mode):
+        T = int((1/freq)*1000)
+        # print(T)
+        if mode == 'high':
+            t = '%0*X'%(4,T)
+            self.T_high = t[2:4]+t[0:2]
+            # print(self.T_high)
+        else:
+            t = '%0*X'%(4,T)
+            self.T_low = t[2:4]+t[0:2]
+            # print(self.T_low)
+        self.set_Timing()
+
+
+
     def set_Timing(self):
         # Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
-        self.Alloff()
 
-        cmd3 = '01170003041862'+ '21' +self.UID+ '09' + 'D0070000'+'0000'
-        cmd4 = '01170003041862'+ '21' +self.UID+ '0A' + '32006400'+'0000'
-        cmd5 = '01170003041862'+ '21' +self.UID+ '0B' + 'c800F401'+'0000'
+        self.Alloff()
+        cmd3 = '01170003041862'+ '21' +self.UID+ '09' + self.t_pulse +'0000'
+        cmd4 = '01170003041862'+ '21' +self.UID+ '0A' + self.T_high + self.DC_high +'0000'
+        cmd5 = '01170003041862'+ '21' +self.UID+ '0B' + self.T_low + self.DC_low +'0000'
 
         state = self.send(cmd3)
         state = self.send(cmd4)
         state = self.send(cmd5)
 
-    def set_ACT_intensity(self,value,text):
+    def set_ACT_intensity(self,dc,mode):
         # Modulate DC/PWM to adjust inensitiy of actuators
-        self.ACT_intensity = value
-        text.setText("Haptic Intensity: {} units".format(value))
+        if mode == 'high':
+            t_h = self.T_high[2:4]+self.T_high[0:2] # value is stored reversed, so it needs to be flipped again
+            temp = int((dc/100)*int(t_h,16)) # DC percentage times the high freq period
+            temp = '%0*X'%(4,temp) # convert to hex string
+            self.DC_high = temp[2:4]+temp[0:2] # Store in reverse for sending command
+            # print(self.DC_high)
+        else:
+            t_l = self.T_low[2:4]+self.T_low[0:2]
+            temp = int((dc/100.0)*int(t_l,16))
+            temp = '%0*X'%(4,temp)
+            self.DC_low = temp[2:4]+temp[0:2]
+            # print(self.DC_low)
+        self.set_Timing()
 
     def Alloff(self):
         cmd = '0117000304186221'+self.UID+'00000002000000'
         res = self.send(cmd)
 
     def set_ACT_state(self,act,num):
+        if self.cnt == 0:
+            self.set_Timing()
+            self.cnt +=1
+
         # turn on/off actuators. ARGS: act: Button Object for an actuator; num:Actuatior number
         if self.ACT_ON == None: # No buttons pressed
             self.ACT_ON = act
@@ -190,31 +257,37 @@ class VR_PRTCL:
                 self.ACT_ON = act
                 action = True # turn on new button
         if action:
-            if num <= 32:
-                blk2 = '%0*X'%(8,0)
-                blk1 = 1 << num-1
-                blk1 = '%0*X'%(8,blk1)
-                blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+            if num == 'Preset1':
+                self.OP_Mode = '80'
+                blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
+                cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
+                state = self.send(cmd0)
             else:
-                blk1 = '%0*X'%(8,0)
-                blk2 = 1 << num-33
-                blk2 = '%0*X'%(8,blk2)
-                blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
+                if num <= 32:
+                    blk2 = '%0*X'%(8,0)
+                    blk1 = 1 << num-1
+                    blk1 = '%0*X'%(8,blk1)
+                    blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+                else:
+                    blk1 = '%0*X'%(8,0)
+                    blk2 = 1 << num-33
+                    blk2 = '%0*X'%(8,blk2)
+                    blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
 
-            # Blk 0
-            self.OP_Mode = '06'
-            blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
-            cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
-                    #|nb             |r/w       |UID  |BlkAdr |data |padding  
-                                        #(9552D9D0F35902E0)
-            # Blk 1
-            cmd1 = '01170003041862'+ '21' +self.UID+ '01' + blk1 + '0000'
-            #Blk 2
-            cmd2 = '01170003041862'+ '21' +self.UID+ '02' + blk2 + '0000'
+                # Blk 0
+                # self.OP_Mode = '03'
+                blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00'
+                cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
+                        #|nb             |r/w       |UID  |BlkAdr |data |padding
+                                            #(9552D9D0F35902E0)
+                # Blk 1
+                cmd1 = '01170003041862'+ '21' +self.UID+ '01' + blk1 + '0000'
+                #Blk 2
+                cmd2 = '01170003041862'+ '21' +self.UID+ '02' + blk2 + '0000'
 
-            state = self.send(cmd1)
-            state = self.send(cmd2)
-            state = self.send(cmd0)
+                state = self.send(cmd1)
+                state = self.send(cmd2)
+                state = self.send(cmd0)
 
 
         else:

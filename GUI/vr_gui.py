@@ -8,6 +8,34 @@ import time
 from vr_gui_layout import Ui_MainWindow
 from VR_NFC import VR_PRTCL
 
+"""QSlider::groove:vertical{
+	border: 1px solid black;
+	background: white;
+	width: 5px;
+	border-radius:4px;
+}
+QSlider::add-page:vertical{
+	background: rgb(48, 50, 198);
+	border: 1px solid black;
+	width: 5px;
+	border-radius:4px;
+}
+QSlider::sub-page:vertical{
+	background: white;
+	border: 1px solid black;
+	width: 5px;
+	border-radius:4px;
+}
+QSlider::handle:vertical{
+	height: 10px;
+	margin-left:  -6px;
+	margin-right: -6px;
+	border: 1px solid black;
+	border-radius:4px;
+	backgound-color: black;
+
+}"""
+
 class MainWindow(QtWidgets.QMainWindow):
 
 
@@ -15,21 +43,42 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # print(MainWindow.geometry().width())
-        # self.ui.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; width: 267px;}")
-        # self.ui.tab_position.setStyleSheet("QTabBar::tab { height: 100px; width: 100px;}")
 
+        # Initialization
         self.vr = VR_PRTCL()
-        self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
-        self.ui.haptic_intensity.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.haptic_intensity.value(),self.ui.haptic_int_text))
-        self.ui.pulse_freq.valueChanged.connect(lambda:self.ui.pulse_freq_text.setText("Pulse Frequency: {} units".format(self.ui.pulse_freq.value())))
-        self.ui.pulse_sensitivity.valueChanged.connect(lambda:self.ui.pulse_sens_text.setText("Pulse Sensitivity: {} units".format(self.ui.pulse_sensitivity.value())))
+
+        # Settings
         self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT,self.ui.connect_button,self.ui.UID))
-        # self.ui.disconnect.clicked.connect(lambda:self.vr.disconnect(self.ui.PORT,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory(self.ui.UID))
-        self.ui.all_off.clicked.connect(lambda:self.vr.Alloff())
+        self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
+
+        # Setting Opertating Mode
+        self.ui.pulse_mode.valueChanged.connect(lambda:self.vr.set_OP_Mode(self.ui.pulse_mode.value(),1))
+        self.ui.hf_mod.toggled.connect(lambda:self.vr.set_OP_Mode(self.ui.hf_mod.isChecked(),2))
+        self.ui.lf_mod.toggled.connect(lambda:self.vr.set_OP_Mode(self.ui.lf_mod.isChecked(),3))
+
+        # Setting High(h) and Low(l) Duty Cycle
+        self.ui.h_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.h_dc.value(),'high'))
+        self.ui.h_dc.valueChanged.connect(lambda:self.ui.h_dc_text.setText("Intensity: {} %".format(self.ui.h_dc.value())))
+        self.ui.l_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.l_dc.value(),'low'))
+        self.ui.l_dc.valueChanged.connect(lambda:self.ui.l_dc_text.setText("Intensity: {} %".format(self.ui.l_dc.value())))
+
+        # Setting High(H) and Low(L) frequency (period)
+        self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Hfreq.value(),'high'))
+        self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.ui.pulse_Hfreq_text.setText("Pulsing Frequency: {} units".format(self.ui.pulse_Hfreq.value())))
+        self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Lfreq.value(),'low'))
+        self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.ui.pulse_Lfreq_text.setText("Repeated Pulse Frequency: {} units".format(self.ui.pulse_Lfreq.value())))
+
+        # Setting Single pulse duration
+        self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.vr.set_one_pulse_duration(self.ui.single_pulse_dur_text.text()))
+        self.ui.pulse_duration.valueChanged.connect(lambda:self.vr.set_one_pulse_duration(self.ui.pulse_duration.value()))
+        self.ui.pulse_duration.valueChanged.connect(lambda:self.ui.single_pulse_dur_text.setText("{}".format(self.ui.pulse_duration.value())))
+
 
         # Actuators
+        self.ui.all_off.clicked.connect(lambda:self.vr.Alloff())
+        self.ui.preset_button1.clicked.connect(lambda:self.vr.set_ACT_state(self.ui.Act1,'Preset1'))
+
         self.ui.Act1.clicked.connect(lambda:self.vr.set_ACT_state(self.ui.Act1,1))
         self.ui.Act2.clicked.connect(lambda:self.vr.set_ACT_state(self.ui.Act2,2))
         self.ui.Act3.clicked.connect(lambda:self.vr.set_ACT_state(self.ui.Act3,3))
