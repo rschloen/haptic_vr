@@ -55,7 +55,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.hex_button()
         # Settings
         self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT,self.ui.connect_button,self.ui.UID))
-        self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory(self.ui.UID))
+        self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
+        self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
+        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID_label.setText('UID:  {}'.format(self.vr.UID_corrected)))
+
         self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
 
         # Setting Opertating Mode
@@ -186,6 +189,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 # print(p)
                 self.all_ACT[p].setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
+    def connect_device(self,port_label,button,UID_label):
+        if self.vr.device.is_open:
+            print('Connected to {}'.format(self.device.name))
+            port_label.setText('Serial Port: {}'.format(self.device.name))
+            button.setText('Disconnect')
+        else:
+            button.setText('Connect')
+            port_label.setText('Serial Port: ')
+            UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
 
     def set_multi_modal(self,value):
         self.vr.set_ACT_Mode(value)
@@ -224,6 +236,5 @@ class MainWindow(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     gui = MainWindow()
-    # print(gui.geometry().width())
     gui.show()
     sys.exit(app.exec_())
