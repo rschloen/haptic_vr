@@ -2,16 +2,18 @@
 
 
 """TODO:
-    - Activate actuators implement all modes for protocol
+    X Activate actuators implement all modes for protocol
     - Work on StyleSheets, Different shapes for buttons
-    - Keep in mind expansion up to 128 actuator arrays
+    - Adding presets and create custom presets in GUI
     - Implement multi-touch (selecting multiple actuators at the same time)
-    - Keep in mind thermal actuators
     - Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
+        - Multiple intensities at same time
+    - Keep in mind expansion up to 128 actuator arrays
+    - Keep in mind thermal actuators
     - Work on deployment (pyqtdeploy, alternatives?) """
 
 import serial
-import sys,time
+import sys,time,csv
 
 class VR_PRTCL:
     """Library for Haptic VR device NFC communication"""
@@ -22,8 +24,9 @@ class VR_PRTCL:
     ACT_Mode = '00'
     ACT_BLKS = '02'
     # ACT_state = [0]*32*ACT_BLKS #may be redundant
-    ACT_ON = None
+    ACT_ON = []
     active = False
+    prev_act = []
     MAX_PACKET_SIZE = 64
     nAttempts = 5
     cnt=0
@@ -35,6 +38,33 @@ class VR_PRTCL:
     T_low = 'F401'
     DC_high = '3200'
     DC_low = 'FA00'
+    append_to_file = False
+    back_slide_vert = ['01170003041862219552D9D0F35902E00A04000E000000','01170003041862219552D9D0F35902E00BFA00F4010000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010F0000000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001F00300000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001007C00000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E00100801F000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010000E0030000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001000000FC0000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001000000000000','01170003041862219552D9D0F35902E0020F0000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0092C0100000000','01170003041862219552D9D0F35902E00A09000E000000','01170003041862219552D9D0F35902E00BFA00F4010000',
+                       '01170003041862219552D9D0F35902E001000000000000','01170003041862219552D9D0F35902E0020F0000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001000000FC0000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010000E0030000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E00100801F000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001007C00000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001F00300000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010F0000000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0092C0100000000','01170003041862219552D9D0F35902E00A0E000E000000','01170003041862219552D9D0F35902E00BFA00F4010000',
+                       '01170003041862219552D9D0F35902E00A04000E000000','01170003041862219552D9D0F35902E00BFA00F4010000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010F0000000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001F00300000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001007C00000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E00100801F000000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E0010000E0030000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001000000FC0000','01170003041862219552D9D0F35902E002000000000000','01170003041862219552D9D0F35902E000050102000000',
+                       '01170003041862219552D9D0F35902E001000000000000','01170003041862219552D9D0F35902E0020F0000000000','01170003041862219552D9D0F35902E000050102000000',]
+
 
     def __init__(self):
         # Device initialization here: usb/bluetooth
@@ -72,7 +102,7 @@ class VR_PRTCL:
 
 
     def disconnect(self,port_label,button,UID_label):
-        # disconnect from NFC board,(Adapted from Abraham's Optogenetics example)
+        # disconnect from NFC board
         self.active = False
         self.device.close()
         if self.device.is_open:
@@ -80,7 +110,26 @@ class VR_PRTCL:
         button.setText('Connect')
         port_label.setText('Serial Port: ')
         UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
+        try:
+            if not self.preset_file.closed:
+                self.preset_file.close()
+        except:
+            pass
         print('Disconnected')
+
+    def add_to_preset(self,preset_name,append):
+        #add check for filename
+        if append:
+            self.append_to_file = True
+            try:
+                self.preset_file = open('preset_files/'+preset_name+'.txt','a')
+            except FileNotFoundError:
+                self.preset_file = open('preset_files/'+preset_name+'.txt','w')
+            print(self.preset_file.closed)
+        else:
+            self.append_to_file = False
+            if not self.preset_file.closed:
+                self.preset_file.close()
 
 
     def get_inventory(self,UID_label):
@@ -99,7 +148,7 @@ class VR_PRTCL:
             temp += uid[len(uid)-(i+1)]
         self.UID_corrected = temp
         UID_label.setText('UID:  {}'.format(self.UID_corrected))
-        self.set_Timing()
+        # self.set_Timing()
 
 
     def read_RFpower(self): #reading from device?
@@ -150,6 +199,33 @@ class VR_PRTCL:
         msg.extend(data)
         return msg
 
+    def play_preset(self,preset):
+        if preset == 'flash all':
+            temp = self.OP_Mode
+            self.OP_Mode = '80'
+            blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
+            cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
+            state = self.send(cmd0)
+            self.OP_Mode = temp
+        elif preset == 'ABCs':
+            with open('preset_files/'+preset+'.txt','r') as read_preset:
+                cnt = 0
+                for line in read_preset:
+                    cmd = line.rstrip()
+                    d = self.send(cmd)
+                    if cnt == 2:
+                        time.sleep(0.5)
+                        self.Alloff()
+                        time.sleep(0.5)
+                        cnt = 0
+                    else:
+                        cnt += 1
+        else:
+            with open('preset_files/'+preset+'.txt','r') as read_preset:
+                for line in read_preset:
+                    cmd = line.rstrip()
+                    d = self.send(cmd)
+
     def set_OP_Mode(self,value,level):
         # Set operating mode (i.e. All off, turn on/off, single pulse, continous)
         if level == 1:
@@ -158,23 +234,15 @@ class VR_PRTCL:
             else:
                 self.pulse_mode = 1
         elif level == 2:
-            if value == 1:
-                self.hf_mod = 1
-            else:
-                self.hf_mod = 0
+            self.hf_mod = value
         elif level == 3:
-            if value == 1:
-                self.lf_mod = 1
-            else:
-                self.lf_mod = 0
-        self.OP_mode = '%0*X'%(2,self.pulse_mode+self.hf_mod+self.lf_mod)
-        # print(self.OP_mode)
+            self.lf_mod = value
+        self.OP_Mode = '%0*X'%(2,self.pulse_mode+self.hf_mod+self.lf_mod)
+        # print(self.OP_Mode)
 
-
-
-    def set_ACT_Mode(self):
+    def set_ACT_Mode(self,mode):
         # Set actuation mode (i.e.Unipolar, bipolar)
-        pass
+        self.ACT_Mode = '%0*X'%(2,mode)
 
     def set_ACT_Cnt(self):
         # set number of blocks of 32 actuators
@@ -187,36 +255,33 @@ class VR_PRTCL:
             print('Must enter a number')
         t = '%0*X'%(8,time)
         self.t_pulse = t[6:]+t[4:6]+t[2:4]+t[0:2]
-        # print(self.t_pulse)
-        self.set_Timing()
+        # self.set_Timing()
 
     def set_pulse_freq(self,freq,mode):
         T = int((1/freq)*1000)
-        # print(T)
         if mode == 'high':
             t = '%0*X'%(4,T)
             self.T_high = t[2:4]+t[0:2]
-            # print(self.T_high)
         else:
             t = '%0*X'%(4,T)
             self.T_low = t[2:4]+t[0:2]
-            # print(self.T_low)
-        self.set_Timing()
-
-
+        # self.set_Timing()
 
     def set_Timing(self):
         # Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
-
         self.Alloff()
         cmd3 = '01170003041862'+ '21' +self.UID+ '09' + self.t_pulse +'0000'
-        cmd4 = '01170003041862'+ '21' +self.UID+ '0A' + self.T_high + self.DC_high +'0000'
-        cmd5 = '01170003041862'+ '21' +self.UID+ '0B' + self.T_low + self.DC_low +'0000'
+        cmd4 = '01170003041862'+ '21' +self.UID+ '0A' + self.DC_high + self.T_high +'0000'
+        cmd5 = '01170003041862'+ '21' +self.UID+ '0B' + self.DC_low + self.T_low +'0000'
 
         state = self.send(cmd3)
         state = self.send(cmd4)
         state = self.send(cmd5)
+        if self.append_to_file:
+            self.preset_file.write(cmd3+'\n')
+            self.preset_file.write(cmd4+'\n')
+            self.preset_file.write(cmd5+'\n')
 
     def set_ACT_intensity(self,dc,mode):
         # Modulate DC/PWM to adjust inensitiy of actuators
@@ -232,51 +297,57 @@ class VR_PRTCL:
             temp = '%0*X'%(4,temp)
             self.DC_low = temp[2:4]+temp[0:2]
             # print(self.DC_low)
-        self.set_Timing()
+        # self.set_Timing()
 
     def Alloff(self):
         cmd = '0117000304186221'+self.UID+'00000002000000'
         res = self.send(cmd)
+        if self.append_to_file:
+            self.preset_file.write(cmd+'\n')
+        self.prev_act = self.ACT_ON[:]
+        self.ACT_ON = []
 
-    def set_ACT_state(self,act,num):
-        if self.cnt == 0:
-            self.set_Timing()
-            self.cnt +=1
-
+    def set_ACT_state(self,act_num):
         # turn on/off actuators. ARGS: act: Button Object for an actuator; num:Actuatior number
-        if self.ACT_ON == None: # No buttons pressed
-            self.ACT_ON = act
-            action = True # Turn on actuator
-        else: # Button already pressed
-            if self.ACT_ON == act: # Button pressed twice in a row
-                act.setChecked(False)
-                self.ACT_ON = None
-                action = False # Turn off actuator
+        action = False
+        self.prev_act = []
+        if self.ACT_Mode == '00':
+            if act_num in self.ACT_ON: # Button pressed twice in a row
+                self.prev_act.append(self.ACT_ON.pop())
             else: # new button pressed
-                self.ACT_ON.setChecked(False)
-                self.ACT_ON = act
+                try:
+                    self.prev_act.append(self.ACT_ON.pop())
+                except:
+                    pass
+                self.ACT_ON.append(act_num)
                 action = True # turn on new button
-        if action:
-            if num == 'Preset1':
-                self.OP_Mode = '80'
-                blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
-                cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
-                state = self.send(cmd0)
+        else:
+            # multi modal (touch)
+            if act_num == 0: # Turns on selected actuators
+                action = True
             else:
-                if num <= 32:
-                    blk2 = '%0*X'%(8,0)
-                    blk1 = 1 << num-1
-                    blk1 = '%0*X'%(8,blk1)
-                    blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+                if act_num in self.ACT_ON: #Turn off an already pressed button
+                    self.ACT_ON.remove(act_num)
+                    self.prev_act.append(act_num) # So it gets turned off in the GUI
                 else:
-                    blk1 = '%0*X'%(8,0)
-                    blk2 = 1 << num-33
-                    blk2 = '%0*X'%(8,blk2)
-                    blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
+                    self.ACT_ON.append(act_num)
+            print(self.ACT_ON)
 
+        if action:
+                temp_blk = 0
+                for act in self.ACT_ON:
+                    shift_act = 1 << act-1
+                    temp_blk |= shift_act
+                temp_blk = '%0*X'%(16,temp_blk)
+
+                # print(temp_blk)
+                blk1 = temp_blk[8:]
+                blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+                blk2 = temp_blk[0:8]
+                blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
                 # Blk 0
-                # self.OP_Mode = '03'
-                blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00'
+                # print(blk1)
+                blk0 = self.OP_Mode + self.ACT_Mode + self.ACT_BLKS + '00'
                 cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
                         #|nb             |r/w       |UID  |BlkAdr |data |padding
                                             #(9552D9D0F35902E0)
@@ -288,7 +359,12 @@ class VR_PRTCL:
                 state = self.send(cmd1)
                 state = self.send(cmd2)
                 state = self.send(cmd0)
-
+                if self.append_to_file:
+                    print('writing')
+                    self.preset_file.write(cmd1+'\n')
+                    self.preset_file.write(cmd2+'\n')
+                    self.preset_file.write(cmd0+'\n')
 
         else:
-            self.Alloff()
+            cmd = '0117000304186221'+self.UID+'00000002000000'
+            res = self.send(cmd)

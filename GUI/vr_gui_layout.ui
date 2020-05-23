@@ -20,11 +20,7 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton:checked{
-	color: blue;
-	background-color: rgb(48, 50, 198);
-	border: 1px solid black;
-}
+   <string notr="true">
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -67,7 +63,6 @@ QTabBar::tab:selected{
 	background-color: rgb(218, 58, 245);	
 	margin: 2px;
 }
-
 QTabWidget{
 	background-color: rgb(149, 27, 218);}</string>
         </property>
@@ -78,6 +73,16 @@ QTabWidget{
          <number>0</number>
         </property>
         <widget class="QWidget" name="Manual">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton[objectName^=&quot;Act&quot;]{
+	background-color: white;
+	border: none;
+}
+</string>
+         </property>
          <attribute name="title">
           <string>Manual</string>
          </attribute>
@@ -163,11 +168,14 @@ QTabWidget{
          <widget class="QPushButton" name="Act1">
           <property name="geometry">
            <rect>
-            <x>450</x>
+            <x>430</x>
             <y>50</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -178,6 +186,9 @@ QTabWidget{
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
           <attribute name="buttonGroup">
            <string notr="true">buttonGroup</string>
           </attribute>
@@ -185,10 +196,10 @@ QTabWidget{
          <widget class="QPushButton" name="Act2">
           <property name="geometry">
            <rect>
-            <x>510</x>
+            <x>480</x>
             <y>50</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -238,8 +249,20 @@ Touch</string>
             <height>31</height>
            </rect>
           </property>
-          <property name="value">
+          <property name="minimum">
+           <number>100</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="singleStep">
            <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>100</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -248,7 +271,7 @@ Touch</string>
            <enum>QSlider::TicksBelow</enum>
           </property>
           <property name="tickInterval">
-           <number>10</number>
+           <number>100</number>
           </property>
          </widget>
          <widget class="QSlider" name="pulse_duration">
@@ -316,7 +339,7 @@ Pulse</string>
            </rect>
           </property>
           <property name="text">
-           <string>Pulsing Frequency: 10 Hz</string>
+           <string>Pulsing Frequency: 100 Hz</string>
           </property>
          </widget>
          <widget class="QLabel" name="single_pulse_dur_label">
@@ -335,10 +358,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act7">
           <property name="geometry">
            <rect>
-            <x>530</x>
+            <x>510</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -354,16 +377,22 @@ Pulse</string>
          <widget class="QPushButton" name="Act3">
           <property name="geometry">
            <rect>
-            <x>620</x>
+            <x>590</x>
             <y>50</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
            <string/>
           </property>
           <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <property name="autoExclusive">
            <bool>true</bool>
           </property>
           <attribute name="buttonGroup">
@@ -373,10 +402,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act9">
           <property name="geometry">
            <rect>
-            <x>650</x>
+            <x>610</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -392,10 +421,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act4">
           <property name="geometry">
            <rect>
-            <x>680</x>
+            <x>640</x>
             <y>50</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -411,10 +440,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act6">
           <property name="geometry">
            <rect>
-            <x>470</x>
+            <x>460</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -430,10 +459,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act12">
           <property name="geometry">
            <rect>
-            <x>500</x>
+            <x>480</x>
             <y>150</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -452,10 +481,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act8">
           <property name="geometry">
            <rect>
-            <x>590</x>
+            <x>560</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -464,6 +493,12 @@ Pulse</string>
           <property name="checkable">
            <bool>true</bool>
           </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
+          </property>
           <attribute name="buttonGroup">
            <string notr="true">buttonGroup</string>
           </attribute>
@@ -471,10 +506,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act36">
           <property name="geometry">
            <rect>
-            <x>680</x>
+            <x>640</x>
             <y>350</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -492,8 +527,8 @@ Pulse</string>
            <rect>
             <x>410</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -509,10 +544,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act14">
           <property name="geometry">
            <rect>
-            <x>620</x>
+            <x>580</x>
             <y>150</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -528,11 +563,14 @@ Pulse</string>
          <widget class="QPushButton" name="Act10">
           <property name="geometry">
            <rect>
-            <x>710</x>
+            <x>660</x>
             <y>100</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
           </property>
           <property name="text">
            <string/>
@@ -547,10 +585,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act35">
           <property name="geometry">
            <rect>
-            <x>620</x>
+            <x>590</x>
             <y>350</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -566,10 +604,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act11">
           <property name="geometry">
            <rect>
-            <x>440</x>
+            <x>430</x>
             <y>150</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -585,10 +623,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act13">
           <property name="geometry">
            <rect>
-            <x>560</x>
+            <x>530</x>
             <y>150</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -604,10 +642,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act15">
           <property name="geometry">
            <rect>
-            <x>680</x>
+            <x>630</x>
             <y>150</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -623,10 +661,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act18">
           <property name="geometry">
            <rect>
-            <x>530</x>
+            <x>510</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -642,10 +680,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act20">
           <property name="geometry">
            <rect>
-            <x>650</x>
+            <x>610</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -661,10 +699,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act17">
           <property name="geometry">
            <rect>
-            <x>470</x>
+            <x>460</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -680,10 +718,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act19">
           <property name="geometry">
            <rect>
-            <x>590</x>
+            <x>560</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -699,10 +737,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act21">
           <property name="geometry">
            <rect>
-            <x>710</x>
+            <x>660</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -718,10 +756,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act23">
           <property name="geometry">
            <rect>
-            <x>500</x>
+            <x>480</x>
             <y>250</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -737,10 +775,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act25">
           <property name="geometry">
            <rect>
-            <x>620</x>
+            <x>580</x>
             <y>250</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -756,10 +794,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act22">
           <property name="geometry">
            <rect>
-            <x>440</x>
+            <x>430</x>
             <y>250</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -775,10 +813,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act28">
           <property name="geometry">
            <rect>
-            <x>470</x>
+            <x>460</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -794,10 +832,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act29">
           <property name="geometry">
            <rect>
-            <x>530</x>
+            <x>510</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -813,10 +851,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act24">
           <property name="geometry">
            <rect>
-            <x>560</x>
+            <x>530</x>
             <y>250</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -832,10 +870,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act31">
           <property name="geometry">
            <rect>
-            <x>650</x>
+            <x>610</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -851,10 +889,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act26">
           <property name="geometry">
            <rect>
-            <x>680</x>
+            <x>630</x>
             <y>250</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -870,10 +908,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act30">
           <property name="geometry">
            <rect>
-            <x>590</x>
+            <x>560</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -889,10 +927,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act32">
           <property name="geometry">
            <rect>
-            <x>710</x>
+            <x>660</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -910,8 +948,8 @@ Pulse</string>
            <rect>
             <x>410</x>
             <y>300</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -929,8 +967,8 @@ Pulse</string>
            <rect>
             <x>410</x>
             <y>200</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -946,10 +984,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act33">
           <property name="geometry">
            <rect>
-            <x>440</x>
+            <x>430</x>
             <y>350</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -965,10 +1003,10 @@ Pulse</string>
          <widget class="QPushButton" name="Act34">
           <property name="geometry">
            <rect>
-            <x>500</x>
+            <x>480</x>
             <y>350</y>
-            <width>51</width>
-            <height>41</height>
+            <width>50</width>
+            <height>50</height>
            </rect>
           </property>
           <property name="text">
@@ -1088,51 +1126,6 @@ Pulse</string>
            <number>10</number>
           </property>
          </widget>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="geometry">
-           <rect>
-            <x>320</x>
-            <y>400</y>
-            <width>111</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <widget class="QWidget" name="verticalLayoutWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>111</width>
-             <height>61</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout">
-            <item>
-             <widget class="QRadioButton" name="radioButton">
-              <property name="text">
-               <string>Single Pulse</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioButton_2">
-              <property name="text">
-               <string>Continuous</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
          <widget class="QSlider" name="l_dc">
           <property name="geometry">
            <rect>
@@ -1174,6 +1167,61 @@ Pulse</string>
            <string>Intensity: 50 %</string>
           </property>
          </widget>
+         <widget class="QPushButton" name="set_time">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>180</y>
+            <width>91</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Set Timing</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="active_selected">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>20</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Activate Selected</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="append_preset">
+          <property name="geometry">
+           <rect>
+            <x>470</x>
+            <y>440</y>
+            <width>131</width>
+            <height>41</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Append to preset</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="append_preset_name">
+          <property name="geometry">
+           <rect>
+            <x>610</x>
+            <y>450</y>
+            <width>113</width>
+            <height>25</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
         <widget class="QWidget" name="Automatic">
          <attribute name="title">
@@ -1183,30 +1231,27 @@ Pulse</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>60</y>
             <width>851</width>
-            <height>561</height>
+            <height>501</height>
            </rect>
           </property>
           <property name="styleSheet">
            <string notr="true">QTabBar::tab { 
 	height: 120px; 
-	width: 120px;
-	background_color: white; 
+	width: 120px; 
 }
 QTabBar::tab:first {
 	border-image: url(/home/rschloen/haptic_vr/GUI/preset_stomach.png);
 }
-QTabBar::tab:last {
-	border-image: url(/home/rschloen/haptic_vr/GUI/preset_chest.png);
-}
+
 </string>
           </property>
           <property name="tabPosition">
            <enum>QTabWidget::West</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <property name="elideMode">
            <enum>Qt::ElideLeft</enum>
@@ -1216,7 +1261,7 @@ QTabBar::tab:last {
             <string notr="true"/>
            </property>
            <attribute name="title">
-            <string>Position 1</string>
+            <string/>
            </attribute>
            <widget class="QPushButton" name="Act7_2">
             <property name="geometry">
@@ -1797,29 +1842,16 @@ QTabBar::tab:last {
              <bool>true</bool>
             </property>
            </widget>
-           <widget class="QPushButton" name="preset_button1">
-            <property name="geometry">
-             <rect>
-              <x>30</x>
-              <y>50</y>
-              <width>131</width>
-              <height>61</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>Activate Preset</string>
-            </property>
-           </widget>
           </widget>
-          <widget class="QWidget" name="Position2">
+          <widget class="QWidget" name="tab_2">
            <attribute name="title">
-            <string>Position 2</string>
+            <string>Back Swipe</string>
            </attribute>
-           <widget class="QPushButton" name="pushButton_73">
+           <widget class="QPushButton" name="Act24_8">
             <property name="geometry">
              <rect>
-              <x>550</x>
-              <y>50</y>
+              <x>340</x>
+              <y>280</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -1827,11 +1859,131 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_74">
+           <widget class="QPushButton" name="Act11_8">
             <property name="geometry">
              <rect>
-              <x>190</x>
+              <x>220</x>
+              <y>180</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act17_8">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>230</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act10_8">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act2_8">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>80</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act30_8">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act1_8">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act34_8">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
               <y>260</y>
               <width>51</width>
               <height>41</height>
@@ -1840,12 +1992,18 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_75">
+           <widget class="QPushButton" name="Act36_8">
             <property name="geometry">
              <rect>
-              <x>190</x>
-              <y>100</y>
+              <x>520</x>
+              <y>110</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -1853,12 +2011,18 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_76">
+           <widget class="QPushButton" name="Act12_8">
             <property name="geometry">
              <rect>
-              <x>550</x>
-              <y>210</y>
+              <x>280</x>
+              <y>160</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -1866,12 +2030,21 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_77">
+           <widget class="QPushButton" name="Act21_8">
             <property name="geometry">
              <rect>
-              <x>310</x>
-              <y>150</y>
+              <x>460</x>
+              <y>230</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -1879,11 +2052,74 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_78">
+           <widget class="QPushButton" name="Act31_8">
             <property name="geometry">
              <rect>
-              <x>550</x>
+              <x>400</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act6_8">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act8_8">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act16_8">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
               <y>260</y>
               <width>51</width>
               <height>41</height>
@@ -1892,258 +2128,17 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_79">
+           <widget class="QPushButton" name="Act18_8">
             <property name="geometry">
              <rect>
-              <x>490</x>
-              <y>180</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_80">
-            <property name="geometry">
-             <rect>
-              <x>490</x>
-              <y>130</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_81">
-            <property name="geometry">
-             <rect>
-              <x>250</x>
-              <y>130</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_82">
-            <property name="geometry">
-             <rect>
-              <x>310</x>
-              <y>50</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_83">
-            <property name="geometry">
-             <rect>
-              <x>490</x>
-              <y>30</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_84">
-            <property name="geometry">
-             <rect>
-              <x>430</x>
-              <y>200</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_85">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
-              <y>130</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_86">
-            <property name="geometry">
-             <rect>
-              <x>430</x>
-              <y>150</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_87">
-            <property name="geometry">
-             <rect>
-              <x>550</x>
-              <y>100</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_88">
-            <property name="geometry">
-             <rect>
-              <x>190</x>
-              <y>50</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_89">
-            <property name="geometry">
-             <rect>
-              <x>430</x>
-              <y>250</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_90">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
-              <y>30</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_91">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
-              <y>230</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_92">
-            <property name="geometry">
-             <rect>
-              <x>250</x>
-              <y>30</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_93">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
-              <y>280</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_94">
-            <property name="geometry">
-             <rect>
-              <x>490</x>
-              <y>80</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_95">
-            <property name="geometry">
-             <rect>
-              <x>310</x>
-              <y>200</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_96">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
-              <y>80</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_97">
-            <property name="geometry">
-             <rect>
-              <x>310</x>
-              <y>250</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_98">
-            <property name="geometry">
-             <rect>
-              <x>190</x>
+              <x>280</x>
               <y>210</y>
               <width>51</width>
               <height>41</height>
@@ -2152,24 +2147,17 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_99">
+           <widget class="QPushButton" name="Act15_8">
             <property name="geometry">
              <rect>
-              <x>250</x>
-              <y>230</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_100">
-            <property name="geometry">
-             <rect>
-              <x>370</x>
+              <x>460</x>
               <y>180</y>
               <width>51</width>
               <height>41</height>
@@ -2178,12 +2166,18 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_101">
+           <widget class="QPushButton" name="Act9_8">
             <property name="geometry">
              <rect>
-              <x>490</x>
-              <y>230</y>
+              <x>400</x>
+              <y>110</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -2191,63 +2185,17 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_102">
+           <widget class="QPushButton" name="Act4_8">
             <property name="geometry">
              <rect>
-              <x>430</x>
-              <y>100</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_103">
-            <property name="geometry">
-             <rect>
-              <x>250</x>
-              <y>180</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_104">
-            <property name="geometry">
-             <rect>
-              <x>310</x>
-              <y>100</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_105">
-            <property name="geometry">
-             <rect>
-              <x>490</x>
-              <y>280</y>
-              <width>51</width>
-              <height>41</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_106">
-            <property name="geometry">
-             <rect>
-              <x>250</x>
+              <x>460</x>
               <y>80</y>
               <width>51</width>
               <height>41</height>
@@ -2256,12 +2204,18 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_107">
+           <widget class="QPushButton" name="Act19_8">
             <property name="geometry">
              <rect>
-              <x>430</x>
-              <y>50</y>
+              <x>340</x>
+              <y>230</y>
               <width>51</width>
               <height>41</height>
              </rect>
@@ -2269,11 +2223,36 @@ QTabBar::tab:last {
             <property name="text">
              <string/>
             </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
            </widget>
-           <widget class="QPushButton" name="pushButton_108">
+           <widget class="QPushButton" name="Act14_8">
             <property name="geometry">
              <rect>
-              <x>250</x>
+              <x>400</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act26_8">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
               <y>280</y>
               <width>51</width>
               <height>41</height>
@@ -2281,9 +2260,878 @@ QTabBar::tab:last {
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act5_8">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act29_8">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act33_8">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act23_8">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act20_8">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>210</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act25_8">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act13_8">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>180</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act7_8">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act22_8">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>280</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act27_8">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act35_8">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act3_8">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>80</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act32_8">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+           <widget class="QPushButton" name="Act28_8">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">buttonGroup_2</string>
+            </attribute>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="tab_3">
+           <attribute name="title">
+            <string>ABCs</string>
+           </attribute>
+           <widget class="QPushButton" name="Act14_4">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act24_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>280</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act2_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>80</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act7_4">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act25_4">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act20_4">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>210</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act33_4">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act13_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>180</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act5_4">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act27_4">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act22_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>280</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act23_4">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act30_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act31_4">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act3_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>80</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act10_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act16_4">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act18_4">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>210</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act36_4">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act6_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act4_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>80</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act17_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>230</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act28_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act29_4">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>310</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act34_4">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>260</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act32_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>330</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act21_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>230</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act15_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>180</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act8_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>130</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act26_4">
+            <property name="geometry">
+             <rect>
+              <x>460</x>
+              <y>280</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act19_4">
+            <property name="geometry">
+             <rect>
+              <x>340</x>
+              <y>230</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act35_4">
+            <property name="geometry">
+             <rect>
+              <x>520</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act12_4">
+            <property name="geometry">
+             <rect>
+              <x>280</x>
+              <y>160</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act11_4">
+            <property name="geometry">
+             <rect>
+              <x>220</x>
+              <y>180</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act1_4">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="Act9_4">
+            <property name="geometry">
+             <rect>
+              <x>400</x>
+              <y>110</y>
+              <width>51</width>
+              <height>41</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </widget>
+         </widget>
+         <widget class="QPushButton" name="preset_button">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>851</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Activate Preset</string>
+          </property>
          </widget>
         </widget>
         <widget class="QWidget" name="Settings">
@@ -2417,5 +3265,6 @@ QTabBar::tab:last {
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>
