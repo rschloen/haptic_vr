@@ -15,6 +15,8 @@ class Ui_MainWindow(object):
         MainWindow.resize(827, 656)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setStyleSheet("")
+        MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
+        # MainWindow.installEventFilter(MainWindow)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setAutoFillBackground(True)
         self.centralwidget.setObjectName("centralwidget")
@@ -1094,4 +1096,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-

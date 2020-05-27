@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -46,7 +46,9 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
+        self.installEventFilter(self)
+        self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         # Initialization
         self.vr = VR_PRTCL()
         self.all_ACT = [0,self.ui.Act1,self.ui.Act2,self.ui.Act3,self.ui.Act4,self.ui.Act5,self.ui.Act6,self.ui.Act7,self.ui.Act8,self.ui.Act9,self.ui.Act10,self.ui.Act11
@@ -57,7 +59,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
-        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID_label.setText('UID:  {}'.format(self.vr.UID_corrected)))
+        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected)))
 
         self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
 
@@ -100,78 +102,98 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.all_off.clicked.connect(lambda:self.vr.Alloff())
         self.ui.all_off.clicked.connect(lambda:self.display_ACT('alloff'))
 
-        self.ui.Act1.clicked.connect(lambda:self.vr.set_ACT_state(1))
+        # self.ui.Act1.clicked.connect(lambda:self.vr.set_ACT_state(1))
         self.ui.Act1.clicked.connect(lambda:self.display_ACT(self.ui.Act1))
-        self.ui.Act2.clicked.connect(lambda:self.vr.set_ACT_state(2))
+        # self.ui.Act2.clicked.connect(lambda:self.vr.set_ACT_state(2))
         self.ui.Act2.clicked.connect(lambda:self.display_ACT(self.ui.Act2))
-        self.ui.Act3.clicked.connect(lambda:self.vr.set_ACT_state(3))
+        # self.ui.Act3.clicked.connect(lambda:self.vr.set_ACT_state(3))
         self.ui.Act3.clicked.connect(lambda:self.display_ACT(self.ui.Act3))
-        self.ui.Act4.clicked.connect(lambda:self.vr.set_ACT_state(4))
+        # self.ui.Act4.clicked.connect(lambda:self.vr.set_ACT_state(4))
         self.ui.Act4.clicked.connect(lambda:self.display_ACT(self.ui.Act4))
-        self.ui.Act5.clicked.connect(lambda:self.vr.set_ACT_state(5))
+        # self.ui.Act5.clicked.connect(lambda:self.vr.set_ACT_state(5))
         self.ui.Act5.clicked.connect(lambda:self.display_ACT(self.ui.Act5))
-        self.ui.Act6.clicked.connect(lambda:self.vr.set_ACT_state(6))
+        # self.ui.Act6.clicked.connect(lambda:self.vr.set_ACT_state(6))
         self.ui.Act6.clicked.connect(lambda:self.display_ACT(self.ui.Act6))
-        self.ui.Act7.clicked.connect(lambda:self.vr.set_ACT_state(7))
+        # self.ui.Act7.clicked.connect(lambda:self.vr.set_ACT_state(7))
         self.ui.Act7.clicked.connect(lambda:self.display_ACT(self.ui.Act7))
-        self.ui.Act8.clicked.connect(lambda:self.vr.set_ACT_state(8))
+        # self.ui.Act8.clicked.connect(lambda:self.vr.set_ACT_state(8))
         self.ui.Act8.clicked.connect(lambda:self.display_ACT(self.ui.Act8))
-        self.ui.Act9.clicked.connect(lambda:self.vr.set_ACT_state(9))
+        # self.ui.Act9.clicked.connect(lambda:self.vr.set_ACT_state(9))
         self.ui.Act9.clicked.connect(lambda:self.display_ACT(self.ui.Act9))
-        self.ui.Act10.clicked.connect(lambda:self.vr.set_ACT_state(10))
+        # self.ui.Act10.clicked.connect(lambda:self.vr.set_ACT_state(10))
         self.ui.Act10.clicked.connect(lambda:self.display_ACT(self.ui.Act10))
-        self.ui.Act11.clicked.connect(lambda:self.vr.set_ACT_state(11))
+        # self.ui.Act11.clicked.connect(lambda:self.vr.set_ACT_state(11))
         self.ui.Act11.clicked.connect(lambda:self.display_ACT(self.ui.Act11))
-        self.ui.Act12.clicked.connect(lambda:self.vr.set_ACT_state(12))
+        # self.ui.Act12.clicked.connect(lambda:self.vr.set_ACT_state(12))
         self.ui.Act12.clicked.connect(lambda:self.display_ACT(self.ui.Act12))
-        self.ui.Act13.clicked.connect(lambda:self.vr.set_ACT_state(13))
+        # self.ui.Act13.clicked.connect(lambda:self.vr.set_ACT_state(13))
         self.ui.Act13.clicked.connect(lambda:self.display_ACT(self.ui.Act13))
-        self.ui.Act14.clicked.connect(lambda:self.vr.set_ACT_state(14))
+        # self.ui.Act14.clicked.connect(lambda:self.vr.set_ACT_state(14))
         self.ui.Act14.clicked.connect(lambda:self.display_ACT(self.ui.Act14))
-        self.ui.Act15.clicked.connect(lambda:self.vr.set_ACT_state(15))
+        # self.ui.Act15.clicked.connect(lambda:self.vr.set_ACT_state(15))
         self.ui.Act15.clicked.connect(lambda:self.display_ACT(self.ui.Act15))
-        self.ui.Act16.clicked.connect(lambda:self.vr.set_ACT_state(16))
+        # self.ui.Act16.clicked.connect(lambda:self.vr.set_ACT_state(16))
         self.ui.Act16.clicked.connect(lambda:self.display_ACT(self.ui.Act16))
-        self.ui.Act17.clicked.connect(lambda:self.vr.set_ACT_state(17))
+        # self.ui.Act17.clicked.connect(lambda:self.vr.set_ACT_state(17))
         self.ui.Act17.clicked.connect(lambda:self.display_ACT(self.ui.Act17))
-        self.ui.Act18.clicked.connect(lambda:self.vr.set_ACT_state(18))
+        # self.ui.Act18.clicked.connect(lambda:self.vr.set_ACT_state(18))
         self.ui.Act18.clicked.connect(lambda:self.display_ACT(self.ui.Act18))
-        self.ui.Act19.clicked.connect(lambda:self.vr.set_ACT_state(19))
+        # self.ui.Act19.clicked.connect(lambda:self.vr.set_ACT_state(19))
         self.ui.Act19.clicked.connect(lambda:self.display_ACT(self.ui.Act19))
-        self.ui.Act20.clicked.connect(lambda:self.vr.set_ACT_state(20))
+        # self.ui.Act20.clicked.connect(lambda:self.vr.set_ACT_state(20))
         self.ui.Act20.clicked.connect(lambda:self.display_ACT(self.ui.Act20))
-        self.ui.Act21.clicked.connect(lambda:self.vr.set_ACT_state(21))
+        # self.ui.Act21.clicked.connect(lambda:self.vr.set_ACT_state(21))
         self.ui.Act21.clicked.connect(lambda:self.display_ACT(self.ui.Act21))
-        self.ui.Act22.clicked.connect(lambda:self.vr.set_ACT_state(22))
+        # self.ui.Act22.clicked.connect(lambda:self.vr.set_ACT_state(22))
         self.ui.Act22.clicked.connect(lambda:self.display_ACT(self.ui.Act22))
-        self.ui.Act23.clicked.connect(lambda:self.vr.set_ACT_state(23))
+        # self.ui.Act23.clicked.connect(lambda:self.vr.set_ACT_state(23))
         self.ui.Act23.clicked.connect(lambda:self.display_ACT(self.ui.Act23))
-        self.ui.Act24.clicked.connect(lambda:self.vr.set_ACT_state(24))
+        # self.ui.Act24.clicked.connect(lambda:self.vr.set_ACT_state(24))
         self.ui.Act24.clicked.connect(lambda:self.display_ACT(self.ui.Act24))
-        self.ui.Act25.clicked.connect(lambda:self.vr.set_ACT_state(25))
+        # self.ui.Act25.clicked.connect(lambda:self.vr.set_ACT_state(25))
         self.ui.Act25.clicked.connect(lambda:self.display_ACT(self.ui.Act25))
-        self.ui.Act26.clicked.connect(lambda:self.vr.set_ACT_state(26))
+        # self.ui.Act26.clicked.connect(lambda:self.vr.set_ACT_state(26))
         self.ui.Act26.clicked.connect(lambda:self.display_ACT(self.ui.Act26))
-        self.ui.Act27.clicked.connect(lambda:self.vr.set_ACT_state(27))
+        # self.ui.Act27.clicked.connect(lambda:self.vr.set_ACT_state(27))
         self.ui.Act27.clicked.connect(lambda:self.display_ACT(self.ui.Act27))
-        self.ui.Act28.clicked.connect(lambda:self.vr.set_ACT_state(28))
+        # self.ui.Act28.clicked.connect(lambda:self.vr.set_ACT_state(28))
         self.ui.Act28.clicked.connect(lambda:self.display_ACT(self.ui.Act28))
-        self.ui.Act29.clicked.connect(lambda:self.vr.set_ACT_state(29))
+        # self.ui.Act29.clicked.connect(lambda:self.vr.set_ACT_state(29))
         self.ui.Act29.clicked.connect(lambda:self.display_ACT(self.ui.Act29))
-        self.ui.Act30.clicked.connect(lambda:self.vr.set_ACT_state(30))
+        # self.ui.Act30.clicked.connect(lambda:self.vr.set_ACT_state(30))
         self.ui.Act30.clicked.connect(lambda:self.display_ACT(self.ui.Act30))
-        self.ui.Act31.clicked.connect(lambda:self.vr.set_ACT_state(31))
+        # self.ui.Act31.clicked.connect(lambda:self.vr.set_ACT_state(31))
         self.ui.Act31.clicked.connect(lambda:self.display_ACT(self.ui.Act31))
-        self.ui.Act32.clicked.connect(lambda:self.vr.set_ACT_state(32))
+        # self.ui.Act32.clicked.connect(lambda:self.vr.set_ACT_state(32))
         self.ui.Act32.clicked.connect(lambda:self.display_ACT(self.ui.Act32))
-        self.ui.Act33.clicked.connect(lambda:self.vr.set_ACT_state(33))
+        # self.ui.Act33.clicked.connect(lambda:self.vr.set_ACT_state(33))
         self.ui.Act33.clicked.connect(lambda:self.display_ACT(self.ui.Act33))
-        self.ui.Act34.clicked.connect(lambda:self.vr.set_ACT_state(34))
+        # self.ui.Act34.clicked.connect(lambda:self.vr.set_ACT_state(34))
         self.ui.Act34.clicked.connect(lambda:self.display_ACT(self.ui.Act34))
-        self.ui.Act35.clicked.connect(lambda:self.vr.set_ACT_state(35))
+        # self.ui.Act35.clicked.connect(lambda:self.vr.set_ACT_state(35))
         self.ui.Act35.clicked.connect(lambda:self.display_ACT(self.ui.Act35))
-        self.ui.Act36.clicked.connect(lambda:self.vr.set_ACT_state(36))
+        # self.ui.Act36.clicked.connect(lambda:self.vr.set_ACT_state(36))
         self.ui.Act36.clicked.connect(lambda:self.display_ACT(self.ui.Act36))
+
+    def eventFilter(self,obj,event):
+        if event.type() == QEvent.TouchBegin:
+            # print('Touch begins')
+            return True
+        elif event.type() == QEvent.TouchEnd:
+            # print('Touch ends')
+            return True
+        elif event.type() == QEvent.TouchUpdate:
+            points = event.touchPoints()
+            print(points)
+            for button in self.all_ACT:
+                if button == 0: continue
+                for i in range(len(points)):
+                    px = points[i].pos().x()
+                    py = points[i].pos().y()
+                    if px >= button.geometry().topLeft().x() and px <= button.geometry().bottomRight().x() and py >= button.geometry().topLeft().y() and py <= button.geometry().bottomRight().y():
+                        button.clicked.emit()
+            return True
+        return super(MainWindow,self).eventFilter(obj,event)
 
 
     def display_ACT(self,act):
@@ -191,8 +213,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def connect_device(self,port_label,button,UID_label):
         if self.vr.device.is_open:
-            print('Connected to {}'.format(self.device.name))
-            port_label.setText('Serial Port: {}'.format(self.device.name))
+            print('Connected to {}'.format(self.vr.device.name))
+            port_label.setText('Serial Port: {}'.format(self.vr.device.name))
             button.setText('Disconnect')
         else:
             button.setText('Connect')
@@ -234,6 +256,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
+    QtWidgets.QApplication.setStyle("fusion")
     app = QtWidgets.QApplication(sys.argv)
     gui = MainWindow()
     gui.show()

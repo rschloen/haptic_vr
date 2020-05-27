@@ -12,6 +12,7 @@
     - Work on deployment (pyqtdeploy, alternatives?) """
 
 import serial
+import serial.tools.list_ports
 import sys,time,csv
 
 class VR_PRTCL:
@@ -48,24 +49,29 @@ class VR_PRTCL:
         if self.active:
             self.disconnect(port_label,button,UID_label)
         else:
-            try:
-                self.device.port = '/dev/ttyUSB0'
-                self.device.open()
-                self.active = True
-                cmd = '010A0003041001210000' #Register write request
-                rep = self.send(cmd)
+            # try:
+            ports = serial.tools.list_ports.comports()
+            # print(ports)
+            for p in ports:
+                print(p)
+                print(p.description)
+            self.device.port = 'COM5'
+            self.device.open()
+            self.active = True
+            cmd = '010A0003041001210000' #Register write request
+            rep = self.send(cmd)
 
-                cmd = '010C00030410002101060000' #Register write request
-                rep = self.send(cmd)
+            cmd = '010C00030410002101060000' #Register write request
+            rep = self.send(cmd)
 
-                cmd = '0109000304F0000000' #AGC Toggle
-                rep = self.send(cmd)
+            cmd = '0109000304F0000000' #AGC Toggle
+            rep = self.send(cmd)
 
-                cmd = '0109000304F1FF0000' #AM PM Toggle
-                rep = self.send(cmd)
+            cmd = '0109000304F1FF0000' #AM PM Toggle
+            rep = self.send(cmd)
 
-            except:
-                print('NFC board not connected.')
+            # except:
+                # print('NFC board not connected.')
 
 
     def disconnect(self,port_label,button,UID_label):
