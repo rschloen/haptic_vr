@@ -47,20 +47,23 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # print(screen.size())
+        print(self.geometry())
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
         self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
         self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
         self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
+        self.blk4 = Actuator_Block(self,self.screen_width,'vertical',self.ui.Manual)
 
         # self.blk2 = Actuator_Block(self,self.screen_width,self.ui.Manual)
         # self.ui.tab_position.addTab(self.ui.Position1, "")
         # self.blk1.prepare_buttons()
         # self.blk2.prepare_buttons()
 
-        b = self.blk1.act_blk.buttons()
-        self.blk1.act_blk.buttonClicked[int].connect(lambda item:print(item))
+        b = self.blk4.act_blk.buttons()
+        # for button in b:
+        #     button.clicked.connect(lambda:self.display_ACT(button))
+        self.blk4.act_blk.buttonClicked.connect(self.handle_button)
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
@@ -199,16 +202,35 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         elif event.type() == QEvent.TouchUpdate:
             points = event.touchPoints()
-            print(points)
-            for button in self.all_ACT:
+            # print(points)
+            button = self.blk4.act_blk.buttons()
+            # print(button[0].mapToGlobal(QPoint(0,0)).x())
+            h = button[0].size().height()
+            w = button[0].size().width()
+            # print(h)
+            # print(button[0].geometry().bottomRight())
+            for button in self.blk4.act_blk.buttons():
                 if button == 0: continue
+
                 for i in range(len(points)):
-                    px = points[i].pos().x()
-                    py = points[i].pos().y()
-                    if px >= button.geometry().topLeft().x() and px <= button.geometry().bottomRight().x() and py >= button.geometry().topLeft().y() and py <= button.geometry().bottomRight().y():
-                        button.clicked.emit()
+                    px = points[i].screenPos().x()
+                    py = points[i].screenPos().y()
+                    # print(px)
+                    # print(py)
+                    if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
+                        # button.clicked.emit()
+                        # button.clicked.connect(lambda:print('button clicked'))
+                        # print(True)
+                        self.blk4.act_blk.buttonClicked.emit(button)#connect(self.handle_button)
+                        continue
+
             return True
         return super(MainWindow,self).eventFilter(obj,event)
+
+    def handle_button(self,button):
+        num = self.blk4.act_blk.id(button)
+        print(num)
+        # self.vr.set_ACT_state(num)
 
 
     def display_ACT(self,act):
