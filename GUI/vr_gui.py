@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 import sys
 import time
 from vr_gui_layout import Ui_MainWindow
+from actuator_layout import Actuator_Block
 from VR_NFC import VR_PRTCL
 
 """QSlider::groove:vertical{
@@ -42,10 +43,24 @@ QTabBar::tab:last {
 class MainWindow(QtWidgets.QMainWindow):
     prev_active_ACT = []
 
-    def __init__(self):
+    def __init__(self,screen):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        # print(screen.size())
+        self.screen_height = screen.size().height()
+        self.screen_width = screen.size().width()
+        self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
+        self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
+        self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
+
+        # self.blk2 = Actuator_Block(self,self.screen_width,self.ui.Manual)
+        # self.ui.tab_position.addTab(self.ui.Position1, "")
+        # self.blk1.prepare_buttons()
+        # self.blk2.prepare_buttons()
+
+        b = self.blk1.act_blk.buttons()
+        self.blk1.act_blk.buttonClicked[int].connect(lambda item:print(item))
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
@@ -258,6 +273,7 @@ class MainWindow(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     QtWidgets.QApplication.setStyle("fusion")
     app = QtWidgets.QApplication(sys.argv)
-    gui = MainWindow()
+    screen = app.primaryScreen()
+    gui = MainWindow(screen)
     gui.show()
     sys.exit(app.exec_())
