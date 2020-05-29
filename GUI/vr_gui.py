@@ -38,7 +38,9 @@ QSlider::handle:vertical{
 }
 QTabBar::tab:last {
 	border-image: url(/home/rschloen/haptic_vr/GUI/preset_chest.png);
-}"""
+}
+
+QGesture Class: detecting gestures"""
 
 class MainWindow(QtWidgets.QMainWindow):
     prev_active_ACT = []
@@ -93,10 +95,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         # Initialization
         self.vr = VR_PRTCL()
-        # self.all_ACT = [0,self.ui.Act1,self.ui.Act2,self.ui.Act3,self.ui.Act4,self.ui.Act5,self.ui.Act6,self.ui.Act7,self.ui.Act8,self.ui.Act9,self.ui.Act10,self.ui.Act11
-        # ,self.ui.Act12,self.ui.Act13,self.ui.Act14,self.ui.Act15,self.ui.Act16,self.ui.Act17,self.ui.Act18,self.ui.Act19,self.ui.Act20,self.ui.Act21,self.ui.Act22,self.ui.Act23
-        # ,self.ui.Act24,self.ui.Act25,self.ui.Act26,self.ui.Act27,self.ui.Act28,self.ui.Act29,self.ui.Act30,self.ui.Act31,self.ui.Act32,self.ui.Act33,self.ui.Act34,self.ui.Act35,self.ui.Act36]
-        # self.hex_button()
+
         # Settings
         self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
@@ -150,14 +149,15 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         elif event.type() == QEvent.TouchEnd:
             num1 = 0
-            for button in self.button_list:
-                print('1:{} ,2:{}'.format(num1,self.manual_blk.act_blk.id(button)))
-                if self.manual_blk.act_blk.id(button) != num1:
-                    print('Emit to:{}'.format(self.manual_blk.act_blk.id(button)))
-                    self.manual_blk.act_blk.buttonClicked.emit(button)
-                    num1 = self.manual_blk.act_blk.id(button)
-                else:
-                    print('skip')
+            for i in range(len(self.button_list)):
+                for button in self.button_list[i]:
+                    print('1:{} ,2:{}'.format(num1,self.manual_blk.act_blk.id(button)))
+                    if self.manual_blk.act_blk.id(button) != num1:
+                        print('Emit to:{}'.format(self.manual_blk.act_blk.id(button)))
+                        self.manual_blk.act_blk.buttonClicked.emit(button)
+                        num1 = self.manual_blk.act_blk.id(button)
+                    else:
+                        print('skip')
 
             self.button_list = []
             return True
@@ -169,11 +169,12 @@ class MainWindow(QtWidgets.QMainWindow):
             for button in self.manual_blk.act_blk.buttons():
                 if button == 0: continue
                 for i in range(len(points)):
+                    self.button_list.append([])
                     px = points[i].screenPos().x()
                     py = points[i].screenPos().y()
                     if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
                         # self.last = self.manual_blk.act_blk.id(button)
-                        self.button_list.append(button)
+                        self.button_list[i].append(button)
 
             return True
         return super(MainWindow,self).eventFilter(obj,event)
@@ -194,31 +195,17 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print(act)
             if int(self.vr.OP_Mode) < 4: # Not single pulse'
-                # print(self.prev_active_ACT)
                 print(self.vr.ACT_ON)
                 # if self.vr.ACT_Mode == '00': # if one touch
                     # if act not in self.prev_active_ACT: # if new button
                 for p in self.vr.prev_act: #remove old button(s)
                     self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-
-                    #     try:
-                    #     p = self.prev_active_ACT.pop()
-                    #     self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                    # except:
-                        # print('First button')
                     # turn on new button
                 for p in self.vr.ACT_ON:
                     self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
                     # self.prev_active_ACT.append(act)
-                # else:
-                #     for p in self.vr.ACT_ON:
-                #         self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                            # self.vr.ACT_ON.remove(p)
-                        # self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                        # self.prev_active_ACT.remove(act)
-                # else:
 
-
+            # Single pulse mode
             else:
                 self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
                 time.sleep(.5)

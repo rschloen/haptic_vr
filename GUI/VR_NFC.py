@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 """TODO:
+    - FIX DELAY! (Hardware)
+    - Adding presets and create custom presets in GUI and Saving/Loading Profiles
+    - Gesture support for presets
     X Activate actuators implement all modes for protocol
-    - Work on StyleSheets, Different shapes for buttons
-    - Adding presets and create custom presets in GUI
-    - Implement multi-touch (selecting multiple actuators at the same time)
-    - Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
-        - Multiple intensities at same time
+    v Work on StyleSheets, Different shapes for buttons
+    X Implement multi-touch (selecting multiple actuators at the same time)
+    X Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
+        - Multiple intensities at same time (Firmware update)
     - Keep in mind expansion up to 128 actuator arrays
     - Keep in mind thermal actuators
     - Work on deployment (pyqtdeploy, alternatives?) """
