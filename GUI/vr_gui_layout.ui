@@ -69,17 +69,16 @@ QTabWidget{
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="Manual">
          <property name="autoFillBackground">
           <bool>false</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">QPushButton[objectName^=&quot;Act&quot;]{
-	background-color: white;
-	border: none;
-}
+          <string notr="true">QPushButton {	font-size: 20pt;}
+QLabel {font-size: 20pt;}
+QRadioButton{font-size: 20pt;}
 </string>
          </property>
          <attribute name="title">
@@ -90,9 +89,15 @@ QTabWidget{
            <rect>
             <x>20</x>
             <y>10</y>
-            <width>601</width>
+            <width>766</width>
             <height>681</height>
            </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>1</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_10">
            <item>
@@ -101,6 +106,12 @@ QTabWidget{
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
                 <spacer name="horizontalSpacer_8">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -117,6 +128,12 @@ QTabWidget{
                </item>
                <item alignment="Qt::AlignHCenter">
                 <widget class="QLabel" name="label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>Multi-
 Modal</string>
@@ -125,6 +142,12 @@ Modal</string>
                </item>
                <item>
                 <spacer name="horizontalSpacer_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -141,6 +164,12 @@ Modal</string>
                </item>
                <item>
                 <widget class="QLabel" name="label_3">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>   3D
 Touch</string>
@@ -149,6 +178,12 @@ Touch</string>
                </item>
                <item>
                 <spacer name="horizontalSpacer_9">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -166,6 +201,12 @@ Touch</string>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
                 <spacer name="horizontalSpacer_10">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -174,7 +215,7 @@ Touch</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>50</width>
+                   <width>70</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -182,6 +223,12 @@ Touch</string>
                </item>
                <item>
                 <widget class="QSlider" name="multi_modal">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="maximum">
                   <number>1</number>
                  </property>
@@ -192,6 +239,12 @@ Touch</string>
                </item>
                <item>
                 <spacer name="horizontalSpacer">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -200,7 +253,7 @@ Touch</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>50</width>
+                   <width>80</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -208,6 +261,12 @@ Touch</string>
                </item>
                <item>
                 <widget class="QSlider" name="threeD_touch">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="maximum">
                   <number>1</number>
                  </property>
@@ -218,6 +277,12 @@ Touch</string>
                </item>
                <item>
                 <spacer name="horizontalSpacer_11">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -237,13 +302,13 @@ Touch</string>
                 <widget class="QLabel" name="label_2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
+                   <width>80</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -254,7 +319,13 @@ Pulse</string>
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_6">
+                <spacer name="horizontalSpacer_12">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -263,7 +334,7 @@ Pulse</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>60</width>
+                   <width>48</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -271,13 +342,33 @@ Pulse</string>
                </item>
                <item>
                 <widget class="QLabel" name="single_pulse_dur_label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>2</horstretch>
+                   <verstretch>2</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QLabel {
+font-size: 20pt;
+}</string>
+                 </property>
                  <property name="text">
-                  <string>Single Pulse Duration(ms): </string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Single Pulse Duration(ms): &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLineEdit" name="single_pulse_dur_text">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
                   <string>500</string>
                  </property>
@@ -289,6 +380,12 @@ Pulse</string>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
                <item>
                 <spacer name="horizontalSpacer_3">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -297,7 +394,7 @@ Pulse</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>7</width>
+                   <width>20</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -305,6 +402,12 @@ Pulse</string>
                </item>
                <item>
                 <widget class="QSlider" name="pulse_mode">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
@@ -318,6 +421,12 @@ Pulse</string>
                </item>
                <item>
                 <spacer name="horizontalSpacer_7">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -326,7 +435,7 @@ Pulse</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>80</width>
+                   <width>90</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -334,6 +443,12 @@ Pulse</string>
                </item>
                <item>
                 <widget class="QSlider" name="pulse_duration">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="maximum">
                   <number>5000</number>
                  </property>
@@ -358,6 +473,12 @@ Pulse</string>
              </item>
              <item>
               <widget class="QLabel" name="label_4">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Continuous</string>
                </property>
@@ -365,6 +486,12 @@ Pulse</string>
              </item>
              <item>
               <widget class="QRadioButton" name="hf_mod">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Pulsing (High Freq modulation)</string>
                </property>
@@ -377,6 +504,12 @@ Pulse</string>
               <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
                 <spacer name="horizontalSpacer_4">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -395,6 +528,12 @@ Pulse</string>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
                   <widget class="QLabel" name="h_dc_text">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="text">
                     <string>Intensity: 50 %</string>
                    </property>
@@ -402,6 +541,12 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QSlider" name="h_dc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="autoFillBackground">
                     <bool>false</bool>
                    </property>
@@ -424,6 +569,18 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QLabel" name="pulse_Hfreq_text">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="baseSize">
+                    <size>
+                     <width>50</width>
+                     <height>50</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Pulsing Frequency: 100 Hz</string>
                    </property>
@@ -431,6 +588,12 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QSlider" name="pulse_Hfreq">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>100</number>
                    </property>
@@ -463,6 +626,12 @@ Pulse</string>
              </item>
              <item>
               <widget class="QRadioButton" name="lf_mod">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Repeated Pulse
 (Low Freq modulation)</string>
@@ -476,6 +645,12 @@ Pulse</string>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
                 <spacer name="horizontalSpacer_5">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                   <horstretch>1</horstretch>
+                   <verstretch>1</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -494,6 +669,12 @@ Pulse</string>
                 <layout class="QVBoxLayout" name="verticalLayout_3">
                  <item>
                   <widget class="QLabel" name="l_dc_text">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="text">
                     <string>Intensity: 50 %</string>
                    </property>
@@ -501,6 +682,12 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QSlider" name="l_dc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="autoFillBackground">
                     <bool>false</bool>
                    </property>
@@ -523,6 +710,12 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QLabel" name="pulse_Lfreq_text">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="text">
                     <string>Repeated Pulse Frequency: 2 Hz</string>
                    </property>
@@ -530,6 +723,12 @@ Pulse</string>
                  </item>
                  <item>
                   <widget class="QSlider" name="pulse_Lfreq">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>1</horstretch>
+                     <verstretch>1</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="value">
                     <number>2</number>
                    </property>
@@ -554,6 +753,12 @@ Pulse</string>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QPushButton" name="all_off">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -570,6 +775,12 @@ Pulse</string>
                <property name="enabled">
                 <bool>false</bool>
                </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -583,6 +794,12 @@ Pulse</string>
              </item>
              <item>
               <widget class="QPushButton" name="set_time">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -596,6 +813,12 @@ Pulse</string>
              </item>
              <item>
               <spacer name="verticalSpacer">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -608,10 +831,23 @@ Pulse</string>
               </spacer>
              </item>
              <item>
-              <widget class="QLineEdit" name="append_preset_name"/>
+              <widget class="QLineEdit" name="append_preset_name">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="append_preset">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -1503,7 +1739,4 @@ QTabBar::tab:first {
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>
