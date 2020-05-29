@@ -300,7 +300,9 @@ class VR_PRTCL:
                     self.prev_act.append(act_num) # So it gets turned off in the GUI
                 else:
                     self.ACT_ON.append(act_num)
-            print(self.ACT_ON)
+                action = True
+                
+            # print(self.ACT_ON)
 
         if action:
                 temp_blk = 0

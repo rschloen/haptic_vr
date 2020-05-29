@@ -192,16 +192,33 @@ class MainWindow(QtWidgets.QMainWindow):
             for button in self.manual_blk.act_blk.buttons():
                 button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
         else:
-            if int(self.vr.OP_Mode) < 4: # Not single pulse
-                if act not in self.prev_active_ACT:
-                    self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
-                    self.prev_active_ACT.append(act)
-                else:
-                    for p in self.vr.ACT_ON:
-                        self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                        self.vr.ACT_ON.remove(p)
-                    self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                    self.prev_active_ACT.remove(act)
+            print(act)
+            if int(self.vr.OP_Mode) < 4: # Not single pulse'
+                # print(self.prev_active_ACT)
+                print(self.vr.ACT_ON)
+                # if self.vr.ACT_Mode == '00': # if one touch
+                    # if act not in self.prev_active_ACT: # if new button
+                for p in self.vr.prev_act: #remove old button(s)
+                    self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+
+                    #     try:
+                    #     p = self.prev_active_ACT.pop()
+                    #     self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                    # except:
+                        # print('First button')
+                    # turn on new button
+                for p in self.vr.ACT_ON:
+                    self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                    # self.prev_active_ACT.append(act)
+                # else:
+                #     for p in self.vr.ACT_ON:
+                #         self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                            # self.vr.ACT_ON.remove(p)
+                        # self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                        # self.prev_active_ACT.remove(act)
+                # else:
+
+
             else:
                 self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
                 time.sleep(.5)
