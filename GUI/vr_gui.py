@@ -42,45 +42,52 @@ QTabBar::tab:last {
 
 class MainWindow(QtWidgets.QMainWindow):
     prev_active_ACT = []
+    last = 0
+    button_list = []
 
     def __init__(self,screen):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        # self.widget_list = [self.ui.label,self.ui.label_3,self.ui.multi_modal,self.ui.threeD_touch,self.ui.label_2,self.ui.single_pulse_dur_label,self.ui.single_pulse_dur_text,
+        # self.ui.pulse_mode,self.ui.pulse_duration,self.ui.label_4,self.ui.hf_mod,self.ui.h_dc_text,self.ui.h_dc,self.ui.pulse_Hfreq_text,self.ui.pulse_Hfreq,self.ui.lf_mod,
+        # self.ui.l_dc_text,self.ui.l_dc,self.ui.pulse_Lfreq_text,self.ui.pulse_Lfreq,self.ui.all_off,self.ui.active_selected,self.ui.set_time,self.ui.append_preset_name,self.ui.append_preset]
+
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
-
-        self.resize(.3*self.screen_width,.3*self.screen_height)
         self.win_height = self.size().height()
         self.win_width = self.size().width()
-        # print(self.ui.centralwidget.geometry())
-        # print(self.win_width)
-        # print(self.win_height)
+        # for ele in self.widget_list:
+        #     ele.resize(int(.5*self.screen_width),int(.5*self.screen_height))
         self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
         self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
         self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
-        self.blk4 = Actuator_Block(self,self.screen_width,'vertical')
-        self.ui.horizontalLayout_10.addLayout(self.blk4.verticalLayout_3)
+        self.manual_blk = Actuator_Block(self,self.screen_width,'vertical')
+        self.ui.horizontalLayout_10.addLayout(self.manual_blk.verticalLayout_3)
         self.ui.Manual.setLayout(self.ui.horizontalLayout_10)
         self.ui.tabWidget.setStyleSheet("""QTabBar::tab {{border: 2px solid black;
                                             height: {}px;
                                             width: {}px;
                                             background-color: rgb(149, 27, 218);
-                                            margin: 2px;}}
+                                            margin: 2px;
+                                            font-size:18pt}}
                                             QTabBar::tab:selected{{
                                             background-color: rgb(218, 58, 245);
                                             margin: 2px;}}
                                             QTabWidget{{
-                                            background-color: rgb(149, 27, 218);}}""".format(int(.09*self.win_height),int(self.win_width*.43)))
-        # self.blk2 = Actuator_Block(self,self.screen_width,self.ui.Manual)
-        # self.ui.tab_position.addTab(self.ui.Position1, "")
-        # self.blk1.prepare_buttons()
-        # self.blk2.prepare_buttons()
-
-        b = self.blk4.act_blk.buttons()
-        # for button in b:
-        #     button.clicked.connect(lambda:self.display_ACT(button))
-        self.blk4.act_blk.buttonClicked.connect(self.handle_button)
+                                            background-color: rgb(149, 27, 218);}}""".format(int(.08*self.screen_height),int(self.screen_width*.326)))
+        self.ui.tab_position.setStyleSheet("""QTabBar::tab {{border: 2px solid black;
+                                            height: {}px;
+                                            width: {}px;
+                                            background-color: rgb(149, 27, 218);
+                                            margin: 2px;
+                                            font-size:16pt}}
+                                            QTabBar::tab:selected{{
+                                            background-color: rgb(218, 58, 245);
+                                            margin: 2px;}}
+                                            QTabWidget{{
+                                            background-color: rgb(149, 27, 218);}}""".format(int(.2*self.screen_height),int(.2*self.screen_height)))
+        self.manual_blk.act_blk.buttonClicked.connect(self.handle_button)
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
@@ -137,133 +144,68 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.all_off.clicked.connect(lambda:self.vr.Alloff())
         self.ui.all_off.clicked.connect(lambda:self.display_ACT('alloff'))
 
-        # self.ui.Act1.clicked.connect(lambda:self.vr.set_ACT_state(1))
-        # self.ui.Act1.clicked.connect(lambda:self.display_ACT(self.ui.Act1))
-        # # self.ui.Act2.clicked.connect(lambda:self.vr.set_ACT_state(2))
-        # self.ui.Act2.clicked.connect(lambda:self.display_ACT(self.ui.Act2))
-        # # self.ui.Act3.clicked.connect(lambda:self.vr.set_ACT_state(3))
-        # self.ui.Act3.clicked.connect(lambda:self.display_ACT(self.ui.Act3))
-        # # self.ui.Act4.clicked.connect(lambda:self.vr.set_ACT_state(4))
-        # self.ui.Act4.clicked.connect(lambda:self.display_ACT(self.ui.Act4))
-        # # self.ui.Act5.clicked.connect(lambda:self.vr.set_ACT_state(5))
-        # self.ui.Act5.clicked.connect(lambda:self.display_ACT(self.ui.Act5))
-        # # self.ui.Act6.clicked.connect(lambda:self.vr.set_ACT_state(6))
-        # self.ui.Act6.clicked.connect(lambda:self.display_ACT(self.ui.Act6))
-        # # self.ui.Act7.clicked.connect(lambda:self.vr.set_ACT_state(7))
-        # self.ui.Act7.clicked.connect(lambda:self.display_ACT(self.ui.Act7))
-        # # self.ui.Act8.clicked.connect(lambda:self.vr.set_ACT_state(8))
-        # self.ui.Act8.clicked.connect(lambda:self.display_ACT(self.ui.Act8))
-        # # self.ui.Act9.clicked.connect(lambda:self.vr.set_ACT_state(9))
-        # self.ui.Act9.clicked.connect(lambda:self.display_ACT(self.ui.Act9))
-        # # self.ui.Act10.clicked.connect(lambda:self.vr.set_ACT_state(10))
-        # self.ui.Act10.clicked.connect(lambda:self.display_ACT(self.ui.Act10))
-        # # self.ui.Act11.clicked.connect(lambda:self.vr.set_ACT_state(11))
-        # self.ui.Act11.clicked.connect(lambda:self.display_ACT(self.ui.Act11))
-        # # self.ui.Act12.clicked.connect(lambda:self.vr.set_ACT_state(12))
-        # self.ui.Act12.clicked.connect(lambda:self.display_ACT(self.ui.Act12))
-        # # self.ui.Act13.clicked.connect(lambda:self.vr.set_ACT_state(13))
-        # self.ui.Act13.clicked.connect(lambda:self.display_ACT(self.ui.Act13))
-        # # self.ui.Act14.clicked.connect(lambda:self.vr.set_ACT_state(14))
-        # self.ui.Act14.clicked.connect(lambda:self.display_ACT(self.ui.Act14))
-        # # self.ui.Act15.clicked.connect(lambda:self.vr.set_ACT_state(15))
-        # self.ui.Act15.clicked.connect(lambda:self.display_ACT(self.ui.Act15))
-        # # self.ui.Act16.clicked.connect(lambda:self.vr.set_ACT_state(16))
-        # self.ui.Act16.clicked.connect(lambda:self.display_ACT(self.ui.Act16))
-        # # self.ui.Act17.clicked.connect(lambda:self.vr.set_ACT_state(17))
-        # self.ui.Act17.clicked.connect(lambda:self.display_ACT(self.ui.Act17))
-        # # self.ui.Act18.clicked.connect(lambda:self.vr.set_ACT_state(18))
-        # self.ui.Act18.clicked.connect(lambda:self.display_ACT(self.ui.Act18))
-        # # self.ui.Act19.clicked.connect(lambda:self.vr.set_ACT_state(19))
-        # self.ui.Act19.clicked.connect(lambda:self.display_ACT(self.ui.Act19))
-        # # self.ui.Act20.clicked.connect(lambda:self.vr.set_ACT_state(20))
-        # self.ui.Act20.clicked.connect(lambda:self.display_ACT(self.ui.Act20))
-        # # self.ui.Act21.clicked.connect(lambda:self.vr.set_ACT_state(21))
-        # self.ui.Act21.clicked.connect(lambda:self.display_ACT(self.ui.Act21))
-        # # self.ui.Act22.clicked.connect(lambda:self.vr.set_ACT_state(22))
-        # self.ui.Act22.clicked.connect(lambda:self.display_ACT(self.ui.Act22))
-        # # self.ui.Act23.clicked.connect(lambda:self.vr.set_ACT_state(23))
-        # self.ui.Act23.clicked.connect(lambda:self.display_ACT(self.ui.Act23))
-        # # self.ui.Act24.clicked.connect(lambda:self.vr.set_ACT_state(24))
-        # self.ui.Act24.clicked.connect(lambda:self.display_ACT(self.ui.Act24))
-        # # self.ui.Act25.clicked.connect(lambda:self.vr.set_ACT_state(25))
-        # self.ui.Act25.clicked.connect(lambda:self.display_ACT(self.ui.Act25))
-        # # self.ui.Act26.clicked.connect(lambda:self.vr.set_ACT_state(26))
-        # self.ui.Act26.clicked.connect(lambda:self.display_ACT(self.ui.Act26))
-        # # self.ui.Act27.clicked.connect(lambda:self.vr.set_ACT_state(27))
-        # self.ui.Act27.clicked.connect(lambda:self.display_ACT(self.ui.Act27))
-        # # self.ui.Act28.clicked.connect(lambda:self.vr.set_ACT_state(28))
-        # self.ui.Act28.clicked.connect(lambda:self.display_ACT(self.ui.Act28))
-        # # self.ui.Act29.clicked.connect(lambda:self.vr.set_ACT_state(29))
-        # self.ui.Act29.clicked.connect(lambda:self.display_ACT(self.ui.Act29))
-        # # self.ui.Act30.clicked.connect(lambda:self.vr.set_ACT_state(30))
-        # self.ui.Act30.clicked.connect(lambda:self.display_ACT(self.ui.Act30))
-        # # self.ui.Act31.clicked.connect(lambda:self.vr.set_ACT_state(31))
-        # self.ui.Act31.clicked.connect(lambda:self.display_ACT(self.ui.Act31))
-        # # self.ui.Act32.clicked.connect(lambda:self.vr.set_ACT_state(32))
-        # self.ui.Act32.clicked.connect(lambda:self.display_ACT(self.ui.Act32))
-        # # self.ui.Act33.clicked.connect(lambda:self.vr.set_ACT_state(33))
-        # self.ui.Act33.clicked.connect(lambda:self.display_ACT(self.ui.Act33))
-        # # self.ui.Act34.clicked.connect(lambda:self.vr.set_ACT_state(34))
-        # self.ui.Act34.clicked.connect(lambda:self.display_ACT(self.ui.Act34))
-        # # self.ui.Act35.clicked.connect(lambda:self.vr.set_ACT_state(35))
-        # self.ui.Act35.clicked.connect(lambda:self.display_ACT(self.ui.Act35))
-        # # self.ui.Act36.clicked.connect(lambda:self.vr.set_ACT_state(36))
-        # self.ui.Act36.clicked.connect(lambda:self.display_ACT(self.ui.Act36))
 
     def eventFilter(self,obj,event):
         if event.type() == QEvent.TouchBegin:
-            # print('Touch begins')
             return True
         elif event.type() == QEvent.TouchEnd:
-            # print('Touch ends')
+            num1 = 0
+            for button in self.button_list:
+                print('1:{} ,2:{}'.format(num1,self.manual_blk.act_blk.id(button)))
+                if self.manual_blk.act_blk.id(button) != num1:
+                    print('Emit to:{}'.format(self.manual_blk.act_blk.id(button)))
+                    self.manual_blk.act_blk.buttonClicked.emit(button)
+                    num1 = self.manual_blk.act_blk.id(button)
+                else:
+                    print('skip')
+
+            self.button_list = []
             return True
         elif event.type() == QEvent.TouchUpdate:
             points = event.touchPoints()
-            # print(points)
-            button = self.blk4.act_blk.buttons()
-            # print(button[0].mapToGlobal(QPoint(0,0)).x())
+            button = self.manual_blk.act_blk.buttons()
             h = button[0].size().height()
             w = button[0].size().width()
-            # print(h)
-            # print(button[0].geometry().bottomRight())
-            for button in self.blk4.act_blk.buttons():
+            for button in self.manual_blk.act_blk.buttons():
                 if button == 0: continue
-
                 for i in range(len(points)):
                     px = points[i].screenPos().x()
                     py = points[i].screenPos().y()
-                    # print(px)
-                    # print(py)
                     if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
-                        # button.clicked.emit()
-                        # button.clicked.connect(lambda:print('button clicked'))
-                        # print(True)
-                        self.blk4.act_blk.buttonClicked.emit(button)#connect(self.handle_button)
-                        continue
+                        # self.last = self.manual_blk.act_blk.id(button)
+                        self.button_list.append(button)
 
             return True
         return super(MainWindow,self).eventFilter(obj,event)
 
     def handle_button(self,button):
-        num = self.blk4.act_blk.id(button)
-        print(num)
-        # self.vr.set_ACT_state(num)
+        num = self.manual_blk.act_blk.id(button)
+        # print(num)
+        self.vr.set_ACT_state(num)
+        self.display_ACT(num)
 
 
     def display_ACT(self,act):
-        # Controls color of buttons  in GUI based on if turn on or not
+        # Controls color of buttons in GUI based on if turn on or not
+        # ARGS: act is int for button id
         if act == 'alloff':
-            for p in self.vr.prev_act:
-                # print(p)
-                self.all_ACT[p].setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-            # for ele in self.vr.ACT_ON:
-                # self.all_ACT[ele].setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+            for button in self.manual_blk.act_blk.buttons():
+                button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
         else:
-            act.setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
-            # if self.vr.ACT_Mode == '00': #single modal
-            for p in self.vr.prev_act:
-                # print(p)
-                self.all_ACT[p].setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+            if int(self.vr.OP_Mode) < 4: # Not single pulse
+                if act not in self.prev_active_ACT:
+                    self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                    self.prev_active_ACT.append(act)
+                else:
+                    for p in self.vr.ACT_ON:
+                        self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                        self.vr.ACT_ON.remove(p)
+                    self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                    self.prev_active_ACT.remove(act)
+            else:
+                self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                time.sleep(.5)
+                self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
     def connect_device(self,port_label,button,UID_label):
         if self.vr.device.is_open:
@@ -314,5 +256,5 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     screen = app.primaryScreen()
     gui = MainWindow(screen)
-    gui.show()
+    gui.showMaximized()
     sys.exit(app.exec_())
