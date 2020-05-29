@@ -53,9 +53,11 @@ class VR_PRTCL:
             ports = serial.tools.list_ports.comports()
             # print(ports)
             for p in ports:
-                print(p)
                 print(p.description)
-            self.device.port = 'COM5'
+                if p.description == 'CP2102 USB to UART Bridge Controller':
+                    port = p.device
+                print(p.device)
+            self.device.port = port
             self.device.open()
             self.active = True
             cmd = '010A0003041001210000' #Register write request
@@ -301,7 +303,7 @@ class VR_PRTCL:
                 else:
                     self.ACT_ON.append(act_num)
                 action = True
-                
+
             # print(self.ACT_ON)
 
         if action:
