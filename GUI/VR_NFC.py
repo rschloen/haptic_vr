@@ -46,10 +46,10 @@ class VR_PRTCL:
         # Device initialization here: usb/bluetooth
         self.device = serial.Serial(None,115200,timeout=1,parity=serial.PARITY_NONE,dsrdtr=False)  # open serial port, 115200 baudrate, 1 sec timeout
 
-    def connect(self,port_label,button,UID_label):
+    def connect(self):#,port_label,button,UID_label):
         # connect to nfc board (0x10c4,0xea60)
         if self.active:
-            self.disconnect(port_label,button,UID_label)
+            self.disconnect()#port_label,button,UID_label)
         else:
             # try:
             ports = serial.tools.list_ports.comports()
@@ -78,7 +78,7 @@ class VR_PRTCL:
                 # print('NFC board not connected.')
 
 
-    def disconnect(self,port_label,button,UID_label):
+    def disconnect(self):#,port_label,button,UID_label):
         # disconnect from NFC board
         self.active = False
         self.device.close()
@@ -112,9 +112,6 @@ class VR_PRTCL:
         cmd = '010B000304140601000000' # read uid
         uid = self.send(cmd)
         uid = uid[33:33+16]
-        # print(uid)
-        # while uid == '':
-        #     uid = self.send(cmd)
         self.UID = uid
         temp = ''
         for i in range(0,len(uid),2):
@@ -136,41 +133,44 @@ class VR_PRTCL:
 
 
     def send(self,cmd):
-        self.device.reset_input_buffer()
-        self.device.reset_output_buffer()
-        for i in range(self.nAttempts):
-            print('|Sent>       {}'.format(cmd))
-            self.device.write(cmd.encode())
-            data = self.device.read(size=self.MAX_PACKET_SIZE).strip().decode()
-
-            if data:
-                print('<Recieved|   {}'.format(str(data)))
-                return data
-            else:
-                print('No data recieved')
-        print('No data recieved in {} attempts'.format(self.nAttempts))
+        if self.device.is_open:
+            self.device.reset_input_buffer()
+            self.device.reset_output_buffer()
+            for i in range(self.nAttempts):
+                print('|Sent>       {}'.format(cmd))
+                self.device.write(cmd.encode())
+                data = self.device.read(size=self.MAX_PACKET_SIZE).strip().decode()
+                if data:
+                    print('<Recieved|   {}'.format(str(data)))
+                    return data
+                else:
+                    print('No data recieved')
+            print('No data recieved in {} attempts'.format(self.nAttempts))
+        else:
+            print('Device not opened')
+            data = None
         return data
 
 
-    def read(self):
-        # assemble and display data returned from device
-        pass
+    # def read(self):
+    #     # assemble and display data returned from device
+    #     pass
 
-    def CRC16(self, msg): #from Nlux code
-        crc_poly = int("8408", 16)
-        crc = int("FFFF",16)
-        for i in msg:
-            crc = crc ^ i;
-            for j in range(8):
-                if(crc & 1):
-                    crc = (crc>>1) ^ crc_poly
-                else:
-                    crc = (crc>>1)
-        data = hex(crc)[2:]
-        data = "0"*(4-len(data))+data
-        data = [int(data[2:],16), int(data[:2],16)]
-        msg.extend(data)
-        return msg
+    # def CRC16(self, msg): #from Nlux code
+    #     crc_poly = int("8408", 16)
+    #     crc = int("FFFF",16)
+    #     for i in msg:
+    #         crc = crc ^ i;
+    #         for j in range(8):
+    #             if(crc & 1):
+    #                 crc = (crc>>1) ^ crc_poly
+    #             else:
+    #                 crc = (crc>>1)
+    #     data = hex(crc)[2:]
+    #     data = "0"*(4-len(data))+data
+    #     data = [int(data[2:],16), int(data[:2],16)]
+    #     msg.extend(data)
+    #     return msg
 
     def play_preset(self,preset):
         if preset == 'flash all':
@@ -217,9 +217,10 @@ class VR_PRTCL:
         # Set actuation mode (i.e.Unipolar, bipolar)
         self.ACT_Mode = '%0*X'%(2,mode)
 
-    def set_ACT_Cnt(self):
+    def set_ACT_Cnt(self,num_blks):
         # set number of blocks of 32 actuators
-        pass
+        self.ACT_BLKS = '%0*X'%(2,num_blks)
+
 
     def set_one_pulse_duration(self,time):
         try:
@@ -273,6 +274,7 @@ class VR_PRTCL:
         # self.set_Timing()
 
     def Alloff(self):
+        print('Alloff')
         cmd = '0117000304186221'+self.UID+'00000002000000'
         res = self.send(cmd)
         if self.append_to_file:
@@ -287,6 +289,7 @@ class VR_PRTCL:
         if self.ACT_Mode == '00':
             if act_num in self.ACT_ON: # Button pressed twice in a row
                 self.prev_act.append(self.ACT_ON.pop())
+                print('No action')
             else: # new button pressed
                 try:
                     self.prev_act.append(self.ACT_ON.pop())
@@ -309,36 +312,57 @@ class VR_PRTCL:
             # print(self.ACT_ON)
 
         if action:
-                temp_blk = 0
-                for act in self.ACT_ON:
-                    shift_act = 1 << act-1
-                    temp_blk |= shift_act
-                temp_blk = '%0*X'%(16,temp_blk)
+            temp_blk = 0
+            for act in self.ACT_ON:
+                shift_act = 1 << act-1
+                temp_blk |= shift_act
+            temp_blk = '%0*X'%(32,temp_blk)
 
-                # print(temp_blk)
-                blk1 = temp_blk[8:]
-                blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
-                blk2 = temp_blk[0:8]
-                blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
-                # Blk 0
-                # print(blk1)
-                blk0 = self.OP_Mode + self.ACT_Mode + self.ACT_BLKS + '00'
-                cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
-                        #|nb             |r/w       |UID  |BlkAdr |data |padding
-                                            #(9552D9D0F35902E0)
-                # Blk 1
-                cmd1 = '01170003041862'+ '21' +self.UID+ '01' + blk1 + '0000'
-                #Blk 2
-                cmd2 = '01170003041862'+ '21' +self.UID+ '02' + blk2 + '0000'
+            # print(temp_blk)
+            blk1 = temp_blk[24:]
+            blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+            blk2 = temp_blk[16:24]
+            blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
+            blk3 = '00000000'
+            blk4 = '00000000'
+            if self.ACT_BLKS == '03':
+                blk3 = temp_blk[8:16]
+                blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
+            if self.ACT_BLKS == '04':
+                blk3 = temp_blk[8:16]
+                blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
+                blk4 = temp_blk[0:8]
+                blk4 = blk4[6:]+blk4[4:6]+blk4[2:4]+blk4[0:2]
 
-                state = self.send(cmd1)
-                state = self.send(cmd2)
-                state = self.send(cmd0)
-                if self.append_to_file:
-                    print('writing')
-                    self.preset_file.write(cmd1+'\n')
-                    self.preset_file.write(cmd2+'\n')
-                    self.preset_file.write(cmd0+'\n')
+            # Blk 0
+            blk0 = self.OP_Mode + self.ACT_Mode + self.ACT_BLKS + '00'
+            cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
+                    #|nb             |r/w       |UID  |BlkAdr |data |padding
+                                        #(9552D9D0F35902E0)
+            # Blk 1
+            cmd1 = '01170003041862'+ '21' +self.UID+ '01' + blk1 + '0000'
+            #Blk 2
+            cmd2 = '01170003041862'+ '21' +self.UID+ '02' + blk2 + '0000'
+            cmd3 = '01170003041862'+ '21' +self.UID+ '03' + blk3 + '0000'
+            cmd4 = '01170003041862'+ '21' +self.UID+ '04' + blk4 + '0000'
+            state = self.send(cmd1)
+            state = self.send(cmd2)
+            if self.ACT_BLKS == '03':
+                state = self.send(cmd3)
+            if self.ACT_BLKS == '04':
+                state = self.send(cmd3)
+                state = self.send(cmd4)
+            state = self.send(cmd0)
+            if self.append_to_file:
+                print('writing')
+                self.preset_file.write(cmd1+'\n')
+                self.preset_file.write(cmd2+'\n')
+                if self.ACT_BLKS == '03':
+                    self.preset_file.write(cmd3+'\n')
+                if self.ACT_BLKS == '04':
+                    self.preset_file.write(cmd3+'\n')
+                    self.preset_file.write(cmd4+'\n')
+                self.preset_file.write(cmd0+'\n')
 
         else:
             cmd = '0117000304186221'+self.UID+'00000002000000'

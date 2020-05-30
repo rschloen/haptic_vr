@@ -30,6 +30,7 @@
     <string notr="true">QPushButton {	font-size: 20pt;}
 QLabel {font-size: 20pt;}
 QRadioButton{font-size: 20pt;}
+QListWidget{font-size: 20pt;}
 </string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -92,7 +93,7 @@ QTabWidget{
            <rect>
             <x>20</x>
             <y>10</y>
-            <width>766</width>
+            <width>1072</width>
             <height>723</height>
            </rect>
           </property>
@@ -103,6 +104,9 @@ QTabWidget{
            </sizepolicy>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
@@ -831,6 +835,33 @@ font-size: 20pt;
               </widget>
              </item>
              <item>
+              <widget class="QListWidget" name="block_options">
+               <property name="currentRow">
+                <number>1</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>2 Blocks Horizontal </string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>2 Blocks Vertical </string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>3 Blocks</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>4 Blocks</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -888,6 +919,28 @@ font-size: 20pt;
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QStackedWidget" name="act_blocks">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>300</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="page"/>
+             <widget class="QWidget" name="page_1"/>
+             <widget class="QWidget" name="page_2"/>
+            </widget>
            </item>
           </layout>
          </widget>

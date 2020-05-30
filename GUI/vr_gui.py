@@ -46,11 +46,15 @@ class MainWindow(QtWidgets.QMainWindow):
     prev_active_ACT = []
     last = 0
     button_list = []
+    blk_option = []
+    manual_blk = 0
 
     def __init__(self,screen):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        # Initialization
+        self.vr = VR_PRTCL()
         # self.widget_list = [self.ui.label,self.ui.label_3,self.ui.multi_modal,self.ui.threeD_touch,self.ui.label_2,self.ui.single_pulse_dur_label,self.ui.single_pulse_dur_text,
         # self.ui.pulse_mode,self.ui.pulse_duration,self.ui.label_4,self.ui.hf_mod,self.ui.h_dc_text,self.ui.h_dc,self.ui.pulse_Hfreq_text,self.ui.pulse_Hfreq,self.ui.lf_mod,
         # self.ui.l_dc_text,self.ui.l_dc,self.ui.pulse_Lfreq_text,self.ui.pulse_Lfreq,self.ui.all_off,self.ui.active_selected,self.ui.set_time,self.ui.append_preset_name,self.ui.append_preset]
@@ -59,14 +63,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.screen_width = screen.size().width()
         self.win_height = self.size().height()
         self.win_width = self.size().width()
-        # for ele in self.widget_list:
-        #     ele.resize(int(.5*self.screen_width),int(.5*self.screen_height))
+        self.blk_vert_manual = QWidget()
+        self.blk_horz_manual = QWidget()
         self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
         self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
         self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
-        self.manual_blk = Actuator_Block(self,self.screen_width,'vertical')
-        self.ui.horizontalLayout_10.addLayout(self.manual_blk.verticalLayout_3)
+        self.manual_vert_blk = Actuator_Block(self,self.screen_width,'vertical',self.blk_vert_manual)
+        self.manual_horz_blk = Actuator_Block(self,self.screen_width,'horizontal',self.blk_horz_manual)
+        self.blk_option.append(self.manual_horz_blk)
+        self.blk_option.append(self.manual_vert_blk)
+
+        self.ui.act_blocks.insertWidget(0,self.blk_horz_manual)
+        self.ui.act_blocks.insertWidget(1,self.blk_vert_manual)
+
         self.ui.Manual.setLayout(self.ui.horizontalLayout_10)
+        self.ui.block_options.setCurrentRow(0)
+        self.ui.act_blocks.setCurrentIndex(0)
         self.ui.tabWidget.setStyleSheet("""QTabBar::tab {{border: 2px solid black;
                                             height: {}px;
                                             width: {}px;
@@ -89,15 +101,14 @@ class MainWindow(QtWidgets.QMainWindow):
                                             margin: 2px;}}
                                             QTabWidget{{
                                             background-color: rgb(149, 27, 218);}}""".format(int(.2*self.screen_height),int(.2*self.screen_height)))
-        self.manual_blk.act_blk.buttonClicked.connect(self.handle_button)
+        # self.blk_option[self.manual_blk].act_blk.buttonClicked.connect(self.handle_button)
+        self.handle_actuator_blk(self.manual_blk)
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
-        # Initialization
-        self.vr = VR_PRTCL()
+
 
         # Settings
-        self.ui.connect_button.clicked.connect(lambda:self.vr.connect(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
         self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected)))
@@ -140,8 +151,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.preset_button.clicked.connect(lambda:self.set_preset(self.ui.tab_position.currentIndex()))
 
         # Actuators
-        self.ui.all_off.clicked.connect(lambda:self.vr.Alloff())
-        self.ui.all_off.clicked.connect(lambda:self.display_ACT('alloff'))
+        self.ui.all_off.clicked.connect(self.handle_Alloff)
+        # self.ui.all_off.clicked.connect(lambda:self.display_ACT('alloff'))
+        self.ui.block_options.currentRowChanged.connect(self.handle_actuator_blk)
 
 
     def eventFilter(self,obj,event):
@@ -151,11 +163,11 @@ class MainWindow(QtWidgets.QMainWindow):
             num1 = 0
             for i in range(len(self.button_list)):
                 for button in self.button_list[i]:
-                    print('1:{} ,2:{}'.format(num1,self.manual_blk.act_blk.id(button)))
-                    if self.manual_blk.act_blk.id(button) != num1:
-                        print('Emit to:{}'.format(self.manual_blk.act_blk.id(button)))
-                        self.manual_blk.act_blk.buttonClicked.emit(button)
-                        num1 = self.manual_blk.act_blk.id(button)
+                    print('1:{} ,2:{}'.format(num1,self.blk_option[self.manual_blk].act_blk.id(button)))
+                    if self.blk_option[self.manual_blk].act_blk.id(button) != num1:
+                        print('Emit to:{}'.format(self.blk_option[self.manual_blk].act_blk.id(button)))
+                        self.blk_option[self.manual_blk].act_blk.buttonClicked.emit(button)
+                        num1 = self.blk_option[self.manual_blk].act_blk.id(button)
                     else:
                         print('skip')
 
@@ -163,55 +175,68 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         elif event.type() == QEvent.TouchUpdate:
             points = event.touchPoints()
-            button = self.manual_blk.act_blk.buttons()
+            button = self.blk_option[self.manual_blk].act_blk.buttons()
             h = button[0].size().height()
             w = button[0].size().width()
-            for button in self.manual_blk.act_blk.buttons():
+            for button in self.blk_option[self.manual_blk].act_blk.buttons():
                 if button == 0: continue
                 for i in range(len(points)):
                     self.button_list.append([])
                     px = points[i].screenPos().x()
                     py = points[i].screenPos().y()
                     if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
-                        # self.last = self.manual_blk.act_blk.id(button)
+                        # self.last = self.blk_option[self.manual_blk].act_blk.id(button)
                         self.button_list[i].append(button)
 
             return True
         return super(MainWindow,self).eventFilter(obj,event)
 
     def handle_button(self,button):
-        num = self.manual_blk.act_blk.id(button)
+        num = self.blk_option[self.manual_blk].act_blk.id(button)
         # print(num)
         self.vr.set_ACT_state(num)
         self.display_ACT(num)
 
+    def handle_Alloff(self):
+        self.vr.Alloff()
+        for button in self.blk_option[self.manual_blk].act_blk.buttons():
+            button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
     def display_ACT(self,act):
         # Controls color of buttons in GUI based on if turn on or not
         # ARGS: act is int for button id
-        if act == 'alloff':
-            for button in self.manual_blk.act_blk.buttons():
-                button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-        else:
-            print(act)
-            if int(self.vr.OP_Mode) < 4: # Not single pulse'
-                print(self.vr.ACT_ON)
-                # if self.vr.ACT_Mode == '00': # if one touch
-                    # if act not in self.prev_active_ACT: # if new button
-                for p in self.vr.prev_act: #remove old button(s)
-                    self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-                    # turn on new button
-                for p in self.vr.ACT_ON:
-                    self.manual_blk.act_blk.button(p).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
-                    # self.prev_active_ACT.append(act)
+        # print(act)
+        if int(self.vr.OP_Mode) < 4: # Not single pulse'
+            print(self.vr.ACT_ON)
+            # if self.vr.ACT_Mode == '00': # if one touch
+                # if act not in self.prev_active_ACT: # if new button
+            for p in self.vr.prev_act: #remove old button(s)
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                # turn on new button
+            for p in self.vr.ACT_ON:
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                # self.prev_active_ACT.append(act)
 
-            # Single pulse mode
-            else:
-                self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
-                time.sleep(.5)
-                self.manual_blk.act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+        # Single pulse mode
+        else:
+            self.blk_option[self.manual_blk].act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+            time.sleep(.5)
+            self.blk_option[self.manual_blk].act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+
+    def handle_actuator_blk(self,index):
+        # print(index)
+        self.handle_Alloff() # turn off actuators for other array (may not be desired)
+        self.ui.act_blocks.setCurrentIndex(index) # switch to selected block of actuators
+        try:
+            self.blk_option[self.manual_blk].act_blk.buttonClicked.disconnect(self.handle_button) # disconnect current button signals
+        except:
+            print('Error')
+        self.manual_blk = index # update to reflrect selected block
+        self.blk_option[self.manual_blk].act_blk.buttonClicked.connect(self.handle_button) # connect signals for newly selected block
+        print(self.manual_blk)
 
     def connect_device(self,port_label,button,UID_label):
+        self.vr.connect()
         if self.vr.device.is_open:
             print('Connected to {}'.format(self.vr.device.name))
             port_label.setText('Serial Port: {}'.format(self.vr.device.name))
