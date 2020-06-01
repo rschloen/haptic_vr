@@ -56,7 +56,7 @@ class VR_PRTCL:
             # print(ports)
             for p in ports:
                 print(p.description)
-                if p.description == 'CP2102 USB to UART Bridge Controller':
+                if p.description == 'CP2102 USB to UART Bridge Controller' or p.description == 'Silicon Labs CP210x USB to UART Bridge (COM5)':
                     port = p.device
                 print(p.device)
             self.device.port = port
