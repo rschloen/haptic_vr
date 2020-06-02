@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1121</width>
+    <width>1350</width>
     <height>813</height>
    </rect>
   </property>
@@ -94,7 +94,7 @@ QTabWidget{
            <rect>
             <x>20</x>
             <y>10</y>
-            <width>1114</width>
+            <width>1220</width>
             <height>723</height>
            </rect>
           </property>
@@ -137,10 +137,16 @@ QTabWidget{
                <item alignment="Qt::AlignHCenter">
                 <widget class="QLabel" name="label">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>0</height>
+                  </size>
                  </property>
                  <property name="text">
                   <string>Multi-
@@ -173,10 +179,16 @@ Modal</string>
                <item>
                 <widget class="QLabel" name="label_3">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>0</height>
+                  </size>
                  </property>
                  <property name="text">
                   <string>   3D
@@ -309,15 +321,21 @@ Touch</string>
                <item>
                 <widget class="QLabel" name="label_2">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>1</horstretch>
-                   <verstretch>1</verstretch>
+                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
                    <width>80</width>
                    <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="text">
@@ -342,7 +360,7 @@ Pulse</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>48</width>
+                   <width>20</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -351,10 +369,22 @@ Pulse</string>
                <item>
                 <widget class="QLabel" name="single_pulse_dur_label">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                   <horstretch>2</horstretch>
-                   <verstretch>2</verstretch>
+                  <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>350</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>350</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QLabel {
@@ -372,15 +402,21 @@ font-size: 20pt;
                <item>
                 <widget class="QLineEdit" name="single_pulse_dur_text">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>1</horstretch>
-                   <verstretch>1</verstretch>
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>100</width>
                    <height>50</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="text">
@@ -449,7 +485,7 @@ font-size: 20pt;
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>90</width>
+                   <width>50</width>
                    <height>20</height>
                   </size>
                  </property>
@@ -458,10 +494,22 @@ font-size: 20pt;
                <item>
                 <widget class="QSlider" name="pulse_duration">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>1</horstretch>
-                   <verstretch>1</verstretch>
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>350</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>350</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="maximum">
                   <number>5000</number>
@@ -488,10 +536,16 @@ font-size: 20pt;
              <item>
               <widget class="QLabel" name="label_4">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                  <horstretch>1</horstretch>
                  <verstretch>1</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
                </property>
                <property name="text">
                 <string>Continuous</string>
@@ -501,10 +555,16 @@ font-size: 20pt;
              <item>
               <widget class="QRadioButton" name="hf_mod">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>1</horstretch>
                  <verstretch>1</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
                </property>
                <property name="text">
                 <string>Pulsing (High Freq modulation)</string>
@@ -543,10 +603,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QLabel" name="h_dc_text">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="text">
                     <string>Intensity: 50 %</string>
@@ -556,10 +622,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QSlider" name="h_dc">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="autoFillBackground">
                     <bool>false</bool>
@@ -584,10 +656,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QLabel" name="pulse_Hfreq_text">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="baseSize">
                     <size>
@@ -603,10 +681,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QSlider" name="pulse_Hfreq">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="minimum">
                     <number>100</number>
@@ -641,10 +725,16 @@ font-size: 20pt;
              <item>
               <widget class="QRadioButton" name="lf_mod">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>1</horstretch>
                  <verstretch>1</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>350</width>
+                 <height>16777215</height>
+                </size>
                </property>
                <property name="text">
                 <string>Repeated Pulse
@@ -684,10 +774,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QLabel" name="l_dc_text">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="text">
                     <string>Intensity: 50 %</string>
@@ -697,10 +793,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QSlider" name="l_dc">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="autoFillBackground">
                     <bool>false</bool>
@@ -725,10 +827,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QLabel" name="pulse_Lfreq_text">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="text">
                     <string>Repeated Pulse Frequency: 2 Hz</string>
@@ -738,10 +846,16 @@ font-size: 20pt;
                  <item>
                   <widget class="QSlider" name="pulse_Lfreq">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>1</horstretch>
                      <verstretch>1</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>350</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="value">
                     <number>2</number>
@@ -913,6 +1027,22 @@ font-size: 20pt;
                 <size>
                  <width>20</width>
                  <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_27">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>250</width>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
