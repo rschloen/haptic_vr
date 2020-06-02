@@ -17,11 +17,11 @@ class Ui_MainWindow(object):
         MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setAutoFillBackground(True)
-        self.centralwidget.setStyleSheet("QPushButton {    font-size: 20pt;}\n"
-"QLabel {font-size: 20pt;}\n"
-"QRadioButton{font-size: 20pt;}\n"
-"QListWidget{font-size: 20pt;}\n"
-"QLineEdit{font-size: 20pt;}\n"
+        self.centralwidget.setStyleSheet("QPushButton {font-size: 18pt;}\n"
+"QLabel {font-size: 18pt;}\n"
+"QRadioButton{font-size: 18pt;}\n"
+"QListWidget{font-size: 18pt;}\n"
+"QLineEdit{font-size: 18pt;}\n"
 "")
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -73,6 +73,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem)
@@ -100,6 +101,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addItem(spacerItem2)
         self.verticalLayout_5.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setSpacing(0)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         spacerItem3 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem3)
@@ -129,6 +131,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addItem(spacerItem5)
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_6.setSpacing(0)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setObjectName("verticalLayout_13")
@@ -138,7 +141,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
-        self.label_2.setMinimumSize(QtCore.QSize(80, 0))
+        self.label_2.setMinimumSize(QtCore.QSize(70, 0))
         self.label_2.setMaximumSize(QtCore.QSize(100, 16777215))
         self.label_2.setObjectName("label_2")
         self.verticalLayout_13.addWidget(self.label_2)
@@ -148,7 +151,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.pulse_mode.sizePolicy().hasHeightForWidth())
         self.pulse_mode.setSizePolicy(sizePolicy)
-        self.pulse_mode.setMinimumSize(QtCore.QSize(80, 0))
+        self.pulse_mode.setMinimumSize(QtCore.QSize(70, 0))
         self.pulse_mode.setStyleSheet("")
         self.pulse_mode.setMaximum(1)
         self.pulse_mode.setOrientation(QtCore.Qt.Vertical)
@@ -160,12 +163,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         self.single_pulse_dur_label = QtWidgets.QLabel(self.horizontalLayoutWidget_7)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.single_pulse_dur_label.sizePolicy().hasHeightForWidth())
         self.single_pulse_dur_label.setSizePolicy(sizePolicy)
-        self.single_pulse_dur_label.setMinimumSize(QtCore.QSize(325, 0))
+        self.single_pulse_dur_label.setMinimumSize(QtCore.QSize(325, 50))
         self.single_pulse_dur_label.setMaximumSize(QtCore.QSize(350, 16777215))
         self.single_pulse_dur_label.setStyleSheet("QLabel {\n"
 "font-size: 20pt;\n"
@@ -179,7 +182,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.single_pulse_dur_text.sizePolicy().hasHeightForWidth())
         self.single_pulse_dur_text.setSizePolicy(sizePolicy)
-        self.single_pulse_dur_text.setMinimumSize(QtCore.QSize(100, 50))
+        self.single_pulse_dur_text.setMinimumSize(QtCore.QSize(70, 50))
         self.single_pulse_dur_text.setMaximumSize(QtCore.QSize(100, 16777215))
         self.single_pulse_dur_text.setObjectName("single_pulse_dur_text")
         self.horizontalLayout_7.addWidget(self.single_pulse_dur_text)
@@ -190,7 +193,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pulse_duration.sizePolicy().hasHeightForWidth())
         self.pulse_duration.setSizePolicy(sizePolicy)
-        self.pulse_duration.setMinimumSize(QtCore.QSize(425, 0))
+        self.pulse_duration.setMinimumSize(QtCore.QSize(400, 50))
         self.pulse_duration.setMaximumSize(QtCore.QSize(350, 16777215))
         self.pulse_duration.setMaximum(5000)
         self.pulse_duration.setSingleStep(10)
@@ -222,8 +225,9 @@ class Ui_MainWindow(object):
         self.hf_mod.setObjectName("hf_mod")
         self.verticalLayout_5.addWidget(self.hf_mod)
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_8.setSpacing(0)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem6)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -291,8 +295,9 @@ class Ui_MainWindow(object):
         self.lf_mod.setObjectName("lf_mod")
         self.verticalLayout_5.addWidget(self.lf_mod)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setSpacing(0)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        spacerItem7 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_9.addItem(spacerItem7)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
