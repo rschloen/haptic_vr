@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-
+# import os
+# os.environ['PYUSB_DEBUG'] = 'debug'
 import usb
 # import serial
 import sys,time
@@ -14,6 +15,7 @@ class VR_PRTCL:
     ACT_BLKS = 1
     ACT_state = [0]*32*ACT_BLKS
     active = 0
+    com_attempts = 5
 
 
     def __init__(self):
@@ -32,7 +34,7 @@ class VR_PRTCL:
         ### pyusb code
         # try:
         self.current_connection = usb.core.find(idVendor=self.device[0],idProduct=self.device[1])
-        usb.util.dispose_resources(self.current_connection)
+        # usb.util.dispose_resources(self.current_connection)
 
         self.current_connection.reset()
         if self.current_connection == None:
@@ -40,7 +42,7 @@ class VR_PRTCL:
         for cfg in self.current_connection:
             # print(cfg)
             for i in range(cfg.bNumInterfaces):
-                print(cfg[(i,0)][0])
+                # print(cfg[(i,0)][0])
                 if self.current_connection.is_kernel_driver_active(i):
                     self.current_connection.detach_kernel_driver(i)
                     # usb.util.claim_interface(self.current_connection, i)
