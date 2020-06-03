@@ -8,6 +8,7 @@ import time
 from vr_gui_layout import Ui_MainWindow
 from actuator_layout import Actuator_Block
 from VR_NFC import VR_PRTCL
+from pyusb_VR_NFC import USB_VR_PRTCL
 
 """QSlider::groove:vertical{
 	border: 1px solid black;
@@ -54,7 +55,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # Initialization
-        self.vr = VR_PRTCL()
+        self.vr = USB_VR_PRTCL()
         # self.widget_list = [self.ui.label,self.ui.label_3,self.ui.multi_modal,self.ui.threeD_touch,self.ui.label_2,self.ui.single_pulse_dur_label,self.ui.single_pulse_dur_text,
         # self.ui.pulse_mode,self.ui.pulse_duration,self.ui.label_4,self.ui.hf_mod,self.ui.h_dc_text,self.ui.h_dc,self.ui.pulse_Hfreq_text,self.ui.pulse_Hfreq,self.ui.lf_mod,
         # self.ui.l_dc_text,self.ui.l_dc,self.ui.pulse_Lfreq_text,self.ui.pulse_Lfreq,self.ui.all_off,self.ui.active_selected,self.ui.set_time,self.ui.append_preset_name,self.ui.append_preset]

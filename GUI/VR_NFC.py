@@ -41,44 +41,41 @@ class VR_PRTCL:
     DC_high = '3200'
     DC_low = 'FA00'
     append_to_file = False
+    data_w_header = [2,0,24,255,176,36,1]
+    data_r_header = [2,0,19,255,176,35,1]
 
     def __init__(self):
         # Device initialization here: usb/bluetooth
         self.device = serial.Serial(None,115200,timeout=1,parity=serial.PARITY_NONE,dsrdtr=False)  # open serial port, 115200 baudrate, 1 sec timeout
 
-    def connect(self):#,port_label,button,UID_label):
+
+    def connect(self):
         # connect to nfc board (0x10c4,0xea60)
         if self.active:
             self.disconnect()#port_label,button,UID_label)
         else:
             # try:
             ports = serial.tools.list_ports.comports()
-            # print(ports)
             for p in ports:
                 print(p.description)
                 if p.description == 'CP2102 USB to UART Bridge Controller' or p.description == 'Silicon Labs CP210x USB to UART Bridge (COM5)':
                     port = p.device
-                print(p.device)
             self.device.port = port
             self.device.open()
             self.active = True
             cmd = '010A0003041001210000' #Register write request
             rep = self.send(cmd)
-
             cmd = '010C00030410002101060000' #Register write request
             rep = self.send(cmd)
-
             cmd = '0109000304F0000000' #AGC Toggle
             rep = self.send(cmd)
-
             cmd = '0109000304F1FF0000' #AM PM Toggle
             rep = self.send(cmd)
-
             # except:
-                # print('NFC board not connected.')
+            #     print('NFC board not connected.')
 
 
-    def disconnect(self):#,port_label,button,UID_label):
+    def disconnect(self):
         # disconnect from NFC board
         self.active = False
         self.device.close()
@@ -156,21 +153,21 @@ class VR_PRTCL:
     #     # assemble and display data returned from device
     #     pass
 
-    # def CRC16(self, msg): #from Nlux code
-    #     crc_poly = int("8408", 16)
-    #     crc = int("FFFF",16)
-    #     for i in msg:
-    #         crc = crc ^ i;
-    #         for j in range(8):
-    #             if(crc & 1):
-    #                 crc = (crc>>1) ^ crc_poly
-    #             else:
-    #                 crc = (crc>>1)
-    #     data = hex(crc)[2:]
-    #     data = "0"*(4-len(data))+data
-    #     data = [int(data[2:],16), int(data[:2],16)]
-    #     msg.extend(data)
-    #     return msg
+    def CRC16(self, msg): #from Nlux code
+        crc_poly = int("8408", 16)
+        crc = int("FFFF",16)
+        for i in msg:
+            crc = crc ^ i;
+            for j in range(8):
+                if(crc & 1):
+                    crc = (crc>>1) ^ crc_poly
+                else:
+                    crc = (crc>>1)
+        data = hex(crc)[2:]
+        data = "0"*(4-len(data))+data
+        data = [int(data[2:],16), int(data[:2],16)]
+        msg.extend(data)
+        return msg
 
     def play_preset(self,preset):
         if preset == 'flash all':
@@ -276,6 +273,7 @@ class VR_PRTCL:
     def Alloff(self):
         print('Alloff')
         cmd = '0117000304186221'+self.UID+'00000002000000'
+
         res = self.send(cmd)
         if self.append_to_file:
             self.preset_file.write(cmd+'\n')
