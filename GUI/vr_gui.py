@@ -112,7 +112,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Settings
         self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
-        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected)))
+        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID)))
 
         self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
 
@@ -238,13 +238,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def connect_device(self,port_label,button,UID_label):
         self.vr.connect()
-        if self.vr.device.is_open:
-            print('Connected to {}'.format(self.vr.device.name))
-            port_label.setText('Serial Port: {}'.format(self.vr.device.name))
+        # if self.vr.device.is_open:
+        # print(self.vr.active_flag)
+        if self.vr.active_flag:
+            print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            '''pyserial'''
+            # print('Connected to {}'.format(self.vr.device.name))
+            # port_label.setText('Serial Port: {}'.format(self.vr.device.name))
             button.setText('Disconnect')
         else:
             button.setText('Connect')
-            port_label.setText('Serial Port: ')
+            port_label.setText('No device')
             UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
 
     def set_multi_modal(self,value):

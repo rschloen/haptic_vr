@@ -94,9 +94,9 @@ class VR_PRTCL:
         if append:
             self.append_to_file = True
             try:
-                self.preset_file = open('preset_files/'+preset_name+'.txt','a')
+                self.preset_file = open('preset_files_serial/'+preset_name+'.txt','a')
             except FileNotFoundError:
-                self.preset_file = open('preset_files/'+preset_name+'.txt','w')
+                self.preset_file = open('preset_files_serial/'+preset_name+'.txt','w')
             print(self.preset_file.closed)
         else:
             self.append_to_file = False
@@ -178,7 +178,7 @@ class VR_PRTCL:
             state = self.send(cmd0)
             self.OP_Mode = temp
         elif preset == 'ABCs':
-            with open('preset_files/'+preset+'.txt','r') as read_preset:
+            with open('preset_files_serial/'+preset+'.txt','r') as read_preset:
                 cnt = 0
                 for line in read_preset:
                     cmd = line.rstrip()
@@ -191,7 +191,7 @@ class VR_PRTCL:
                     else:
                         cnt += 1
         else:
-            with open('preset_files/'+preset+'.txt','r') as read_preset:
+            with open('preset_files_serial/'+preset+'.txt','r') as read_preset:
                 for line in read_preset:
                     cmd = line.rstrip()
                     d = self.send(cmd)
