@@ -32,7 +32,7 @@ QLabel {font-size: 18pt;}
 QRadioButton{font-size: 18pt;}
 QListWidget{font-size: 18pt;}
 QLineEdit{font-size: 18pt;}
-</string>
+QComboBox{font-size: 18pt;}</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -1134,7 +1134,7 @@ QTabBar::tab:first {
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>3</number>
             </property>
             <property name="elideMode">
              <enum>Qt::ElideLeft</enum>
@@ -1151,74 +1151,264 @@ QTabBar::tab:first {
              <attribute name="title">
               <string>Sweeping</string>
              </attribute>
-             <widget class="QComboBox" name="sweep_type">
+             <widget class="QWidget" name="verticalLayoutWidget">
               <property name="geometry">
                <rect>
-                <x>20</x>
-                <y>30</y>
-                <width>181</width>
-                <height>41</height>
+                <x>30</x>
+                <y>40</y>
+                <width>243</width>
+                <height>214</height>
                </rect>
               </property>
-              <property name="currentText">
-               <string>Left to Right (LR)</string>
-              </property>
-              <property name="currentIndex">
-               <number>0</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>Left to Right (LR)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Right to Left (RL)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Top to Bottom (TB)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Bottom to Top (BT)</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>+45º BT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>+45º TB</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>-45º BT</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>-45º TB</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Explosion</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Implosion</string>
-               </property>
-              </item>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <widget class="QComboBox" name="sweep_type">
+                 <property name="currentText">
+                  <string>Left to Right (LR)</string>
+                 </property>
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Left to Right (LR)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Right to Left (RL)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Top to Bottom (TB)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Bottom to Top (BT)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>+45º BT</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>+45º TB</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>-45º BT</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>-45º TB</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Explosion</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Implosion</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="sweep_pulseTime_Label">
+                   <property name="text">
+                    <string>Pulse Time:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="sweep_pulseTime"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="sweep_pauseTime_Label">
+                   <property name="text">
+                    <string>Pause Time:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="sweep_pauseTime"/>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="sweep_intensity_Label">
+                   <property name="text">
+                    <string>Intensity:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="sweep_intensity"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="sweep_set_time">
+                 <property name="text">
+                  <string>Set Timing</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </widget>
             <widget class="QWidget" name="tab_3">
+             <attribute name="title">
+              <string>Two Intensities</string>
+             </attribute>
+             <widget class="QWidget" name="verticalLayoutWidget_2">
+              <property name="geometry">
+               <rect>
+                <x>30</x>
+                <y>40</y>
+                <width>243</width>
+                <height>214</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <widget class="QComboBox" name="two_int_blk">
+                 <property name="currentText">
+                  <string>Block 1</string>
+                 </property>
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Block 1</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 2</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 3</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 4</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 5</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 6</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 7</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 8</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 9</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 10</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 11</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 12</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 13</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 14</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Block 15</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <layout class="QFormLayout" name="formLayout_2">
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="i2_intensity_Label">
+                   <property name="text">
+                    <string>Intensity:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="i2_intensity"/>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="i2_pulseTime"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="i2_pulseTime_Label">
+                   <property name="text">
+                    <string>Pulse Time:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="i2_pauseTime_Label">
+                   <property name="text">
+                    <string>Pause Time:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="i2_pauseTime"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="i2_set_time">
+                 <property name="text">
+                  <string>Set Timing</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QWidget" name="tab_4">
              <attribute name="title">
               <string>ABCs</string>
              </attribute>
@@ -1292,7 +1482,7 @@ QTabBar::tab:first {
             <item>
              <widget class="QLabel" name="rf_power_text">
               <property name="text">
-               <string>4 Watts</string>
+               <string>2 Watts</string>
               </property>
              </widget>
             </item>
@@ -1328,16 +1518,16 @@ QTabBar::tab:first {
                </size>
               </property>
               <property name="minimum">
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="maximum">
                <number>12</number>
               </property>
               <property name="value">
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="sliderPosition">
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>

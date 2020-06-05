@@ -70,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
         self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
         self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
+        self.blk4 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_4)
         self.manual_vert_blk = Actuator_Block(self,self.screen_width,'vertical',self.blk_vert_manual)
         self.manual_horz_blk = Actuator_Block(self,self.screen_width,'horizontal',self.blk_horz_manual)
         self.blk_option.append(self.manual_horz_blk)
@@ -130,29 +131,47 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.active_selected.clicked.connect(lambda:self.vr.set_ACT_state(0))
 
         # Setting High(h) and Low(l) Duty Cycle
-        self.ui.h_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.h_dc.value(),'high'))
-        self.ui.h_dc.valueChanged.connect(lambda:self.ui.h_dc_text.setText("Intensity: {} %".format(self.ui.h_dc.value())))
-        self.ui.l_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.l_dc.value(),'low'))
-        self.ui.l_dc.valueChanged.connect(lambda:self.ui.l_dc_text.setText("Intensity: {} %".format(self.ui.l_dc.value())))
+        self.ui.h_dc.valueChanged.connect(lambda:self.handle_timing('intensity',self.ui.h_dc.value(),'high',self.ui.h_dc_text))
+        # self.ui.h_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.h_dc.value(),'high'))
+        # self.ui.h_dc.valueChanged.connect(lambda:self.ui.h_dc_text.setText("Intensity: {} %".format(self.ui.h_dc.value())))
+        self.ui.l_dc.valueChanged.connect(lambda:self.handle_timing('intensity',self.ui.l_dc.value(),'low',self.ui.l_dc_text))
+        # self.ui.l_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.l_dc.value(),'low'))
+        # self.ui.l_dc.valueChanged.connect(lambda:self.ui.l_dc_text.setText("Intensity: {} %".format(self.ui.l_dc.value())))
+        self.ui.sweep_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.sweep_intensity.text(),'high',None))
+        self.ui.i2_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.i2_intensity.text(),'high',None))
 
         # Setting High(H) and Low(L) frequency (period)
-        self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Hfreq.value(),'high'))
-        self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.ui.pulse_Hfreq_text.setText("Pulsing Frequency: {} Hz".format(self.ui.pulse_Hfreq.value())))
-        self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Lfreq.value(),'low'))
-        self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.ui.pulse_Lfreq_text.setText("Repeated Pulse Frequency: {} Hz".format(self.ui.pulse_Lfreq.value())))
+        self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.handle_timing('freq',self.ui.pulse_Hfreq.value(),'high',self.ui.pulse_Hfreq_text))
+
+        # self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Hfreq.value(),'high'))
+        # self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.ui.pulse_Hfreq_text.setText("Pulsing Frequency: {} Hz".format(self.ui.pulse_Hfreq.value())))
+        self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.handle_timing('freq',self.ui.pulse_Lfreq.value(),'low',self.ui.pulse_Lfreq_text))
+        # self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Lfreq.value(),'low'))
+        # self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.ui.pulse_Lfreq_text.setText("Repeated Pulse Frequency: {} Hz".format(self.ui.pulse_Lfreq.value())))
+
+
 
         # Setting Single pulse duration
-        self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.vr.set_one_pulse_duration(self.ui.single_pulse_dur_text.text()))
-        self.ui.pulse_duration.valueChanged.connect(lambda:self.vr.set_one_pulse_duration(self.ui.pulse_duration.value()))
-        self.ui.pulse_duration.valueChanged.connect(lambda:self.ui.single_pulse_dur_text.setText("{}".format(self.ui.pulse_duration.value())))
+        self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.single_pulse_dur_text.text(),'on',self.ui.single_pulse_dur_text))
+        # self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.vr.set_one_pulse_duration(self.ui.single_pulse_dur_text.text()))
+        self.ui.pulse_duration.valueChanged.connect(lambda:self.handle_timing('pulse',self.ui.pulse_duration.value(),'on',self.ui.single_pulse_dur_text))
+        # self.ui.pulse_duration.valueChanged.connect(lambda:self.vr.set_one_pulse_duration(self.ui.pulse_duration.value()))
+        # self.ui.pulse_duration.valueChanged.connect(lambda:self.ui.single_pulse_dur_text.setText("{}".format(self.ui.pulse_duration.value())))
+        self.ui.sweep_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pulseTime.text(),'on',None))
+        self.ui.sweep_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pauseTime.text(),'off',None))
+        self.ui.i2_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pulseTime.text(),'on',None))
+        self.ui.i2_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pauseTime.text(),'off',None))
 
         self.ui.set_time.clicked.connect(lambda:self.vr.set_Timing())
         self.ui.set_time.clicked.connect(lambda:self.display_ACT())
-
+        self.ui.sweep_set_time.clicked.connect(lambda:self.vr.set_Timing())
+        self.ui.sweep_set_time.clicked.connect(lambda:self.display_ACT())
+        self.ui.i2_set_time.clicked.connect(lambda:self.vr.set_Timing())
+        self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
         # Presets
         self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked()))
-        # self.ui.tab_position.currentChanged(lambda:self.handle_preset(self.ui.tab_position.currentIndex))
         self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
+
 
         # Actuators
         self.ui.all_off.clicked.connect(self.handle_Alloff)
@@ -224,6 +243,23 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.active_selected.setEnabled(True)
 
+    def handle_timing(self,mode,value,level,text):
+        if mode == 'pulse':
+            self.vr.set_one_pulse_duration(value,level)
+            if text != None:
+                text.setText("{}".format(value))
+        if mode == 'intensity':
+            self.vr.set_ACT_intensity(value,level)
+            if text != None:
+                text.setText("Intensity: {} %".format(value))
+        if mode == 'frequency':
+            self.vr.set_pulse_freq(value,level)
+            if text != None:
+                if level == 'high':
+                    text.setText("Pulsing Frequency: {} Hz".format(value))
+                else:
+                    text.setText("Repeated Pulse Frequency: {} Hz".format(value))
+
 
     def handle_preset(self,index):
         # print(index)
@@ -231,8 +267,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.vr.play_preset('flash all')
         elif index == 1:
             print(self.ui.sweep_type.currentIndex())
-            self.vr.play_preset(self.ui.sweep_type.currentIndex())
+            self.vr.play_preset(self.ui.sweep_type.currentIndex(),index)
         elif index == 2:
+            self.vr.play_preset(self.ui.two_int_blk.currentIndex(),index)
+        elif index == 3:
             self.vr.play_preset('ABCs')
 
 

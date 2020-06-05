@@ -25,7 +25,8 @@ class USB_VR_PRTCL:
     pulse_mode = 1
     hf_mod = 0
     lf_mod = 0
-    t_pulse = 'F4010000'
+    t_pulse = 'F401'
+    t_pause = '0000'
     T_high = '6400'
     T_low = 'F401'
     DC_high = '3200'
@@ -121,11 +122,7 @@ class USB_VR_PRTCL:
             return None
         msg0 = '|>>>: '
         for i in msg:
-            strtmp = str(hex(i))[2:]
-            if len(strtmp) == 1:
-                msg0 += '0' + str(hex(i))[2:] + ' '
-            if len(strtmp) == 2:
-                msg0 += str(hex(i))[2:] + ' '
+            msg0 += '%0*X'%(2,i)
         data = None
         print(msg0)
         msgx = msg
@@ -135,7 +132,7 @@ class USB_VR_PRTCL:
     ##            data = self.current_connection.read(129, 128)
                 self.current_connection.write(2,msgx)
                 self.recieving_flag = True
-                time.sleep(0.05)     # Update with time hold on
+                time.sleep(0.25)     # Update with time hold on
                 data = self.current_connection.read(129, 128)
 
                 while len(data) < 0:
@@ -143,11 +140,7 @@ class USB_VR_PRTCL:
                 msg = data
                 msg0 = '<<<|: '
                 for i in msg:
-                    strtmp = str(hex(i))[2:]
-                    if len(strtmp) == 1:
-                        msg0 += '0' + str(hex(i))[2:] + ' '
-                    if len(strtmp) == 2:
-                        msg0 += str(hex(i))[2:] + ' '
+                    msg0 += '%0*X'%(2,i)
                 count += 1
                 # check for errors in the response, probably not devices in the antenna
                 # or the error with the antenna tunning
@@ -184,13 +177,16 @@ class USB_VR_PRTCL:
                 self.preset_file.close()
 
 
-    def play_preset(self,preset):
+    def play_preset(self,preset,index=None):
         if type(preset) == int:
-            preset = self.preset_num2name(preset)
+            preset = self.preset_num2name(preset,index)
 
         if preset == 'flash all':
             temp = self.OP_Mode
             self.OP_Mode = '80'
+        elif preset == '2i_blk':
+            temp = self.OP_Mode
+            self.OP_Mode = 'A'+str(index)
         elif preset == 'LR':
             temp = self.OP_Mode
             self.OP_Mode = '86'
@@ -241,7 +237,7 @@ class USB_VR_PRTCL:
                     cmd = line.rstrip()
                     d = self.send(cmd)
             return
-        cmd0 = self.UID+ '00' + '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
+        cmd0 = self.UID+ '000104' + '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
         n_cmd0 = self.assemble_command(cmd0,'w')
         state = self.send(n_cmd0)
         self.OP_Mode = temp
@@ -271,13 +267,16 @@ class USB_VR_PRTCL:
         self.ACT_BLKS = '%0*X'%(2,num_blks)
 
 
-    def set_one_pulse_duration(self,time):
+    def set_one_pulse_duration(self,time,mode):
         try:
             time = int(time)
         except ValueError:
             print('Must enter a number')
-        t = '%0*X'%(8,time)
-        self.t_pulse = t#[6:]+t[4:6]+t[2:4]+t[0:2]
+        t = '%0*X'%(4,time)
+        if mode == 'on':
+            self.t_pulse = t#[6:]+t[4:6]+t[2:4]+t[0:2]
+        else:
+            self.t_pause = t
         # self.set_Timing()
 
 
@@ -297,7 +296,7 @@ class USB_VR_PRTCL:
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
         #LSB first
         self.Alloff()
-        cmd3 = self.UID+ '090104' + self.t_pulse# +'0000'
+        cmd3 = self.UID+ '090104' + self.t_pulse + self.t_pause# +'0000'
         cmd4 = self.UID+ '0A0104' + self.T_high + self.DC_high# +'0000'
         cmd5 = self.UID+ '0B0104' + self.T_low + self.DC_low# +'0000'
         n_cmd3 = self.assemble_command(cmd3,'w')
@@ -461,9 +460,13 @@ class USB_VR_PRTCL:
             cmd_array = self.data_r_header + temp_cmd
         return cmd_array
 
-    def preset_num2name(self,i):
-        options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
-        return options[i]
+    def preset_num2name(self,preset,num):
+        if preset == 1:
+            options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
+        elif preset == 2:
+            return '2i_blk'
+
+        return options[num]
 
 
 
