@@ -56,6 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         # Initialization
         self.vr = USB_VR_PRTCL()
+        # self.vr = VR_PRTCL()
         # self.widget_list = [self.ui.label,self.ui.label_3,self.ui.multi_modal,self.ui.threeD_touch,self.ui.label_2,self.ui.single_pulse_dur_label,self.ui.single_pulse_dur_text,
         # self.ui.pulse_mode,self.ui.pulse_duration,self.ui.label_4,self.ui.hf_mod,self.ui.h_dc_text,self.ui.h_dc,self.ui.pulse_Hfreq_text,self.ui.pulse_Hfreq,self.ui.lf_mod,
         # self.ui.l_dc_text,self.ui.l_dc,self.ui.pulse_Lfreq_text,self.ui.pulse_Lfreq,self.ui.all_off,self.ui.active_selected,self.ui.set_time,self.ui.append_preset_name,self.ui.append_preset]
@@ -107,14 +108,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
+        self.ui.PORT.setText('No device')
+        self.ui.UID.setText('UID:  XX XX XX XX XX XX XX XX')
 
 
         # Settings
-        self.ui.connect_button.clicked.connect(lambda:self.connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
+        self.ui.connect_button.clicked.connect(lambda:self.handle_connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
         self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID)))
 
-        self.ui.rf_power.valueChanged.connect(lambda:self.vr.set_RFpower(self.ui.rf_power.value(),self.ui.rf_power_text))
+        self.ui.rf_power.valueChanged.connect(lambda:self.handle_rf_power(self.ui.rf_power.value(),self.ui.rf_power_text))
 
         # Setting Opertating Mode
         self.ui.pulse_mode.valueChanged.connect(lambda:self.vr.set_OP_Mode(self.ui.pulse_mode.value(),1))
@@ -123,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Setting Actuator Mode
         # self.ui.multi_modal.valueChanged.connect(lambda:self.vr.set_ACT_Mode(self.ui.multi_modal.value()))
-        self.ui.multi_modal.valueChanged.connect(lambda:self.set_multi_modal(self.ui.multi_modal.value()))
+        self.ui.multi_modal.valueChanged.connect(lambda:self.handle_multi_modal(self.ui.multi_modal.value()))
         self.ui.active_selected.clicked.connect(lambda:self.vr.set_ACT_state(0))
 
         # Setting High(h) and Low(l) Duty Cycle
@@ -144,12 +147,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pulse_duration.valueChanged.connect(lambda:self.ui.single_pulse_dur_text.setText("{}".format(self.ui.pulse_duration.value())))
 
         self.ui.set_time.clicked.connect(lambda:self.vr.set_Timing())
-        self.ui.set_time.clicked.connect(lambda:self.display_ACT('alloff'))
+        self.ui.set_time.clicked.connect(lambda:self.display_ACT())
 
         # Presets
         self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked()))
-        # self.ui.tab_position.currentChanged(lambda:self.set_preset(self.ui.tab_position.currentIndex))
-        self.ui.preset_button.clicked.connect(lambda:self.set_preset(self.ui.tab_position.currentIndex()))
+        # self.ui.tab_position.currentChanged(lambda:self.handle_preset(self.ui.tab_position.currentIndex))
+        self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
 
         # Actuators
         self.ui.all_off.clicked.connect(self.handle_Alloff)
@@ -192,18 +195,74 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         return super(MainWindow,self).eventFilter(obj,event)
 
+    def handle_connect_device(self,port_label,button,UID_label):
+        self.vr.connect()
+        # if self.vr.device.is_open:#pyserial
+        # print(self.vr.active_flag)
+        if self.vr.active_flag:
+            print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            '''pyserial'''
+            # print('Connected to {}'.format(self.vr.device.name))
+            # port_label.setText('Serial Port: {}'.format(self.vr.device.name))
+            button.setText('Disconnect')
+        else:
+            button.setText('Connect')
+            port_label.setText('No device')
+            UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
+
+
+    def handle_rf_power(self,power,text):
+        self.vr.set_RFpower(power)
+        text.setText(("{} Watts").format(power))
+
+
+    def handle_multi_modal(self,value):
+        self.vr.set_ACT_Mode(value)
+        if value == 0:
+            self.ui.active_selected.setEnabled(False)
+        else:
+            self.ui.active_selected.setEnabled(True)
+
+
+    def handle_preset(self,index):
+        # print(index)
+        if index == 0:
+            self.vr.play_preset('flash all')
+        elif index == 1:
+            print(self.ui.sweep_type.currentIndex())
+            self.vr.play_preset(self.ui.sweep_type.currentIndex())
+        elif index == 2:
+            self.vr.play_preset('ABCs')
+
+
     def handle_button(self,button):
         num = self.blk_option[self.manual_blk].act_blk.id(button)
         # print(num)
         self.vr.set_ACT_state(num)
-        self.display_ACT(num)
+        self.display_ACT()
+
+
+    def handle_actuator_blk(self,index):
+        # print(index)
+        self.handle_Alloff() # turn off actuators for other array (may not be desired)
+        self.ui.act_blocks.setCurrentIndex(index) # switch to selected block of actuators
+        try:
+            self.blk_option[self.manual_blk].act_blk.buttonClicked.disconnect(self.handle_button) # disconnect current button signals
+        except:
+            print('Error')
+        self.manual_blk = index # update to reflrect selected block
+        self.blk_option[self.manual_blk].act_blk.buttonClicked.connect(self.handle_button) # connect signals for newly selected block
+        print(self.manual_blk)
+
 
     def handle_Alloff(self):
         self.vr.Alloff()
         for button in self.blk_option[self.manual_blk].act_blk.buttons():
             button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
-    def display_ACT(self,act):
+
+    def display_ACT(self):
         # Controls color of buttons in GUI based on if turn on or not
         # ARGS: act is int for button id
         # print(act)
@@ -220,53 +279,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Single pulse mode
         else:
-            self.blk_option[self.manual_blk].act_blk.button(act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+            self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
             time.sleep(.5)
-            self.blk_option[self.manual_blk].act_blk.button(act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+            self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
-    def handle_actuator_blk(self,index):
-        # print(index)
-        self.handle_Alloff() # turn off actuators for other array (may not be desired)
-        self.ui.act_blocks.setCurrentIndex(index) # switch to selected block of actuators
-        try:
-            self.blk_option[self.manual_blk].act_blk.buttonClicked.disconnect(self.handle_button) # disconnect current button signals
-        except:
-            print('Error')
-        self.manual_blk = index # update to reflrect selected block
-        self.blk_option[self.manual_blk].act_blk.buttonClicked.connect(self.handle_button) # connect signals for newly selected block
-        print(self.manual_blk)
-
-    def connect_device(self,port_label,button,UID_label):
-        self.vr.connect()
-        # if self.vr.device.is_open:
-        # print(self.vr.active_flag)
-        if self.vr.active_flag:
-            print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-            port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-            '''pyserial'''
-            # print('Connected to {}'.format(self.vr.device.name))
-            # port_label.setText('Serial Port: {}'.format(self.vr.device.name))
-            button.setText('Disconnect')
-        else:
-            button.setText('Connect')
-            port_label.setText('No device')
-            UID_label.setText('UID:  XX XX XX XX XX XX XX XX')
-
-    def set_multi_modal(self,value):
-        self.vr.set_ACT_Mode(value)
-        if value == 0:
-            self.ui.active_selected.setEnabled(False)
-        else:
-            self.ui.active_selected.setEnabled(True)
-
-    def set_preset(self,index):
-        print(index)
-        if index == 0:
-            self.vr.play_preset('flash all')
-        elif index == 1:
-            self.vr.play_preset('back_slide')
-        elif index == 2:
-            self.vr.play_preset('ABCs')
 
     def hex_button(self):
         for button in self.all_ACT:

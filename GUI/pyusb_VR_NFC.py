@@ -4,7 +4,7 @@
 import usb
 # import serial
 import sys,time
-
+'''Gesture sweeps send op mode(86..af), update timing when switching to preset'''
 class USB_VR_PRTCL:
     """Library for Haptic VR device NFC communication"""
     UID = ''
@@ -44,6 +44,7 @@ class USB_VR_PRTCL:
                 return
         print('NFC Box Not Found')
 
+
     def connect(self):
         # connect to nfc board (0x10c4,0xea60) (Adapted from Abraham's Optogenetics example)
         # print(self.active_flag)
@@ -72,6 +73,7 @@ class USB_VR_PRTCL:
                 print('Connection failed')
                 return False
 
+
     def disconnect(self):
         # disconnect from NFC board,(Adapted from Abraham's Optogenetics example)
         self.active_flag = False
@@ -85,18 +87,17 @@ class USB_VR_PRTCL:
             pass
         print('Disconnected')
 
+
     def get_inventory(self):
         # Get UID
         msg = [2,0,9,255,176,1,0]
         self.UID = ''
         uid = self.send(msg)
-        print(uid[9:])
-        uid = uid[9:]
+        # print(uid[9:])
+        uid = uid[9:17]
         for ele in uid:
             self.UID += '%0*X'%(2,ele)
         # print(self.UID)
-
-
 
 
     def read_RFpower(self): #reading from device?
@@ -104,11 +105,12 @@ class USB_VR_PRTCL:
         print("RF Power is currently ...")
 
 
-    def set_RFpower(self,pow,text):
+    def set_RFpower(self,pow):
         # Set watts
-        msg = [2,0,44,255,139,2,1,1,1,30,0,3,0,8,pow,128,0,0,0,0,0,0,0,0,0,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         self.RF_Power = pow
-        text.setText(("{} Watts").format(pow))
+        msg = [2,0,44,255,139,2,1,1,1,30,0,3,0,8,pow,128,0,0,0,0,0,0,0,0,0,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        res = self.send(msg)
+        print(res)
 
 
     def send(self, msg):
@@ -124,7 +126,6 @@ class USB_VR_PRTCL:
                 msg0 += '0' + str(hex(i))[2:] + ' '
             if len(strtmp) == 2:
                 msg0 += str(hex(i))[2:] + ' '
-
         data = None
         print(msg0)
         msgx = msg
@@ -134,7 +135,7 @@ class USB_VR_PRTCL:
     ##            data = self.current_connection.read(129, 128)
                 self.current_connection.write(2,msgx)
                 self.recieving_flag = True
-                time.sleep(0.25)     # Update with time hold on
+                time.sleep(0.05)     # Update with time hold on
                 data = self.current_connection.read(129, 128)
 
                 while len(data) < 0:
@@ -159,11 +160,14 @@ class USB_VR_PRTCL:
                         data = []
                 else:
                     print(msg0)
+                    # print(data)
                     return data
                 if count == self.com_attempts: return[]
-                time.sleep(0.5)
+                # time.sleep(0.5)
+            # print(data)
             return data
         return []
+
 
     def add_to_preset(self,preset_name,append):
     #add check for filename
@@ -181,14 +185,42 @@ class USB_VR_PRTCL:
 
 
     def play_preset(self,preset):
+        if type(preset) == int:
+            preset = self.preset_num2name(preset)
+
         if preset == 'flash all':
             temp = self.OP_Mode
             self.OP_Mode = '80'
-            blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
-            cmd0 = self.UID+ '00' + blk0+'0000'
-            n_cmd0 = self.assemble_command(cmd0,'w')
-            state = self.send(cmd0)
-            self.OP_Mode = temp
+        elif preset == 'LR':
+            temp = self.OP_Mode
+            self.OP_Mode = '86'
+        elif preset == 'RL':
+            temp = self.OP_Mode
+            self.OP_Mode = '87'
+        elif preset == 'TB':
+            temp = self.OP_Mode
+            self.OP_Mode = '88'
+        elif preset == 'BT':
+            temp = self.OP_Mode
+            self.OP_Mode = '89'
+        elif preset == 'p45BT':
+            temp = self.OP_Mode
+            self.OP_Mode = '8A'
+        elif preset == 'p45TB':
+            temp = self.OP_Mode
+            self.OP_Mode = '8B'
+        elif preset == 'n45BT':
+            temp = self.OP_Mode
+            self.OP_Mode = '8C'
+        elif preset == 'n45TB':
+            temp = self.OP_Mode
+            self.OP_Mode = '8D'
+        elif preset == 'EXP':
+            temp = self.OP_Mode
+            self.OP_Mode = '8E'
+        elif preset == 'IMP':
+            temp = self.OP_Mode
+            self.OP_Mode = '8F'
         elif preset == 'ABCs':
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 cnt = 0
@@ -202,12 +234,17 @@ class USB_VR_PRTCL:
                         cnt = 0
                     else:
                         cnt += 1
+            return
         else:
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 for line in read_preset:
                     cmd = line.rstrip()
                     d = self.send(cmd)
-
+            return
+        cmd0 = self.UID+ '00' + '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
+        n_cmd0 = self.assemble_command(cmd0,'w')
+        state = self.send(n_cmd0)
+        self.OP_Mode = temp
 
     def set_OP_Mode(self,value,level):
         # Set operating mode (i.e. All off, turn on/off, single pulse, continous)
@@ -240,8 +277,9 @@ class USB_VR_PRTCL:
         except ValueError:
             print('Must enter a number')
         t = '%0*X'%(8,time)
-        self.t_pulse = t[6:]+t[4:6]+t[2:4]+t[0:2]
+        self.t_pulse = t#[6:]+t[4:6]+t[2:4]+t[0:2]
         # self.set_Timing()
+
 
     def set_pulse_freq(self,freq,mode):
         T = int((1/freq)*1000)
@@ -253,18 +291,18 @@ class USB_VR_PRTCL:
             self.T_low = t[2:4]+t[0:2]
         # self.set_Timing()
 
+
     def set_Timing(self):
         # Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
+        #LSB first
         self.Alloff()
-        cmd3 = self.UID+ '09' + self.t_pulse +'0000'
-        cmd4 = self.UID+ '0A' + self.T_high + self.DC_high +'0000'
-        cmd5 = self.UID+ '0B' + self.T_low + self.DC_low +'0000'
+        cmd3 = self.UID+ '090104' + self.t_pulse# +'0000'
+        cmd4 = self.UID+ '0A0104' + self.T_high + self.DC_high# +'0000'
+        cmd5 = self.UID+ '0B0104' + self.T_low + self.DC_low# +'0000'
         n_cmd3 = self.assemble_command(cmd3,'w')
         n_cmd4 = self.assemble_command(cmd4,'w')
         n_cmd5 = self.assemble_command(cmd5,'w')
-
-
         state = self.send(n_cmd3)
         state = self.send(n_cmd4)
         state = self.send(n_cmd5)
@@ -280,20 +318,20 @@ class USB_VR_PRTCL:
             t_h = self.T_high[2:4]+self.T_high[0:2] # value is stored reversed, so it needs to be flipped again
             temp = int((dc/100)*int(t_h,16)) # DC percentage times the high freq period
             temp = '%0*X'%(4,temp) # convert to hex string
-            self.DC_high = temp[2:4]+temp[0:2] # Store in reverse for sending command
+            self.DC_high = temp#[2:4]+temp[0:2] # Store in reverse for sending command
             # print(self.DC_high)
         else:
             t_l = self.T_low[2:4]+self.T_low[0:2]
             temp = int((dc/100.0)*int(t_l,16))
             temp = '%0*X'%(4,temp)
-            self.DC_low = temp[2:4]+temp[0:2]
+            self.DC_low = temp#[2:4]+temp[0:2]
             # print(self.DC_low)
         # self.set_Timing()
 
 
     def Alloff(self):
         print('Alloff')
-        cmd = self.UID+'00000002000000'
+        cmd = self.UID+'00010402000000'
         n_cmd = self.assemble_command(cmd,'w')
         res = self.send(n_cmd)
         if self.append_to_file:
@@ -340,38 +378,36 @@ class USB_VR_PRTCL:
 
             # print(temp_blk)
             blk1 = temp_blk[24:]
-            blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
+            # blk1 = blk1[6:]+blk1[4:6]+blk1[2:4]+blk1[0:2]
             blk2 = temp_blk[16:24]
-            blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
+            # blk2 = blk2[6:]+blk2[4:6]+blk2[2:4]+blk2[0:2]
             blk3 = '00000000'
             blk4 = '00000000'
             if self.ACT_BLKS == '03':
                 blk3 = temp_blk[8:16]
-                blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
+                # blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
             if self.ACT_BLKS == '04':
                 blk3 = temp_blk[8:16]
-                blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
+                # blk3 = blk3[6:]+blk3[4:6]+blk3[2:4]+blk3[0:2]
                 blk4 = temp_blk[0:8]
-                blk4 = blk4[6:]+blk4[4:6]+blk4[2:4]+blk4[0:2]
+                # blk4 = blk4[6:]+blk4[4:6]+blk4[2:4]+blk4[0:2]
 
             # Blk 0
-            blk0 = self.OP_Mode + self.ACT_Mode + self.ACT_BLKS + '00'
-            cmd0 = self.UID+ '00' + blk0+'0000'
+            blk0 = '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
+            cmd0 = self.UID+ '000104' + blk0#+'0000'
                     #|UID     |BlkAdr |data |padding
             #(9552D9D0F35902E0)
             # Blk 1
-            cmd1 = self.UID+ '01' + blk1 + '0000'
+            cmd1 = self.UID+ '010104' + blk1 #+ '0000'
             #Blk 2
-            cmd2 = self.UID+ '02' + blk2 + '0000'
-            cmd3 = self.UID+ '03' + blk3 + '0000'
-            cmd4 = self.UID+ '04' + blk4 + '0000'
+            cmd2 = self.UID+ '020104' + blk2 #+ '0000'
+            cmd3 = self.UID+ '030104' + blk3 #+ '0000'
+            cmd4 = self.UID+ '040104' + blk4 #+ '0000'
             n_cmd0 = self.assemble_command(cmd0,'w')
             n_cmd1 = self.assemble_command(cmd1,'w')
             n_cmd2 = self.assemble_command(cmd2,'w')
             n_cmd3 = self.assemble_command(cmd3,'w')
             n_cmd4 = self.assemble_command(cmd4,'w')
-
-
             state = self.send(n_cmd1)
             state = self.send(n_cmd2)
             if self.ACT_BLKS == '03':
@@ -392,9 +428,9 @@ class USB_VR_PRTCL:
                 self.preset_file.write(cmd0+'\n')
 
         else:
-            cmd = self.UID+'00000002000000'
+            cmd = self.UID+'00010402000000'
             n_cmd = self.assemble_command(cmd,'w')
-            res = self.send(cmd)
+            res = self.send(n_cmd)
 
 
     def CRC16(self, msg): #from Nlux code
@@ -414,6 +450,7 @@ class USB_VR_PRTCL:
         msg.extend(data)
         return msg
 
+
     def assemble_command(self,cmd,mode):
         temp_cmd = []
         for i in range(0,len(cmd),2):
@@ -424,6 +461,9 @@ class USB_VR_PRTCL:
             cmd_array = self.data_r_header + temp_cmd
         return cmd_array
 
+    def preset_num2name(self,i):
+        options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
+        return options[i]
 
 
 
