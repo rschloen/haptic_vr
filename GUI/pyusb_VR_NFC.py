@@ -4,6 +4,7 @@
 import usb
 # import serial
 import sys,time
+'''MAybe try booting linux from usb on tablet-can't get touch screen to work without different kernel(alternatives?)'''
 '''Gesture sweeps send op mode(86..af), update timing when switching to preset'''
 class USB_VR_PRTCL:
     """Library for Haptic VR device NFC communication"""
@@ -128,33 +129,42 @@ class USB_VR_PRTCL:
         msgx = msg
         if self.active_flag:
             count = 0
+
             while 1:
     ##            data = self.current_connection.read(129, 128)
+                # time.sleep(0.25)     # Update with time hold on
                 self.current_connection.write(2,msgx)
                 self.recieving_flag = True
-                time.sleep(0.25)     # Update with time hold on
+                time.sleep(.25)
                 data = self.current_connection.read(129, 128)
 
-                while len(data) < 0:
-                    data = self.current_connection.read(129, 128)
+                # while len(data) < 0:
+                #     data = self.current_connection.read(129, 128)
                 msg = data
                 msg0 = '<<<|: '
                 for i in msg:
                     msg0 += '%0*X'%(2,i)
                 count += 1
+                print(msg0)
                 # check for errors in the response, probably not devices in the antenna
                 # or the error with the antenna tunning
                 if data[2] == 8 or data[2] == 9:
                     if data[5] == 132:
                         print(msg0 + ' | Antenna warning!')
                         return []
-                    if data[5] == 1:
+                    elif data[5] == 1:
                         print(msg0 + ' | No devices found, ' + str(count) + ' out of ' + str(self.com_attempts))
                         data = []
+                    elif data[5] == 0:
+                        print(data)
+                        return data
+                    else:
+                        print(data)
                 else:
                     print(msg0)
                     # print(data)
                     return data
+
                 if count == self.com_attempts: return[]
                 # time.sleep(0.5)
             # print(data)
@@ -186,56 +196,34 @@ class USB_VR_PRTCL:
             self.OP_Mode = '80'
         elif preset == '2i_blk':
             temp = self.OP_Mode
-            self.OP_Mode = 'A'+str(index)
-        elif preset == 'LR':
+            self.OP_Mode = 'A'+str(hex(index))[2]
+            print(self.OP_Mode)
+        elif preset == 'sweep':
             temp = self.OP_Mode
-            self.OP_Mode = '86'
-        elif preset == 'RL':
-            temp = self.OP_Mode
-            self.OP_Mode = '87'
-        elif preset == 'TB':
-            temp = self.OP_Mode
-            self.OP_Mode = '88'
-        elif preset == 'BT':
-            temp = self.OP_Mode
-            self.OP_Mode = '89'
-        elif preset == 'p45BT':
-            temp = self.OP_Mode
-            self.OP_Mode = '8A'
-        elif preset == 'p45TB':
-            temp = self.OP_Mode
-            self.OP_Mode = '8B'
-        elif preset == 'n45BT':
-            temp = self.OP_Mode
-            self.OP_Mode = '8C'
-        elif preset == 'n45TB':
-            temp = self.OP_Mode
-            self.OP_Mode = '8D'
-        elif preset == 'EXP':
-            temp = self.OP_Mode
-            self.OP_Mode = '8E'
-        elif preset == 'IMP':
-            temp = self.OP_Mode
-            self.OP_Mode = '8F'
+            self.OP_Mode = '8'+str(hex(index+6))[2]
+            print(self.OP_Mode)
+
         elif preset == 'ABCs':
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 cnt = 0
                 for line in read_preset:
                     cmd = line.rstrip()
-                    d = self.send(cmd)
-                    if cnt == 2:
-                        time.sleep(0.5)
-                        self.Alloff()
-                        time.sleep(0.5)
-                        cnt = 0
-                    else:
-                        cnt += 1
+                    n_cmd = self.assemble_command(cmd,'w')
+                    d = self.send(n_cmd)
+                    # if cnt == 2:
+                    #     time.sleep(0.5)
+                    #     self.Alloff()
+                    #     time.sleep(0.5)
+                    #     cnt = 0
+                    # else:
+                    #     cnt += 1
             return
         else:
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 for line in read_preset:
                     cmd = line.rstrip()
-                    d = self.send(cmd)
+                    n_cmd = self.assemble_command(cmd,'w')
+                    d = self.send(n_cmd)
             return
         cmd0 = self.UID+ '000104' + '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
         n_cmd0 = self.assemble_command(cmd0,'w')
@@ -313,6 +301,10 @@ class USB_VR_PRTCL:
 
     def set_ACT_intensity(self,dc,mode):
         # Modulate DC/PWM to adjust inensitiy of actuators
+        try:
+            dc = int(dc)
+        except ValueError:
+            print('Must enter a number')
         if mode == 'high':
             t_h = self.T_high[2:4]+self.T_high[0:2] # value is stored reversed, so it needs to be flipped again
             temp = int((dc/100)*int(t_h,16)) # DC percentage times the high freq period
@@ -364,7 +356,7 @@ class USB_VR_PRTCL:
                     self.prev_act.append(act_num) # So it gets turned off in the GUI
                 else:
                     self.ACT_ON.append(act_num)
-                action = True
+                # action = True
 
             # print(self.ACT_ON)
 
@@ -462,7 +454,8 @@ class USB_VR_PRTCL:
 
     def preset_num2name(self,preset,num):
         if preset == 1:
-            options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
+            return 'sweep'
+            # options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
         elif preset == 2:
             return '2i_blk'
 

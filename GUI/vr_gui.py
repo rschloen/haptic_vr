@@ -57,9 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialization
         self.vr = USB_VR_PRTCL()
         # self.vr = VR_PRTCL()
-        # self.widget_list = [self.ui.label,self.ui.label_3,self.ui.multi_modal,self.ui.threeD_touch,self.ui.label_2,self.ui.single_pulse_dur_label,self.ui.single_pulse_dur_text,
-        # self.ui.pulse_mode,self.ui.pulse_duration,self.ui.label_4,self.ui.hf_mod,self.ui.h_dc_text,self.ui.h_dc,self.ui.pulse_Hfreq_text,self.ui.pulse_Hfreq,self.ui.lf_mod,
-        # self.ui.l_dc_text,self.ui.l_dc,self.ui.pulse_Lfreq_text,self.ui.pulse_Lfreq,self.ui.all_off,self.ui.active_selected,self.ui.set_time,self.ui.append_preset_name,self.ui.append_preset]
+
 
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
@@ -107,6 +105,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.blk_option[self.manual_blk].act_blk.buttonClicked.connect(self.handle_button)
         self.handle_actuator_blk(self.manual_blk)
         # MainWindow.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
+        # self.ui.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
+
         self.installEventFilter(self)
         self.ui.tabWidget.setAttribute(QtCore.Qt.WA_AcceptTouchEvents,True)
         self.ui.PORT.setText('No device')
@@ -132,42 +132,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Setting High(h) and Low(l) Duty Cycle
         self.ui.h_dc.valueChanged.connect(lambda:self.handle_timing('intensity',self.ui.h_dc.value(),'high',self.ui.h_dc_text))
-        # self.ui.h_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.h_dc.value(),'high'))
-        # self.ui.h_dc.valueChanged.connect(lambda:self.ui.h_dc_text.setText("Intensity: {} %".format(self.ui.h_dc.value())))
         self.ui.l_dc.valueChanged.connect(lambda:self.handle_timing('intensity',self.ui.l_dc.value(),'low',self.ui.l_dc_text))
-        # self.ui.l_dc.valueChanged.connect(lambda:self.vr.set_ACT_intensity(self.ui.l_dc.value(),'low'))
-        # self.ui.l_dc.valueChanged.connect(lambda:self.ui.l_dc_text.setText("Intensity: {} %".format(self.ui.l_dc.value())))
-        self.ui.sweep_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.sweep_intensity.text(),'high',None))
-        self.ui.i2_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.i2_intensity.text(),'high',None))
+            # Used for preset timing control
+        # self.ui.sweep_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.sweep_intensity.text(),'high',None))
+        # self.ui.i2_intensity.editingFinished.connect(lambda:self.handle_timing('intensity',self.ui.i2_intensity.text(),'high',None))
 
         # Setting High(H) and Low(L) frequency (period)
         self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.handle_timing('freq',self.ui.pulse_Hfreq.value(),'high',self.ui.pulse_Hfreq_text))
-
-        # self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Hfreq.value(),'high'))
-        # self.ui.pulse_Hfreq.valueChanged.connect(lambda:self.ui.pulse_Hfreq_text.setText("Pulsing Frequency: {} Hz".format(self.ui.pulse_Hfreq.value())))
         self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.handle_timing('freq',self.ui.pulse_Lfreq.value(),'low',self.ui.pulse_Lfreq_text))
-        # self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.vr.set_pulse_freq(self.ui.pulse_Lfreq.value(),'low'))
-        # self.ui.pulse_Lfreq.valueChanged.connect(lambda:self.ui.pulse_Lfreq_text.setText("Repeated Pulse Frequency: {} Hz".format(self.ui.pulse_Lfreq.value())))
-
-
 
         # Setting Single pulse duration
         self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.single_pulse_dur_text.text(),'on',self.ui.single_pulse_dur_text))
-        # self.ui.single_pulse_dur_text.editingFinished.connect(lambda:self.vr.set_one_pulse_duration(self.ui.single_pulse_dur_text.text()))
         self.ui.pulse_duration.valueChanged.connect(lambda:self.handle_timing('pulse',self.ui.pulse_duration.value(),'on',self.ui.single_pulse_dur_text))
-        # self.ui.pulse_duration.valueChanged.connect(lambda:self.vr.set_one_pulse_duration(self.ui.pulse_duration.value()))
-        # self.ui.pulse_duration.valueChanged.connect(lambda:self.ui.single_pulse_dur_text.setText("{}".format(self.ui.pulse_duration.value())))
-        self.ui.sweep_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pulseTime.text(),'on',None))
-        self.ui.sweep_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pauseTime.text(),'off',None))
-        self.ui.i2_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pulseTime.text(),'on',None))
-        self.ui.i2_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pauseTime.text(),'off',None))
+
+            # Used for preset timing control
+        # self.ui.sweep_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pulseTime.text(),'on',None))
+        # self.ui.sweep_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.sweep_pauseTime.text(),'off',None))
+        # self.ui.i2_pulseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pulseTime.text(),'on',None))
+        # self.ui.i2_pauseTime.editingFinished.connect(lambda:self.handle_timing('pulse',self.ui.i2_pauseTime.text(),'off',None))
 
         self.ui.set_time.clicked.connect(lambda:self.vr.set_Timing())
         self.ui.set_time.clicked.connect(lambda:self.display_ACT())
-        self.ui.sweep_set_time.clicked.connect(lambda:self.vr.set_Timing())
-        self.ui.sweep_set_time.clicked.connect(lambda:self.display_ACT())
-        self.ui.i2_set_time.clicked.connect(lambda:self.vr.set_Timing())
-        self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
+            # Used for preset timing control
+        # self.ui.sweep_set_time.clicked.connect(lambda:self.vr.set_Timing())
+        # self.ui.sweep_set_time.clicked.connect(lambda:self.display_ACT())
+        # self.ui.i2_set_time.clicked.connect(lambda:self.vr.set_Timing())
+        # self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
         # Presets
         self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked()))
         self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
@@ -175,7 +165,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Actuators
         self.ui.all_off.clicked.connect(self.handle_Alloff)
-        # self.ui.all_off.clicked.connect(lambda:self.display_ACT('alloff'))
+
         self.ui.block_options.currentRowChanged.connect(self.handle_actuator_blk)
 
 
@@ -266,17 +256,22 @@ class MainWindow(QtWidgets.QMainWindow):
         if index == 0:
             self.vr.play_preset('flash all')
         elif index == 1:
-            print(self.ui.sweep_type.currentIndex())
-            self.vr.play_preset(self.ui.sweep_type.currentIndex(),index)
+            self.vr.set_one_pulse_duration(300,'on')
+            # print(self.ui.sweep_type.currentIndex())
+            self.vr.play_preset(index,self.ui.sweep_type.currentIndex())
         elif index == 2:
-            self.vr.play_preset(self.ui.two_int_blk.currentIndex(),index)
+            self.vr.set_one_pulse_duration(500,'on')
+            self.vr.set_one_pulse_duration(1000,'off')
+            self.vr.play_preset(index,self.ui.two_int_blk.currentIndex())
         elif index == 3:
+            self.vr.set_one_pulse_duration(500,'on')
+            self.vr.set_one_pulse_duration(500,'off')
             self.vr.play_preset('ABCs')
 
 
     def handle_button(self,button):
         num = self.blk_option[self.manual_blk].act_blk.id(button)
-        # print(num)
+        print(num)
         self.vr.set_ACT_state(num)
         self.display_ACT()
 
@@ -296,9 +291,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def handle_Alloff(self):
         self.vr.Alloff()
-        for button in self.blk_option[self.manual_blk].act_blk.buttons():
-            button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
-
+        try:
+            for button in self.blk_option[self.manual_blk].act_blk.buttons():
+                button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+        except:
+            print('No block')
 
     def display_ACT(self):
         # Controls color of buttons in GUI based on if turn on or not
@@ -317,9 +314,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Single pulse mode
         else:
-            self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
-            time.sleep(.5)
-            self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+            print(self.vr.prev_act)
+            if self.vr.prev_act:
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                time.sleep(.5)
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
 
 
     def hex_button(self):
