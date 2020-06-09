@@ -18,6 +18,7 @@ class Actuator_Block(QtWidgets.QWidget):
         self.Position1 = parent
         self.orientation = orientation
         self.size = size
+
         if orientation == 'vertical':
             self.vertical_blk(main)
         elif orientation == 'horizontal':

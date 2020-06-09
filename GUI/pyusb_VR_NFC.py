@@ -95,7 +95,6 @@ class USB_VR_PRTCL:
         msg = [2,0,9,255,176,1,0]
         self.UID = ''
         uid = self.send(msg)
-        # print(uid[9:])
         uid = uid[9:17]
         for ele in uid:
             self.UID += '%0*X'%(2,ele)
@@ -131,8 +130,7 @@ class USB_VR_PRTCL:
             count = 0
 
             while 1:
-    ##            data = self.current_connection.read(129, 128)
-                # time.sleep(0.25)     # Update with time hold on
+
                 self.current_connection.write(2,msgx)
                 self.recieving_flag = True
                 time.sleep(.25)
@@ -156,7 +154,7 @@ class USB_VR_PRTCL:
                         print(msg0 + ' | No devices found, ' + str(count) + ' out of ' + str(self.com_attempts))
                         data = []
                     elif data[5] == 0:
-                        print(data)
+                        # print(data)
                         return data
                     else:
                         print(data)
@@ -172,14 +170,22 @@ class USB_VR_PRTCL:
         return []
 
 
-    def add_to_preset(self,preset_name,append):
+    def add_to_preset(self,preset_name,append,orientation):
     #add check for filename
+        print(orientation)
         if append:
+            if preset_name == '':
+                print('Need File name')
+                return
             self.append_to_file = True
             try:
                 self.preset_file = open('preset_files_usb/'+preset_name+'.txt','a')
+                self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','a')
             except FileNotFoundError:
                 self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
+                self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
+                self.preset_file.write('o: '+orientation+'\n')
+
             print(self.preset_file.closed)
         else:
             self.append_to_file = False
@@ -197,30 +203,16 @@ class USB_VR_PRTCL:
         elif preset == '2i_blk':
             temp = self.OP_Mode
             self.OP_Mode = 'A'+str(hex(index))[2]
-            print(self.OP_Mode)
+            # print(self.OP_Mode)
         elif preset == 'sweep':
             temp = self.OP_Mode
             self.OP_Mode = '8'+str(hex(index+6))[2]
-            print(self.OP_Mode)
-
-        elif preset == 'ABCs':
-            with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
-                cnt = 0
-                for line in read_preset:
-                    cmd = line.rstrip()
-                    n_cmd = self.assemble_command(cmd,'w')
-                    d = self.send(n_cmd)
-                    # if cnt == 2:
-                    #     time.sleep(0.5)
-                    #     self.Alloff()
-                    #     time.sleep(0.5)
-                    #     cnt = 0
-                    # else:
-                    #     cnt += 1
-            return
+            # print(self.OP_Mode)
         else:
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
+                time.sleep(.25)
                 for line in read_preset:
+                    if line[0] == 'o': continue
                     cmd = line.rstrip()
                     n_cmd = self.assemble_command(cmd,'w')
                     d = self.send(n_cmd)
@@ -356,7 +348,8 @@ class USB_VR_PRTCL:
                     self.prev_act.append(act_num) # So it gets turned off in the GUI
                 else:
                     self.ACT_ON.append(act_num)
-                # action = True
+                if not self.append_to_file:
+                    action = True
 
             # print(self.ACT_ON)
 
@@ -417,6 +410,7 @@ class USB_VR_PRTCL:
                     self.preset_file.write(cmd3+'\n')
                     self.preset_file.write(cmd4+'\n')
                 self.preset_file.write(cmd0+'\n')
+                self.display_preset.write(str(self.ACT_ON)+'\n')
 
         else:
             cmd = self.UID+'00010402000000'

@@ -77,7 +77,7 @@ QTabWidget{
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="Manual">
          <property name="autoFillBackground">
@@ -1153,7 +1153,7 @@ QTabBar::tab:first {
               <string notr="true"/>
              </property>
              <attribute name="title">
-              <string/>
+              <string>Flash All</string>
              </attribute>
             </widget>
             <widget class="QWidget" name="tab_2">
@@ -1317,11 +1317,6 @@ QTabBar::tab:first {
                </property>
               </item>
              </widget>
-            </widget>
-            <widget class="QWidget" name="tab_4">
-             <attribute name="title">
-              <string>ABCs</string>
-             </attribute>
             </widget>
            </widget>
           </item>

@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys
+import sys, os
 import time
 from vr_gui_layout import Ui_MainWindow
 from actuator_layout import Actuator_Block
@@ -49,7 +49,8 @@ class MainWindow(QtWidgets.QMainWindow):
     button_list = []
     blk_option = []
     manual_blk = 0
-
+    off_style_sheet = """QPushButton{background-color: white;border:1px solid black}"""
+    on_style_sheet = """QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}"""
     def __init__(self,screen):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
@@ -57,18 +58,34 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialization
         self.vr = USB_VR_PRTCL()
         # self.vr = VR_PRTCL()
-
-
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
         self.win_height = self.size().height()
         self.win_width = self.size().width()
+
+        # Add any existing presets as a new tab with correct block orientation
+        self.preset_list = self.check_for_presets()
+        self.preset_tabs = [QtWidgets.QWidget() for i in range(len(self.preset_list))]
+        cnt = 4 # Already 3 hardcoded presets
+        self.preset_blks = []
+        for i in range(len(self.preset_list)): #loop through existing presets
+            # Initialize basic widget parameters
+            self.preset_tabs[i].setStyleSheet("")
+            self.preset_tabs[i].setObjectName("tab_"+str(cnt))
+            cnt+=1
+            # Add widget as a new tab and set text per file name
+            self.ui.tab_position.addTab(self.preset_tabs[i], "")
+            self.ui.tab_position.setTabText(self.ui.tab_position.indexOf(self.preset_tabs[i]),self.preset_list[i][0])
+            # Add actuator block of correct orientation
+            self.preset_blks.append(Actuator_Block(self,self.screen_width,self.preset_list[i][1],self.preset_tabs[i]))
+
+        self.tab_blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
+        self.tab_blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
+        self.tab_blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
+
+
         self.blk_vert_manual = QWidget()
         self.blk_horz_manual = QWidget()
-        self.blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
-        self.blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
-        self.blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
-        self.blk4 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_4)
         self.manual_vert_blk = Actuator_Block(self,self.screen_width,'vertical',self.blk_vert_manual)
         self.manual_horz_blk = Actuator_Block(self,self.screen_width,'horizontal',self.blk_horz_manual)
         self.blk_option.append(self.manual_horz_blk)
@@ -159,7 +176,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.i2_set_time.clicked.connect(lambda:self.vr.set_Timing())
         # self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
         # Presets
-        self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked()))
+        self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked(),self.blk_option[self.manual_blk].orientation))
         self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
 
 
@@ -254,6 +271,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def handle_preset(self,index):
         # print(index)
         if index == 0:
+            self.vr.set_one_pulse_duration(1000,'on')
             self.vr.play_preset('flash all')
         elif index == 1:
             self.vr.set_one_pulse_duration(300,'on')
@@ -263,10 +281,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.vr.set_one_pulse_duration(500,'on')
             self.vr.set_one_pulse_duration(1000,'off')
             self.vr.play_preset(index,self.ui.two_int_blk.currentIndex())
-        elif index == 3:
-            self.vr.set_one_pulse_duration(500,'on')
-            self.vr.set_one_pulse_duration(500,'off')
-            self.vr.play_preset('ABCs')
+        else:
+            i = index-3 # preset_list does NOT include 3 hardcoded presets, needs to start from 0
+            self.vr.play_preset(self.preset_list[i][0])
+
 
 
     def handle_button(self,button):
@@ -293,7 +311,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.vr.Alloff()
         try:
             for button in self.blk_option[self.manual_blk].act_blk.buttons():
-                button.setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                button.setStyleSheet(off_style_sheet)
         except:
             print('No block')
 
@@ -306,36 +324,45 @@ class MainWindow(QtWidgets.QMainWindow):
             # if self.vr.ACT_Mode == '00': # if one touch
                 # if act not in self.prev_active_ACT: # if new button
             for p in self.vr.prev_act: #remove old button(s)
-                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(off_style_sheet)
                 # turn on new button
             for p in self.vr.ACT_ON:
-                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(on_style_sheet)
                 # self.prev_active_ACT.append(act)
 
         # Single pulse mode
         else:
             print(self.vr.prev_act)
             if self.vr.prev_act:
-                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: rgb(48, 50, 198);border: 1px soild black;}""")
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(on_style_sheet)
                 time.sleep(.5)
-                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet("""QPushButton{background-color: white;border:1px solid black}""")
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(off_style_sheet)
 
+    def check_for_presets(self):
+        presets = []
+        for file in os.listdir("preset_files_usb"):
+            if file.endswith(".txt"):
+                with open('preset_files_usb/'+file,'r') as open_preset:
+                    line = open_preset.readline().rstrip()
+                presets.append([file.replace('.txt',''),line[3:]])
+                # print(file)
+        return presets
 
-    def hex_button(self):
-        for button in self.all_ACT:
-            if button == 0:
-                continue
-            button.setFixedSize(QSize(50,50))
-            size = button.width()
-            # size = button.height()
-            # size = 100
-            # x = (3**.5 / 2)
-            x = .9
-            # print(x)
-            # points = [QPoint(size/4,0),QPoint(size/4+size/2,0),QPoint(size,size*.5*x),QPoint(size/4+size/2,size*x),QPoint(size/4,size*x),QPoint(0,size*.5*x)] # points at the side
-            points = [QPoint(0,size/4),QPoint(0,size/4+size/2),QPoint(size*.5*x,size),QPoint(size*x,size/4+size/2),QPoint(size*x,size/4),QPoint(size*.5*x,0)] # points at the top
-            button.setMask(QRegion(QPolygon(points)))
-            # break
+    # def hex_button(self):
+    #     for button in self.all_ACT:
+    #         if button == 0:
+    #             continue
+    #         button.setFixedSize(QSize(50,50))
+    #         size = button.width()
+    #         # size = button.height()
+    #         # size = 100
+    #         # x = (3**.5 / 2)
+    #         x = .9
+    #         # print(x)
+    #         # points = [QPoint(size/4,0),QPoint(size/4+size/2,0),QPoint(size,size*.5*x),QPoint(size/4+size/2,size*x),QPoint(size/4,size*x),QPoint(0,size*.5*x)] # points at the side
+    #         points = [QPoint(0,size/4),QPoint(0,size/4+size/2),QPoint(size*.5*x,size),QPoint(size*x,size/4+size/2),QPoint(size*x,size/4),QPoint(size*.5*x,0)] # points at the top
+    #         button.setMask(QRegion(QPolygon(points)))
+    #         # break
 
 
 
