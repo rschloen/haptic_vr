@@ -3,7 +3,7 @@
 # os.environ['PYUSB_DEBUG'] = 'debug'
 import usb
 # import serial
-import sys,time
+import sys,time, os
 '''MAybe try booting linux from usb on tablet-can't get touch screen to work without different kernel(alternatives?)'''
 '''Gesture sweeps send op mode(86..af), update timing when switching to preset'''
 class USB_VR_PRTCL:
@@ -49,7 +49,6 @@ class USB_VR_PRTCL:
 
     def connect(self):
         # connect to nfc board (0x10c4,0xea60) (Adapted from Abraham's Optogenetics example)
-        # print(self.active_flag)
         if self.active_flag:
             self.disconnect()
         else:
@@ -126,16 +125,13 @@ class USB_VR_PRTCL:
         data = None
         print(msg0)
         msgx = msg
+        count = 0
         if self.active_flag:
-            count = 0
-
             while 1:
-
                 self.current_connection.write(2,msgx)
                 self.recieving_flag = True
                 time.sleep(.25)
                 data = self.current_connection.read(129, 128)
-
                 # while len(data) < 0:
                 #     data = self.current_connection.read(129, 128)
                 msg = data
@@ -154,18 +150,13 @@ class USB_VR_PRTCL:
                         print(msg0 + ' | No devices found, ' + str(count) + ' out of ' + str(self.com_attempts))
                         data = []
                     elif data[5] == 0:
-                        # print(data)
                         return data
                     else:
                         print(data)
                 else:
-                    print(msg0)
-                    # print(data)
+                    # print(msg0)
                     return data
-
                 if count == self.com_attempts: return[]
-                # time.sleep(0.5)
-            # print(data)
             return data
         return []
 
@@ -180,21 +171,24 @@ class USB_VR_PRTCL:
             self.append_to_file = True
             if append == 'append':
                 try:
-                    print('Appending')
                     self.preset_file = open('preset_files_usb/'+preset_name+'.txt','a')
                     self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','a')
+                    print('Appending')
                 except FileNotFoundError:
                     print('File not found')
                     self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
                     self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
                     self.preset_file.write('o: '+orientation+'\n')
+                    self.display_preset.write('{0:[')
             else:
                 print('New file')
                 self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
                 self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
                 self.preset_file.write('o: '+orientation+'\n')
+                self.display_preset.write('{0:')
             # print(self.preset_file.closed)
         else:
+            self.display_preset.write(']}')
             self.append_to_file = False
             if not self.preset_file.closed:
                 self.preset_file.close()
@@ -206,7 +200,7 @@ class USB_VR_PRTCL:
         if type(preset) == int:
             preset = self.preset_num2name(preset,index)
 
-        if preset == 'flash all':
+        if preset == 'flash_all':
             temp = self.OP_Mode
             self.OP_Mode = '80'
         elif preset == '2i_blk':
@@ -216,7 +210,7 @@ class USB_VR_PRTCL:
         elif preset == 'sweep':
             temp = self.OP_Mode
             self.OP_Mode = '8'+str(hex(index+6))[2]
-            print(self.OP_Mode)
+            # print(self.OP_Mode)
         else:
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 time.sleep(.25)
@@ -263,9 +257,9 @@ class USB_VR_PRTCL:
             print('Must enter a number')
         t = '%0*X'%(4,time)
         if mode == 'on':
-            self.t_pulse = t#[6:]+t[4:6]+t[2:4]+t[0:2]
+            self.t_pulse = t[6:]+t[4:6]+t[2:4]+t[0:2]
         else:
-            self.t_pause = t
+            self.t_pause = t[6:]+t[4:6]+t[2:4]+t[0:2]
         # self.set_Timing()
 
 
@@ -420,7 +414,7 @@ class USB_VR_PRTCL:
                     self.preset_file.write(cmd3+'\n')
                     self.preset_file.write(cmd4+'\n')
                 self.preset_file.write(cmd0+'\n')
-                self.display_preset.write(str(self.ACT_ON)+'\n')
+                self.display_preset.write(str(self.ACT_ON)+',')
 
         else:
             cmd = self.UID+'00010402000000'
@@ -455,13 +449,12 @@ class USB_VR_PRTCL:
             cmd_array = self.data_r_header + temp_cmd
         return cmd_array
 
+
     def preset_num2name(self,preset,num):
         if preset == 1:
             return 'sweep'
-            # options = {0:'LR',1:'RL',2:'TB',3:'BT',4:'p45BT',5:'p45TB',6:'n45BT',7:'n45TB',8:'EXP',9:'IMP'}
         elif preset == 2:
             return '2i_blk'
-
         return options[num]
 
 
@@ -472,5 +465,4 @@ if __name__ == '__main__':
     vr.connect()
     if vr.active_flag:
         vr.get_inventory()
-
     vr.disconnect()

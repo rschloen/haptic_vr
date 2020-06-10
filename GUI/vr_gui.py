@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys, os, threading
+import sys, os, threading, ast
 import time
 from vr_gui_layout import Ui_MainWindow
 from actuator_layout import Actuator_Block
@@ -181,6 +181,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
         # Presets
         self.ui.append_preset.toggled.connect(lambda:self.handle_append_preset())
+        self.ui.del_preset.clicked.connect(lambda:self.handle_delete_preset())
         self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
 
 
@@ -311,20 +312,34 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preset_blks.append(Actuator_Block(self,self.screen_width,orientation,self.preset_tabs[-1]))
             self.preset_list.append([name,orientation])
 
+    def handle_delete_preset(self):
+        name = self.ui.append_preset_name.text()
+        orientation = self.blk_option[self.manual_blk].orientation
+        if os.path.exists('preset_files_usb/'+name+'.txt'):
+            os.remove('preset_files_usb/'+name+'.txt')
+        else:
+            print('File does not exsist')
+        if os.path.exists('preset_display_usb/display_'+name+'.txt'):
+            os.remove('preset_display_usb/display_'+name+'.txt')
+        else:
+            print('File does not exsist')
+        try:
+            self.preset_list.remove([name,orientation])
+        except:
+            print('Not in list')
+        print(self.preset_list)
 
     def handle_preset(self,index):
-        print(index)
+        name = self.preset_list[index][0]
+        option = 0
         if index == 0:
             self.vr.set_one_pulse_duration(1000,'on')
             self.vr.set_Timing()
-            self.vr.play_preset('flash all')
+            self.vr.play_preset('flash_all')
             # thread = threading.Thread(target=self.vr.play_preset,args=('flash_all',))
         elif index == 1:
             self.vr.set_one_pulse_duration(300,'on')
             self.vr.set_Timing()
-
-            print(self.vr.t_pulse)
-            # print(self.ui.sweep_type.currentIndex())
             option = self.ui.sweep_type.currentIndex()
             # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
             self.vr.play_preset(index,self.ui.sweep_type.currentIndex())
@@ -336,26 +351,41 @@ class MainWindow(QtWidgets.QMainWindow):
             # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
             self.vr.play_preset(index,self.ui.two_int_blk.currentIndex())
         else:
-            name = self.preset_list[index][0]
             thread = threading.Thread(target=self.vr.play_preset,args=(name,))
             thread.start()
-            # self.vr.play_preset(name)
-            with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
-                # print(self.vr.t_pulse)
-                for line in display_file:
-                    # if line[0:6] == 'option' and line[8] == option:
-                        # while line
-                    act_list = list(map(int,line.replace('[','').replace(']','').split(', ')))
-                    for act in act_list:
-                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
-                        self.preset_blks[index].act_blk.button(act).repaint()
-                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-                    # time.sleep(.5)
-                    for act in act_list:
-                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
-                        self.preset_blks[index].act_blk.button(act).repaint()
-                    time.sleep(.5)
-                    # time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
+
+        # with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+        #     try:
+        #         act_dict = ast.literal_eval(display_file.read())
+        #         for act_list in act_dict[option]:
+        #             for act in act_list:
+        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+        #                 self.preset_blks[index].act_blk.button(act).repaint()
+        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+        #             for act in act_list:
+        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+        #                 self.preset_blks[index].act_blk.button(act).repaint()
+        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+        #     except:
+        #         print("Error reading display txt")
+        """# else:
+        #     with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+        #         for line in display_file:
+        #             print(line)
+        #             act_list = list(map(int,line.replace('[','').replace(']','').split(', ')))
+        #             # act_list = ast.literal_eval(line)
+        #             print(act_list)
+        #             for act in act_list:
+        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+        #                 self.preset_blks[index].act_blk.button(act).repaint()
+        #             # time.sleep(int(self.vr.t_pulse,16)/1000)
+        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+        #             # time.sleep(.5)
+        #             for act in act_list:
+        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+        #                 self.preset_blks[index].act_blk.button(act).repaint()
+        #             # time.sleep(.5)
+        #             time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)"""
 
 
     def handle_button(self,button):
@@ -406,7 +436,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.vr.prev_act:
                 self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act[0]).setStyleSheet(self.on_style_sheet)
                 time.sleep(.5)
-                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(self.off_style_sheet)
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act[0]).setStyleSheet(self.off_style_sheet)
 
     def check_for_presets(self):
         presets = []
