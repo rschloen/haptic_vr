@@ -77,7 +77,7 @@ QTabWidget{
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="Manual">
          <property name="autoFillBackground">
@@ -1143,7 +1143,7 @@ QTabBar::tab:first {
              <enum>QTabWidget::West</enum>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="elideMode">
              <enum>Qt::ElideLeft</enum>
@@ -1317,6 +1317,11 @@ QTabBar::tab:first {
                </property>
               </item>
              </widget>
+            </widget>
+            <widget class="QWidget" name="tab_4">
+             <attribute name="title">
+              <string>ABCs</string>
+             </attribute>
             </widget>
            </widget>
           </item>

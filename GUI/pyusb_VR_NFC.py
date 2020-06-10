@@ -55,7 +55,7 @@ class USB_VR_PRTCL:
         else:
             try:
                 self.current_connection = usb.core.find(idVendor=self.device[0],idProduct=self.device[1])
-                # usb.util.dispose_resources(self.current_connection)
+                usb.util.dispose_resources(self.current_connection)
 
                 self.current_connection.reset()
                 if self.current_connection == None:
@@ -173,24 +173,33 @@ class USB_VR_PRTCL:
     def add_to_preset(self,preset_name,append,orientation):
     #add check for filename
         print(orientation)
-        if append:
+        if append != 'close':
             if preset_name == '':
                 print('Need File name')
                 return
             self.append_to_file = True
-            try:
-                self.preset_file = open('preset_files_usb/'+preset_name+'.txt','a')
-                self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','a')
-            except FileNotFoundError:
+            if append == 'append':
+                try:
+                    print('Appending')
+                    self.preset_file = open('preset_files_usb/'+preset_name+'.txt','a')
+                    self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','a')
+                except FileNotFoundError:
+                    print('File not found')
+                    self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
+                    self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
+                    self.preset_file.write('o: '+orientation+'\n')
+            else:
+                print('New file')
                 self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
                 self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
                 self.preset_file.write('o: '+orientation+'\n')
-
-            print(self.preset_file.closed)
+            # print(self.preset_file.closed)
         else:
             self.append_to_file = False
             if not self.preset_file.closed:
                 self.preset_file.close()
+            if not self.display_preset.closed:
+                self.display_preset.close()
 
 
     def play_preset(self,preset,index=None):
@@ -207,7 +216,7 @@ class USB_VR_PRTCL:
         elif preset == 'sweep':
             temp = self.OP_Mode
             self.OP_Mode = '8'+str(hex(index+6))[2]
-            # print(self.OP_Mode)
+            print(self.OP_Mode)
         else:
             with open('preset_files_usb/'+preset+'.txt','r') as read_preset:
                 time.sleep(.25)
@@ -276,6 +285,7 @@ class USB_VR_PRTCL:
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
         #LSB first
         self.Alloff()
+        print(self.t_pulse)
         cmd3 = self.UID+ '090104' + self.t_pulse + self.t_pause# +'0000'
         cmd4 = self.UID+ '0A0104' + self.T_high + self.DC_high# +'0000'
         cmd5 = self.UID+ '0B0104' + self.T_low + self.DC_low# +'0000'
@@ -421,7 +431,6 @@ class USB_VR_PRTCL:
     def CRC16(self, msg): #from Nlux code
         crc_poly = int("8408", 16)
         crc = int("FFFF",16)
-        print(crc)
         for i in msg:
             crc = crc ^ i;
             for j in range(8):

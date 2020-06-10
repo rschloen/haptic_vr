@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys, os
+import sys, os, threading
 import time
 from vr_gui_layout import Ui_MainWindow
 from actuator_layout import Actuator_Block
@@ -64,24 +64,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.win_width = self.size().width()
 
         # Add any existing presets as a new tab with correct block orientation
+        self.tab_blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
+        self.tab_blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
+        self.tab_blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
         self.preset_list = self.check_for_presets()
+        hard_presets = [['flash_all','vertical'],['sweep','horizontal'],['2i','horizontal']]
+        self.preset_list = hard_presets+self.preset_list
+        print(self.preset_list)
         self.preset_tabs = [QtWidgets.QWidget() for i in range(len(self.preset_list))]
-        cnt = 4 # Already 3 hardcoded presets
-        self.preset_blks = []
-        for i in range(len(self.preset_list)): #loop through existing presets
+        self.tab_cnt = 4 # Already 3 hardcoded presets
+        self.preset_blks = [self.tab_blk1,self.tab_blk2,self.tab_blk3]
+        for i in range(3,len(self.preset_list)): #loop through existing presets
             # Initialize basic widget parameters
             self.preset_tabs[i].setStyleSheet("")
-            self.preset_tabs[i].setObjectName("tab_"+str(cnt))
-            cnt+=1
+            self.preset_tabs[i].setObjectName("tab_"+str(self.tab_cnt))
+            self.tab_cnt+=1
             # Add widget as a new tab and set text per file name
             self.ui.tab_position.addTab(self.preset_tabs[i], "")
             self.ui.tab_position.setTabText(self.ui.tab_position.indexOf(self.preset_tabs[i]),self.preset_list[i][0])
             # Add actuator block of correct orientation
             self.preset_blks.append(Actuator_Block(self,self.screen_width,self.preset_list[i][1],self.preset_tabs[i]))
+        print(self.preset_blks)
 
-        self.tab_blk1 = Actuator_Block(self,self.screen_width,'vertical',self.ui.tab_1)
-        self.tab_blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
-        self.tab_blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
 
 
         self.blk_vert_manual = QWidget()
@@ -145,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Setting Actuator Mode
         # self.ui.multi_modal.valueChanged.connect(lambda:self.vr.set_ACT_Mode(self.ui.multi_modal.value()))
         self.ui.multi_modal.valueChanged.connect(lambda:self.handle_multi_modal(self.ui.multi_modal.value()))
-        self.ui.active_selected.clicked.connect(lambda:self.vr.set_ACT_state(0))
+        self.ui.active_selected.clicked.connect(lambda:self.handle_selection())
 
         # Setting High(h) and Low(l) Duty Cycle
         self.ui.h_dc.valueChanged.connect(lambda:self.handle_timing('intensity',self.ui.h_dc.value(),'high',self.ui.h_dc_text))
@@ -176,7 +180,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.ui.i2_set_time.clicked.connect(lambda:self.vr.set_Timing())
         # self.ui.i2_set_time.clicked.connect(lambda:self.display_ACT())
         # Presets
-        self.ui.append_preset.toggled.connect(lambda:self.vr.add_to_preset(self.ui.append_preset_name.text(),self.ui.append_preset.isChecked(),self.blk_option[self.manual_blk].orientation))
+        self.ui.append_preset.toggled.connect(lambda:self.handle_append_preset())
         self.ui.preset_button.clicked.connect(lambda:self.handle_preset(self.ui.tab_position.currentIndex()))
 
 
@@ -250,6 +254,17 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.active_selected.setEnabled(True)
 
+    def handle_selection(self):
+        self.vr.set_ACT_state(0)
+        print(self.vr.t_pulse)
+        print(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+        if int(self.vr.OP_Mode) >= 4:
+            time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+            for p in self.vr.ACT_ON:
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(self.off_style_sheet)
+            self.vr.ACT_ON = []
+
+
     def handle_timing(self,mode,value,level,text):
         if mode == 'pulse':
             self.vr.set_one_pulse_duration(value,level)
@@ -267,24 +282,80 @@ class MainWindow(QtWidgets.QMainWindow):
                 else:
                     text.setText("Repeated Pulse Frequency: {} Hz".format(value))
 
+    def handle_append_preset(self):
+        name = self.ui.append_preset_name.text()
+        orientation = self.blk_option[self.manual_blk].orientation
+        new_preset = True
+        for preset in self.preset_list:
+            if name == preset[0]:
+                new_preset = False
+        if self.ui.append_preset.isChecked():
+            if new_preset:
+                append = 'new'
+            else:
+                append = 'append'
+        else:
+            append = 'close'
+        self.vr.add_to_preset(name,append,orientation)
+        print(new_preset)
+        if new_preset:
+            print('Adding new preset')
+            self.preset_tabs.append(QtWidgets.QWidget())
+            self.preset_tabs[-1].setStyleSheet("")
+            self.preset_tabs[-1].setObjectName("tab_"+str(self.tab_cnt))
+            self.tab_cnt+=1
+            # Add widget as a new tab and set text per file name
+            self.ui.tab_position.addTab(self.preset_tabs[-1], "")
+            self.ui.tab_position.setTabText(self.ui.tab_position.indexOf(self.preset_tabs[-1]),name)
+            # Add actuator block of correct orientation
+            self.preset_blks.append(Actuator_Block(self,self.screen_width,orientation,self.preset_tabs[-1]))
+            self.preset_list.append([name,orientation])
+
 
     def handle_preset(self,index):
-        # print(index)
+        print(index)
         if index == 0:
             self.vr.set_one_pulse_duration(1000,'on')
+            self.vr.set_Timing()
             self.vr.play_preset('flash all')
+            # thread = threading.Thread(target=self.vr.play_preset,args=('flash_all',))
         elif index == 1:
             self.vr.set_one_pulse_duration(300,'on')
+            self.vr.set_Timing()
+
+            print(self.vr.t_pulse)
             # print(self.ui.sweep_type.currentIndex())
+            option = self.ui.sweep_type.currentIndex()
+            # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
             self.vr.play_preset(index,self.ui.sweep_type.currentIndex())
         elif index == 2:
             self.vr.set_one_pulse_duration(500,'on')
             self.vr.set_one_pulse_duration(1000,'off')
+            self.vr.set_Timing()
+            option = self.ui.sweep_type.currentIndex()
+            # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
             self.vr.play_preset(index,self.ui.two_int_blk.currentIndex())
         else:
-            i = index-3 # preset_list does NOT include 3 hardcoded presets, needs to start from 0
-            self.vr.play_preset(self.preset_list[i][0])
-
+            name = self.preset_list[index][0]
+            thread = threading.Thread(target=self.vr.play_preset,args=(name,))
+            thread.start()
+            # self.vr.play_preset(name)
+            with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+                # print(self.vr.t_pulse)
+                for line in display_file:
+                    # if line[0:6] == 'option' and line[8] == option:
+                        # while line
+                    act_list = list(map(int,line.replace('[','').replace(']','').split(', ')))
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+                    # time.sleep(.5)
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(.5)
+                    # time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
 
 
     def handle_button(self,button):
@@ -311,32 +382,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.vr.Alloff()
         try:
             for button in self.blk_option[self.manual_blk].act_blk.buttons():
-                button.setStyleSheet(off_style_sheet)
+                button.setStyleSheet(self.off_style_sheet)
         except:
             print('No block')
+
 
     def display_ACT(self):
         # Controls color of buttons in GUI based on if turn on or not
         # ARGS: act is int for button id
         # print(act)
-        if int(self.vr.OP_Mode) < 4: # Not single pulse'
+        if int(self.vr.OP_Mode) < 4 or int(self.vr.ACT_Mode) != 0: # Not single pulse'
             print(self.vr.ACT_ON)
-            # if self.vr.ACT_Mode == '00': # if one touch
-                # if act not in self.prev_active_ACT: # if new button
             for p in self.vr.prev_act: #remove old button(s)
-                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(off_style_sheet)
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(self.off_style_sheet)
                 # turn on new button
             for p in self.vr.ACT_ON:
-                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(on_style_sheet)
-                # self.prev_active_ACT.append(act)
+                self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(self.on_style_sheet)
+
 
         # Single pulse mode
         else:
             print(self.vr.prev_act)
             if self.vr.prev_act:
-                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(on_style_sheet)
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act[0]).setStyleSheet(self.on_style_sheet)
                 time.sleep(.5)
-                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(off_style_sheet)
+                self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act).setStyleSheet(self.off_style_sheet)
 
     def check_for_presets(self):
         presets = []
