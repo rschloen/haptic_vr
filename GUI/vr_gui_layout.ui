@@ -258,12 +258,10 @@ QTabWidget{
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">QLabel {
-font-size: 20pt;
-}</string>
+                      <string notr="true"/>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;Single Pulse Duration(ms): &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>Single Pulse Duration (ms):</string>
                      </property>
                      <property name="scaledContents">
                       <bool>true</bool>
@@ -356,7 +354,8 @@ font-size: 20pt;
                 </size>
                </property>
                <property name="text">
-                <string>Pulsing (High Freq modulation)</string>
+                <string>Pulsing
+(High Freq modulation)</string>
                </property>
                <property name="autoExclusive">
                 <bool>false</bool>
@@ -466,7 +465,8 @@ font-size: 20pt;
                     </size>
                    </property>
                    <property name="text">
-                    <string>Pulsing Frequency: 100 Hz</string>
+                    <string>Pulsing Frequency:
+ 100 Hz</string>
                    </property>
                   </widget>
                  </item>
@@ -634,7 +634,8 @@ font-size: 20pt;
                     </size>
                    </property>
                    <property name="text">
-                    <string>Repeated Pulse Frequency: 2 Hz</string>
+                    <string>Repeated Pulse
+Frequency: 2 Hz</string>
                    </property>
                   </widget>
                  </item>

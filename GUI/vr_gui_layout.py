@@ -135,9 +135,7 @@ class Ui_MainWindow(object):
         self.single_pulse_dur_label.setSizePolicy(sizePolicy)
         self.single_pulse_dur_label.setMinimumSize(QtCore.QSize(325, 50))
         self.single_pulse_dur_label.setMaximumSize(QtCore.QSize(350, 16777215))
-        self.single_pulse_dur_label.setStyleSheet("QLabel {\n"
-"font-size: 20pt;\n"
-"}")
+        self.single_pulse_dur_label.setStyleSheet("")
         self.single_pulse_dur_label.setScaledContents(True)
         self.single_pulse_dur_label.setObjectName("single_pulse_dur_label")
         self.horizontalLayout_7.addWidget(self.single_pulse_dur_label)
@@ -1061,15 +1059,18 @@ class Ui_MainWindow(object):
         self.d3_touch.setText(_translate("MainWindow", "3DTouch"))
         self.single_pulse_mode.setText(_translate("MainWindow", "Single Pulse"))
         self.cont_pulse_mode.setText(_translate("MainWindow", "Continuous"))
-        self.single_pulse_dur_label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:20pt;\">Single Pulse Duration(ms): </span></p></body></html>"))
+        self.single_pulse_dur_label.setText(_translate("MainWindow", "Single Pulse Duration (ms):"))
         self.single_pulse_dur_text.setText(_translate("MainWindow", "500"))
-        self.hf_mod.setText(_translate("MainWindow", "Pulsing (High Freq modulation)"))
+        self.hf_mod.setText(_translate("MainWindow", "Pulsing\n"
+"(High Freq modulation)"))
         self.h_dc_text.setText(_translate("MainWindow", "Intensity: 50 %"))
-        self.pulse_Hfreq_text.setText(_translate("MainWindow", "Pulsing Frequency: 100 Hz"))
+        self.pulse_Hfreq_text.setText(_translate("MainWindow", "Pulsing Frequency:\n"
+" 100 Hz"))
         self.lf_mod.setText(_translate("MainWindow", "Repeated Pulse\n"
 "(Low Freq modulation)"))
         self.l_dc_text.setText(_translate("MainWindow", "Intensity: 50 %"))
-        self.pulse_Lfreq_text.setText(_translate("MainWindow", "Repeated Pulse Frequency: 2 Hz"))
+        self.pulse_Lfreq_text.setText(_translate("MainWindow", "Repeated Pulse\n"
+"Frequency: 2 Hz"))
         self.all_off.setText(_translate("MainWindow", "ALL OFF"))
         self.active_selected.setText(_translate("MainWindow", "Activate Selected"))
         self.set_time.setText(_translate("MainWindow", "Set Timing"))
