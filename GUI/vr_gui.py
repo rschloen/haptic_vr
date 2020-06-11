@@ -373,9 +373,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.vr.set_pulse_freq(value,level)
             if text != None:
                 if level == 'high':
-                    text.setText("Pulsing Frequency: {} Hz".format(value))
+                    text.setText("Pulsing Frequency:\n {} Hz".format(value))
                 else:
-                    text.setText("Repeated Pulse Frequency: {} Hz".format(value))
+                    text.setText("Repeated Pulse\nFrequency: {} Hz".format(value))
 
 
     def handle_append_preset(self):
