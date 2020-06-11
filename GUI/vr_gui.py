@@ -56,8 +56,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # Initialization
-        self.vr = USB_VR_PRTCL()
-        # self.vr = VR_PRTCL()
+        # self.vr = USB_VR_PRTCL()
+        self.vr = VR_PRTCL()
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
         self.win_height = self.size().height()
@@ -137,7 +137,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Settings
         self.ui.connect_button.clicked.connect(lambda:self.handle_connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
-        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID)))
+        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected))) #pyserial
+        # self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID))) #pyusb
+
 
         self.ui.rf_power.valueChanged.connect(lambda:self.handle_rf_power(self.ui.rf_power.value(),self.ui.rf_power_text))
 
@@ -187,7 +189,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Actuators
         self.ui.all_off.clicked.connect(self.handle_Alloff)
-
         self.ui.block_options.currentRowChanged.connect(self.handle_actuator_blk)
 
 
@@ -205,7 +206,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         num1 = self.blk_option[self.manual_blk].act_blk.id(button)
                     else:
                         print('skip')
-
             self.button_list = []
             return True
         elif event.type() == QEvent.TouchUpdate:
@@ -226,16 +226,18 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         return super(MainWindow,self).eventFilter(obj,event)
 
+
     def handle_connect_device(self,port_label,button,UID_label):
         self.vr.connect()
-        # if self.vr.device.is_open:#pyserial
-        # print(self.vr.active_flag)
-        if self.vr.active_flag:
-            print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-            port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-            '''pyserial'''
-            # print('Connected to {}'.format(self.vr.device.name))
-            # port_label.setText('Serial Port: {}'.format(self.vr.device.name))
+        '''pyusb'''
+        # if self.vr.active_flag:
+            # print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            # port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+        '''pyserial'''
+        if self.vr.device.is_open:
+            print('Connected to {}'.format(self.vr.device.name))
+            port_label.setText('Serial Port: {}'.format(self.vr.device.name))
+
             button.setText('Disconnect')
         else:
             button.setText('Connect')
@@ -283,6 +285,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 else:
                     text.setText("Repeated Pulse Frequency: {} Hz".format(value))
 
+
     def handle_append_preset(self):
         name = self.ui.append_preset_name.text()
         orientation = self.blk_option[self.manual_blk].orientation
@@ -312,6 +315,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.preset_blks.append(Actuator_Block(self,self.screen_width,orientation,self.preset_tabs[-1]))
             self.preset_list.append([name,orientation])
 
+
     def handle_delete_preset(self):
         name = self.ui.append_preset_name.text()
         orientation = self.blk_option[self.manual_blk].orientation
@@ -323,11 +327,20 @@ class MainWindow(QtWidgets.QMainWindow):
             os.remove('preset_display_usb/display_'+name+'.txt')
         else:
             print('File does not exsist')
+        if os.path.exists('preset_files_serial/'+name+'.txt'):
+            os.remove('preset_files_serial/'+name+'.txt')
+        else:
+            print('File does not exsist')
+        if os.path.exists('preset_display_serial/display_'+name+'.txt'):
+            os.remove('preset_display_serial/display_'+name+'.txt')
+        else:
+            print('File does not exsist')
         try:
             self.preset_list.remove([name,orientation])
         except:
             print('Not in list')
         print(self.preset_list)
+
 
     def handle_preset(self,index):
         name = self.preset_list[index][0]
@@ -355,6 +368,7 @@ class MainWindow(QtWidgets.QMainWindow):
             thread.start()
 
         # with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+        # with open('preset_display_serial/display_'+name+'.txt','r') as display_file:
         #     try:
         #         act_dict = ast.literal_eval(display_file.read())
         #         for act_list in act_dict[option]:
@@ -428,8 +442,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 # turn on new button
             for p in self.vr.ACT_ON:
                 self.blk_option[self.manual_blk].act_blk.button(p).setStyleSheet(self.on_style_sheet)
-
-
         # Single pulse mode
         else:
             print(self.vr.prev_act)
@@ -438,11 +450,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(.5)
                 self.blk_option[self.manual_blk].act_blk.button(self.vr.prev_act[0]).setStyleSheet(self.off_style_sheet)
 
+
     def check_for_presets(self):
         presets = []
-        for file in os.listdir("preset_files_usb"):
+        # for file in os.listdir("preset_files_usb"):
+        for file in os.listdir("preset_files_serial"):
             if file.endswith(".txt"):
-                with open('preset_files_usb/'+file,'r') as open_preset:
+                # with open('preset_files_usb/'+file,'r') as open_preset:
+                with open('preset_files_serial/'+file,'r') as open_preset:
                     line = open_preset.readline().rstrip()
                 presets.append([file.replace('.txt',''),line[3:]])
                 # print(file)
