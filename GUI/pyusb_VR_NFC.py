@@ -2,10 +2,23 @@
 # import os
 # os.environ['PYUSB_DEBUG'] = 'debug'
 import usb
-# import serial
 import sys,time, os
 '''MAybe try booting linux from usb on tablet-can't get touch screen to work without different kernel(alternatives?)'''
 '''Gesture sweeps send op mode(86..af), update timing when switching to preset'''
+
+"""TODO:
+    - FIX DELAY! (Hardware)
+    X Adding presets and create custom presets in GUI and Saving/Loading Profiles
+    - Gesture support for presets
+    X Activate actuators implement all modes for protocol
+    v Work on StyleSheets, Different shapes for buttons
+    X Implement multi-touch (selecting multiple actuators at the same time)
+    X Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
+        - Multiple intensities at same time (Firmware update)
+    - Keep in mind expansion up to 128 actuator arrays
+    - Keep in mind thermal actuators
+    - Work on deployment (pyqtdeploy, alternatives?) """
+
 class USB_VR_PRTCL:
     """Library for Haptic VR device NFC communication"""
     UID = ''
@@ -16,7 +29,6 @@ class USB_VR_PRTCL:
     OP_Mode = '01'
     ACT_Mode = '00'
     ACT_BLKS = '02'
-    # ACT_state = [0]*32*ACT_BLKS #may be redundant
     ACT_ON = []
     active = False
     prev_act = []
@@ -225,6 +237,7 @@ class USB_VR_PRTCL:
         state = self.send(n_cmd0)
         self.OP_Mode = temp
 
+
     def set_OP_Mode(self,value,level):
         # Set operating mode (i.e. All off, turn on/off, single pulse, continous)
         if level == 1:
@@ -279,7 +292,7 @@ class USB_VR_PRTCL:
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
         #LSB first
         self.Alloff()
-        print(self.t_pulse)
+        # print(self.t_pulse)
         cmd3 = self.UID+ '090104' + self.t_pulse + self.t_pause# +'0000'
         cmd4 = self.UID+ '0A0104' + self.T_high + self.DC_high# +'0000'
         cmd5 = self.UID+ '0B0104' + self.T_low + self.DC_low# +'0000'
