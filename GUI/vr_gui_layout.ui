@@ -27,13 +27,13 @@
     <bool>true</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton {font-size: 18pt;}
+    <string notr="true">QPushButton {font-size: 16pt;}
 QPushButton:checked{background-color:rgb(220, 53, 249)}
-QLabel {font-size: 18pt;}
-QRadioButton{font-size: 18pt;}
-QListWidget{font-size: 18pt;}
-QLineEdit{font-size: 18pt;}
-QComboBox{font-size: 18pt;}</string>
+QLabel {font-size: 16pt;}
+QRadioButton{font-size: 16pt;}
+QListWidget{font-size: 16pt;}
+QLineEdit{font-size: 16pt;}
+QComboBox{font-size: 16pt;}</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>

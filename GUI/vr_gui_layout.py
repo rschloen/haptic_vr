@@ -17,13 +17,13 @@ class Ui_MainWindow(object):
         MainWindow.setStyleSheet("")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setAutoFillBackground(True)
-        self.centralwidget.setStyleSheet("QPushButton {font-size: 18pt;}\n"
+        self.centralwidget.setStyleSheet("QPushButton {font-size: 16pt;}\n"
 "QPushButton:checked{background-color:rgb(220, 53, 249)}\n"
-"QLabel {font-size: 18pt;}\n"
-"QRadioButton{font-size: 18pt;}\n"
-"QListWidget{font-size: 18pt;}\n"
-"QLineEdit{font-size: 18pt;}\n"
-"QComboBox{font-size: 18pt;}")
+"QLabel {font-size: 16pt;}\n"
+"QRadioButton{font-size: 16pt;}\n"
+"QListWidget{font-size: 16pt;}\n"
+"QLineEdit{font-size: 16pt;}\n"
+"QComboBox{font-size: 16pt;}")
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName("horizontalLayout")
