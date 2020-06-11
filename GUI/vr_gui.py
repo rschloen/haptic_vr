@@ -56,8 +56,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         # Initialization
-        # self.vr = USB_VR_PRTCL()
-        self.vr = VR_PRTCL()
+        self.vr = USB_VR_PRTCL()
+        # self.vr = VR_PRTCL()
         self.screen_height = screen.size().height()
         self.screen_width = screen.size().width()
         self.win_height = self.size().height()
@@ -137,20 +137,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Settings
         self.ui.connect_button.clicked.connect(lambda:self.handle_connect_device(self.ui.PORT,self.ui.connect_button,self.ui.UID))
         self.ui.read_uuid.clicked.connect(lambda:self.vr.get_inventory())
-        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected))) #pyserial
-        # self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID))) #pyusb
+        # self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID_corrected))) #pyserial
+        self.ui.read_uuid.clicked.connect(lambda:self.ui.UID.setText('UID:  {}'.format(self.vr.UID))) #pyusb
 
 
         self.ui.rf_power.valueChanged.connect(lambda:self.handle_rf_power(self.ui.rf_power.value(),self.ui.rf_power_text))
 
         # Setting Opertating Mode
-        self.ui.pulse_mode.valueChanged.connect(lambda:self.vr.set_OP_Mode(self.ui.pulse_mode.value(),1))
+        self.ui.single_pulse_mode.clicked.connect(lambda:self.vr.set_OP_Mode(1,1))
+        self.ui.cont_pulse_mode.clicked.connect(lambda:self.vr.set_OP_Mode(0,1))
+        # self.ui.pulse_mode.valueChanged.connect(lambda:self.vr.set_OP_Mode(self.ui.pulse_mode.value(),1))
         self.ui.hf_mod.toggled.connect(lambda:self.vr.set_OP_Mode(self.ui.hf_mod.isChecked(),2))
         self.ui.lf_mod.toggled.connect(lambda:self.vr.set_OP_Mode(self.ui.lf_mod.isChecked(),3))
 
         # Setting Actuator Mode
         # self.ui.multi_modal.valueChanged.connect(lambda:self.vr.set_ACT_Mode(self.ui.multi_modal.value()))
-        self.ui.multi_modal.valueChanged.connect(lambda:self.handle_multi_modal(self.ui.multi_modal.value()))
+        self.ui.multi_modal.toggled.connect(lambda:self.handle_multi_modal(self.ui.multi_modal.isChecked()))
         self.ui.active_selected.clicked.connect(lambda:self.handle_selection())
 
         # Setting High(h) and Low(l) Duty Cycle
@@ -320,13 +322,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def handle_connect_device(self,port_label,button,UID_label):
         self.vr.connect()
         '''pyusb'''
-        # if self.vr.active_flag:
-            # print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-            # port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
-        '''pyserial'''
-        if self.vr.device.is_open:
-            print('Connected to {}'.format(self.vr.device.name))
-            port_label.setText('Serial Port: {}'.format(self.vr.device.name))
+        if self.vr.active_flag:
+            print('Connected to idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+            port_label.setText('idVendor:{},idProduct:{}'.format(self.vr.device[0],self.vr.device[1]))
+        # '''pyserial'''
+        # if self.vr.device.is_open:
+        #     print('Connected to {}'.format(self.vr.device.name))
+        #     port_label.setText('Serial Port: {}'.format(self.vr.device.name))
 
             button.setText('Disconnect')
         else:
@@ -474,22 +476,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def display_preset(self,index,option):
         name = self.preset_list[index][0]
-        # with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
-        with open('preset_display_serial/display_'+name+'.txt','r') as display_file:
+        with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+        # with open('preset_display_serial/display_'+name+'.txt','r') as display_file:
 
-            # try:
-            act_dict = ast.literal_eval(display_file.read())
-            for act_list in act_dict[option]:
-                for act in act_list:
-                    self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
-                    self.preset_blks[index].act_blk.button(act).repaint()
-                time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-                for act in act_list:
-                    self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
-                    self.preset_blks[index].act_blk.button(act).repaint()
-                time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
-            # except:
-            #    print("Error reading display txt")
+            try:
+                act_dict = ast.literal_eval(display_file.read())
+                for act_list in act_dict[option]:
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
+            except:
+               print("Error reading display txt")
 
 
     def handle_button(self,button):
@@ -543,11 +545,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def check_for_presets(self):
         presets = []
-        # for file in os.listdir("preset_files_usb"):
-        for file in os.listdir("preset_files_serial"):
+        for file in os.listdir("preset_files_usb"):
+        # for file in os.listdir("preset_files_serial"):
             if file.endswith(".txt"):
-                # with open('preset_files_usb/'+file,'r') as open_preset:
-                with open('preset_files_serial/'+file,'r') as open_preset:
+                with open('preset_files_usb/'+file,'r') as open_preset:
+                # with open('preset_files_serial/'+file,'r') as open_preset:
                     line = open_preset.readline().rstrip()
                 presets.append([file.replace('.txt',''),line[3:]])
                 # print(file)
