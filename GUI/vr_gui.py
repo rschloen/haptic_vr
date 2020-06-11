@@ -190,41 +190,131 @@ class MainWindow(QtWidgets.QMainWindow):
         # Actuators
         self.ui.all_off.clicked.connect(self.handle_Alloff)
         self.ui.block_options.currentRowChanged.connect(self.handle_actuator_blk)
-
+        gesture_list = [Qt.SwipeGesture, Qt.PanGesture, Qt.PinchGesture,Qt.TapGesture,Qt.TapAndHoldGesture]
+        for gesture in gesture_list:
+            self.ui.centralwidget.grabGesture(gesture)
+        self.px_begin = []
+        self.px_end = []
+        self.py_begin = []
+        self.py_end = []
 
     def eventFilter(self,obj,event):
-        if event.type() == QEvent.TouchBegin:
-            return True
-        elif event.type() == QEvent.TouchEnd:
-            num1 = 0
-            for i in range(len(self.button_list)):
-                for button in self.button_list[i]:
-                    print('1:{} ,2:{}'.format(num1,self.blk_option[self.manual_blk].act_blk.id(button)))
-                    if self.blk_option[self.manual_blk].act_blk.id(button) != num1:
-                        print('Emit to:{}'.format(self.blk_option[self.manual_blk].act_blk.id(button)))
-                        self.blk_option[self.manual_blk].act_blk.buttonClicked.emit(button)
-                        num1 = self.blk_option[self.manual_blk].act_blk.id(button)
-                    else:
-                        print('skip')
-            self.button_list = []
-            return True
-        elif event.type() == QEvent.TouchUpdate:
-            points = event.touchPoints()
-            button = self.blk_option[self.manual_blk].act_blk.buttons()
-            h = button[0].size().height()
-            w = button[0].size().width()
-            for button in self.blk_option[self.manual_blk].act_blk.buttons():
-                if button == 0: continue
-                for i in range(len(points)):
-                    self.button_list.append([])
-                    px = points[i].screenPos().x()
-                    py = points[i].screenPos().y()
-                    if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
-                        # self.last = self.blk_option[self.manual_blk].act_blk.id(button)
-                        self.button_list[i].append(button)
+        if self.ui.tabWidget.currentIndex() == 0:
+            if event.type() == QEvent.TouchBegin:
+                return True
+            elif event.type() == QEvent.TouchEnd:
+                num1 = 0
+                for i in range(len(self.button_list)):
+                    for button in self.button_list[i]:
+                        print('1:{} ,2:{}'.format(num1,self.blk_option[self.manual_blk].act_blk.id(button)))
+                        if self.blk_option[self.manual_blk].act_blk.id(button) != num1:
+                            print('Emit to:{}'.format(self.blk_option[self.manual_blk].act_blk.id(button)))
+                            self.blk_option[self.manual_blk].act_blk.buttonClicked.emit(button)
+                            num1 = self.blk_option[self.manual_blk].act_blk.id(button)
+                        else:
+                            print('skip')
+                self.button_list = []
+                return True
+            elif event.type() == QEvent.TouchUpdate:
+                points = event.touchPoints()
+                button = self.blk_option[self.manual_blk].act_blk.buttons()
+                h = button[0].size().height()
+                w = button[0].size().width()
+                for button in self.blk_option[self.manual_blk].act_blk.buttons():
+                    if button == 0: continue
+                    for i in range(len(points)):
+                        self.button_list.append([])
+                        px = points[i].screenPos().x()
+                        py = points[i].screenPos().y()
+                        if px >= button.mapToGlobal(QPoint(0,0)).x() and px <= button.mapToGlobal(QPoint(0,0)).x()+w and py >= button.mapToGlobal(QPoint(0,0)).y() and py <= button.mapToGlobal(QPoint(0,0)).y()+h:
+                            # self.last = self.blk_option[self.manual_blk].act_blk.id(button)
+                            self.button_list[i].append(button)
+                return True
+        else:
+            if event.type() == QEvent.Gesture or event.type() == QEvent.GestureOverride:
+                print('Gesture Event')
+                return True
+            elif event.type() == QEvent.TouchBegin:
+                points = event.touchPoints()
+                # print(points)
+                for i in range(len(points)): # make px/py a list for multiple touchpoints
+                    self.px_begin = points[i].screenPos().x()
+                    self.py_begin = points[i].screenPos().y()
+                print(self.px_begin)
+                return True
+            # elif event.type() == QEvent.TouchUpdate:
+            #     points = event.touchPoints()
+            #     # print(points)
+            #     for i in range(len(points)): # make px/py a list for multiple touchpoints
+            #         self.px_begin.append(points[i].screenPos().x())
+            #         self.py_begin.append(points[i].screenPos().y())
+            #     print(self.px_begin)
 
-            return True
+            elif event.type() == QEvent.TouchEnd:
+                points = event.touchPoints()
+                print(points)
+                # print(self.px_begin)
+                # self.px_begin = self.px_begin[:2]
+                # self.py_begin = self.py_begin[:2]
+                # print(self.px_begin)
+                for i in range(len(points)):
+                    self.px_end = points[i].screenPos().x()
+                    self.py_end = points[i].screenPos().y()
+                self.get_gesture()
         return super(MainWindow,self).eventFilter(obj,event)
+
+    def get_gesture(self):
+        dx = []
+        dy = []
+        # dx1 = 0
+        # dy1 = 0
+        # print(self.px_begin)
+        # for i in range(len(self.px_begin)):
+        print('Start:{} End:{}'.format(self.px_begin,self.px_end))
+        dx = self.px_end - self.px_begin #negative is LR, positive is RL
+        dy = self.py_end - self.py_begin #negative is TB, positive is BT
+        print('dx:{} dy:{}'.format(dx,dy))
+        index = self.ui.tab_position.currentIndex()
+        # self.px_begin = []
+        # self.px_end = []
+        # self.py_begin = []
+        # self.py_end = []
+        # dx = dx[0]
+        # dy = dy[0]
+        # if len(dx) > 1:
+        #     dx1 = dx[1]
+        #     dy1 = dy[1]
+        if index == 1:
+            self.vr.set_one_pulse_duration(300,'on') #Move timing to be set when selecting a preset tab
+            self.vr.set_Timing()
+            if dx > 0 and abs(dy) < 75:
+                print('LR')
+                option = 0
+            elif dx < 0 and abs(dy) < 75:
+                print('RL')
+                option = 1
+            elif dy > 0 and abs(dx) < 75:
+                print('TB')
+                option = 2
+            elif dy < 0 and abs(dx) < 75:
+                print('BT')
+                option = 3
+            elif dx > 0 and dy < 0:
+                print('+45BT')
+                option = 4
+            elif dx < 0 and dy > 0:
+                print('+45TB')
+                option = 5
+            elif dx < 0 and dy < 0:
+                print('-45BT')
+                option = 6
+            elif dx > 0 and dy > 0:
+                print('-45TB')
+                option = 7
+
+            thread = threading.Thread(target=self.display_preset,args=(index,option))
+            thread.start()
+            self.vr.play_preset('sweep',option)
 
 
     def handle_connect_device(self,port_label,button,UID_label):
@@ -342,8 +432,8 @@ class MainWindow(QtWidgets.QMainWindow):
         print(self.preset_list)
 
 
-    def handle_preset(self,index):
-        '''NOTICE!! Updating GUI display should not be in another thread! Either move actuator activation to another thread
+    def handle_preset(self,index,):
+        '''NOTICE!! Updating GUI display should not be in another thread(it will crash after a while)! Either move actuator activation to another thread
         (has caused problems with updaing GUI) or find legal way to update widgets in a thread (Qimage?)'''
         name = self.preset_list[index][0]
         option = 0
@@ -384,20 +474,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def display_preset(self,index,option):
         name = self.preset_list[index][0]
-        with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
-            try:
-                act_dict = ast.literal_eval(display_file.read())
-                for act_list in act_dict[option]:
-                    for act in act_list:
-                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
-                        self.preset_blks[index].act_blk.button(act).repaint()
-                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-                    for act in act_list:
-                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
-                        self.preset_blks[index].act_blk.button(act).repaint()
-                    time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
-            except:
-               print("Error reading display txt")
+        # with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+        with open('preset_display_serial/display_'+name+'.txt','r') as display_file:
+
+            # try:
+            act_dict = ast.literal_eval(display_file.read())
+            for act_list in act_dict[option]:
+                for act in act_list:
+                    self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+                    self.preset_blks[index].act_blk.button(act).repaint()
+                time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+                for act in act_list:
+                    self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+                    self.preset_blks[index].act_blk.button(act).repaint()
+                time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
+            # except:
+            #    print("Error reading display txt")
 
 
     def handle_button(self,button):
