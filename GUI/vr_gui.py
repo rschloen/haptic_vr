@@ -68,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tab_blk2 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_2)
         self.tab_blk3 = Actuator_Block(self,self.screen_width,'horizontal',self.ui.tab_3)
         self.preset_list = self.check_for_presets()
-        hard_presets = [['flash_all','vertical'],['sweep','horizontal'],['2i','horizontal']]
+        hard_presets = [['flash_all','vertical'],['sweep','horizontal'],['2i_blk','horizontal']]
         self.preset_list = hard_presets+self.preset_list
         print(self.preset_list)
         self.preset_tabs = [QtWidgets.QWidget() for i in range(len(self.preset_list))]
@@ -332,42 +332,44 @@ class MainWindow(QtWidgets.QMainWindow):
     def handle_preset(self,index):
         name = self.preset_list[index][0]
         option = 0
+        thread = threading.Tread(target=self.display_preset(),args=(name,))
         if index == 0:
             self.vr.set_one_pulse_duration(1000,'on')
             self.vr.set_Timing()
-            self.vr.play_preset('flash_all')
-            # thread = threading.Thread(target=self.vr.play_preset,args=('flash_all',))
+            thread.start()
+            self.vr.play_preset(name)
         elif index == 1:
             self.vr.set_one_pulse_duration(300,'on')
             self.vr.set_Timing()
             option = self.ui.sweep_type.currentIndex()
-            # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
-            self.vr.play_preset(index,self.ui.sweep_type.currentIndex())
+            thread.start()
+            self.vr.play_preset(name,self.ui.sweep_type.currentIndex())
         elif index == 2:
             self.vr.set_one_pulse_duration(500,'on')
             self.vr.set_one_pulse_duration(1000,'off')
             self.vr.set_Timing()
             option = self.ui.sweep_type.currentIndex()
-            # thread = threading.Thread(target=self.vr.play_preset,args=(index,option,))
-            self.vr.play_preset(index,self.ui.two_int_blk.currentIndex())
-        else:
-            thread = threading.Thread(target=self.vr.play_preset,args=(name,))
             thread.start()
+            self.vr.play_preset(name,self.ui.two_int_blk.currentIndex())
+        else:
+            thread.start()
+            self.vr.play_preset(name)
 
-        # with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
-        #     try:
-        #         act_dict = ast.literal_eval(display_file.read())
-        #         for act_list in act_dict[option]:
-        #             for act in act_list:
-        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
-        #                 self.preset_blks[index].act_blk.button(act).repaint()
-        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-        #             for act in act_list:
-        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
-        #                 self.preset_blks[index].act_blk.button(act).repaint()
-        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-        #     except:
-        #         print("Error reading display txt")
+    def display_preset(self,name):
+        with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
+            try:
+                act_dict = ast.literal_eval(display_file.read())
+                for act_list in act_dict[option]:
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+                    for act in act_list:
+                        self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
+                        self.preset_blks[index].act_blk.button(act).repaint()
+                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+            except:
+                print("Error reading display txt")
         """# else:
         #     with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
         #         for line in display_file:
