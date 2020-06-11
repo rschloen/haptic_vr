@@ -343,32 +343,47 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def handle_preset(self,index):
+        '''NOTICE!! Updating GUI display should not be in another thread! Either move actuator activation to another thread
+        (has caused problems with updaing GUI) or find legal way to update widgets in a thread (Qimage?)'''
         name = self.preset_list[index][0]
         option = 0
-        thread = threading.Tread(target=self.display_preset(),args=(name,))
         if index == 0:
             self.vr.set_one_pulse_duration(1000,'on')
             self.vr.set_Timing()
+            thread = threading.Thread(target=self.display_preset,args=(index,option))
+            # thread = threading.Thread(target=self.vr.play_preset(name))
             thread.start()
+            # elf.display_preset(index,option)
             self.vr.play_preset(name)
         elif index == 1:
             self.vr.set_one_pulse_duration(300,'on')
             self.vr.set_Timing()
             option = self.ui.sweep_type.currentIndex()
+            thread = threading.Thread(target=self.display_preset,args=(index,option))
+            # thread = threading.Thread(target=self.vr.play_preset(name,self.ui.sweep_type.currentIndex()))
             thread.start()
+            # self.display_preset(index,option)
             self.vr.play_preset(name,self.ui.sweep_type.currentIndex())
         elif index == 2:
             self.vr.set_one_pulse_duration(500,'on')
             self.vr.set_one_pulse_duration(1000,'off')
             self.vr.set_Timing()
             option = self.ui.sweep_type.currentIndex()
+            # thread = threading.Thread(target=self.vr.play_preset(name,self.ui.two_int_blk.currentIndex()))
+            thread = threading.Thread(target=self.display_preset,args=(index,option))
             thread.start()
+            # self.display_preset(index,option)
             self.vr.play_preset(name,self.ui.two_int_blk.currentIndex())
         else:
+            thread = threading.Thread(target=self.display_preset,args=(index,option))
+            # thread = threading.Thread(target=self.vr.play_preset(name))
             thread.start()
+        # self.display_preset(index,option)
             self.vr.play_preset(name)
 
-    def display_preset(self,name):
+
+    def display_preset(self,index,option):
+        name = self.preset_list[index][0]
         with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
             try:
                 act_dict = ast.literal_eval(display_file.read())
@@ -380,27 +395,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     for act in act_list:
                         self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
                         self.preset_blks[index].act_blk.button(act).repaint()
-                    time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
+                    time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)
             except:
-                print("Error reading display txt")
-        """# else:
-        #     with open('preset_display_usb/display_'+name+'.txt','r') as display_file:
-        #         for line in display_file:
-        #             print(line)
-        #             act_list = list(map(int,line.replace('[','').replace(']','').split(', ')))
-        #             # act_list = ast.literal_eval(line)
-        #             print(act_list)
-        #             for act in act_list:
-        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.on_style_sheet)
-        #                 self.preset_blks[index].act_blk.button(act).repaint()
-        #             # time.sleep(int(self.vr.t_pulse,16)/1000)
-        #             time.sleep(int(self.vr.t_pulse[2:]+self.vr.t_pulse[0:2],16)/1000)
-        #             # time.sleep(.5)
-        #             for act in act_list:
-        #                 self.preset_blks[index].act_blk.button(act).setStyleSheet(self.off_style_sheet)
-        #                 self.preset_blks[index].act_blk.button(act).repaint()
-        #             # time.sleep(.5)
-        #             time.sleep(int(self.vr.t_pause[2:]+self.vr.t_pause[0:2],16)/1000)"""
+               print("Error reading display txt")
 
 
     def handle_button(self,button):

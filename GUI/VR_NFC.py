@@ -118,11 +118,11 @@ class VR_PRTCL:
             self.device.reset_input_buffer()
             self.device.reset_output_buffer()
             for i in range(self.nAttempts):
-                print('|Sent>       {}'.format(cmd))
+                # print('|Sent>       {}'.format(cmd))
                 self.device.write(cmd.encode())
                 data = self.device.read(size=self.MAX_PACKET_SIZE).strip().decode()
                 if data:
-                    print('<Recieved|   {}'.format(str(data)))
+                    # print('<Recieved|   {}'.format(str(data)))
                     return data
                 else:
                     print('No data recieved')
@@ -173,35 +173,9 @@ class VR_PRTCL:
                 self.display_preset.close()
 
 
-    # def play_preset(self,preset):
-    #     if preset == 'flash all':
-    #         temp = self.OP_Mode
-    #         self.OP_Mode = '80'
-    #         blk0 = self.OP_Mode+self.ACT_Mode+self.ACT_BLKS+'00' #'01000200'
-    #         cmd0 = '01170003041862'+ '21' +self.UID+ '00' + blk0+'0000'
-    #         state = self.send(cmd0)
-    #         self.OP_Mode = temp
-    #     elif preset == 'ABCs':
-    #         with open('preset_files_serial/'+preset+'.txt','r') as read_preset:
-    #             cnt = 0
-    #             for line in read_preset:
-    #                 cmd = line.rstrip()
-    #                 d = self.send(cmd)
-    #                 if cnt == 2:
-    #                     time.sleep(0.5)
-    #                     self.Alloff()
-    #                     time.sleep(0.5)
-    #                     cnt = 0
-    #                 else:
-    #                     cnt += 1
-    #     else:
-    #         with open('preset_files_serial/'+preset+'.txt','r') as read_preset:
-    #             for line in read_preset:
-    #                 cmd = line.rstrip()
-    #                 d = self.send(cmd)
     def play_preset(self,preset,index=None):
-        if type(preset) == int:
-            preset = self.preset_num2name(preset,index)
+        # if type(preset) == int:
+        #     preset = self.preset_num2name(preset,index)
         if preset == 'flash_all':
             temp = self.OP_Mode
             self.OP_Mode = '80'
@@ -278,7 +252,7 @@ class VR_PRTCL:
         # Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
         self.Alloff()
-        cmd3 = '01170003041862'+ '21' +self.UID+ '09' + self.t_pulse +self.t_pause
+        cmd3 = '01170003041862'+ '21' +self.UID+ '09' + self.t_pulse +self.t_pause +'0000'
         cmd4 = '01170003041862'+ '21' +self.UID+ '0A' + self.DC_high + self.T_high +'0000'
         cmd5 = '01170003041862'+ '21' +self.UID+ '0B' + self.DC_low + self.T_low +'0000'
 
