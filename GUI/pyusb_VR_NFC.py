@@ -3,20 +3,20 @@
 # os.environ['PYUSB_DEBUG'] = 'debug'
 import usb
 import sys,time, os
-'''MAybe try booting linux from usb on tablet-can't get touch screen to work without different kernel(alternatives?)'''
+'''Mybe try booting linux from usb on tablet-can't get touch screen to work without different kernel(alternatives?)'''
 '''Gesture sweeps send op mode(86..af), update timing when switching to preset'''
 
 """TODO:
-    - FIX DELAY! (Hardware)
+    X FIX DELAY! (Hardware)
     X Adding presets and create custom presets in GUI and Saving/Loading Profiles
-    - Gesture support for presets
+    - Finsh gesture support for presets
     X Activate actuators implement all modes for protocol
-    v Work on StyleSheets, Different shapes for buttons
+    X Work on StyleSheets, Different shapes for buttons
     X Implement multi-touch (selecting multiple actuators at the same time)
     X Keep in mind PWM frequency to set intensity of led (Implement setting DC/Freq)
         - Multiple intensities at same time (Firmware update)
     - Keep in mind expansion up to 128 actuator arrays
-    - Keep in mind thermal actuators
+    - Add thermal actuator tab
     - Work on deployment (pyqtdeploy, alternatives?) """
 
 class USB_VR_PRTCL:
@@ -60,7 +60,7 @@ class USB_VR_PRTCL:
 
 
     def connect(self):
-        # connect to nfc board (0x10c4,0xea60) (Adapted from Abraham's Optogenetics example)
+        # Connect to nfc board (0x0ab1,0x2)
         if self.active_flag:
             self.disconnect()
         else:
@@ -88,7 +88,7 @@ class USB_VR_PRTCL:
 
 
     def disconnect(self):
-        # disconnect from NFC board,(Adapted from Abraham's Optogenetics example)
+        # Disconnect from NFC board. Close open files
         self.active_flag = False
         if self.current_connection is not None:
             usb.util.dispose_resources(self.current_connection)
@@ -96,23 +96,24 @@ class USB_VR_PRTCL:
         try:
             if not self.preset_file.closed:
                 self.preset_file.close()
+            if not self.display_preset.closed:
+                self.display_preset.close()
         except:
             pass
         print('Disconnected')
 
 
     def get_inventory(self):
-        # Get UID
+        # Get UID for devices in range
         msg = [2,0,9,255,176,1,0]
         self.UID = ''
         uid = self.send(msg)
         uid = uid[9:17]
         for ele in uid:
             self.UID += '%0*X'%(2,ele)
-        # print(self.UID)
 
 
-    def read_RFpower(self): #reading from device?
+    def read_RFpower(self): #reading from device
         # return Watts
         print("RF Power is currently ...")
 
@@ -126,6 +127,8 @@ class USB_VR_PRTCL:
 
 
     def send(self, msg):
+        '''Send passed command to connected board and read what is returned.
+        ARGS: msg: array of decimals to be sent to board'''
         # From OptogenNFC provided by Abraham
         msg = self.CRC16(msg)
         msg0 = ''
@@ -144,8 +147,6 @@ class USB_VR_PRTCL:
                 self.recieving_flag = True
                 time.sleep(.25)
                 data = self.current_connection.read(129, 128)
-                # while len(data) < 0:
-                #     data = self.current_connection.read(129, 128)
                 msg = data
                 msg0 = '<<<|: '
                 for i in msg:
@@ -166,7 +167,6 @@ class USB_VR_PRTCL:
                     else:
                         print(data)
                 else:
-                    # print(msg0)
                     return data
                 if count == self.com_attempts: return[]
             return data
@@ -174,8 +174,10 @@ class USB_VR_PRTCL:
 
 
     def add_to_preset(self,preset_name,append,orientation):
-    #add check for filename
-        print(orientation)
+        '''Open/close file or check for file matching passed name to append to.
+        ARGS: preset_name: (str) name of file to open/close/create
+              append: (str) check if closing, appending, creating file
+              orientation: (str) orientation of actuator block'''
         if append != 'close':
             if preset_name == '':
                 print('Need File name')
@@ -197,8 +199,7 @@ class USB_VR_PRTCL:
                 self.preset_file = open('preset_files_usb/'+preset_name+'.txt','w')
                 self.display_preset = open('preset_display_usb/display_'+preset_name+'.txt','w')
                 self.preset_file.write('o: '+orientation+'\n')
-                self.display_preset.write('{0:')
-            # print(self.preset_file.closed)
+                self.display_preset.write('{0:[')
         else:
             self.display_preset.write(']}')
             self.append_to_file = False
@@ -209,9 +210,12 @@ class USB_VR_PRTCL:
 
 
     def play_preset(self,preset,index=None):
-        if type(preset) == int:
-            preset = self.preset_num2name(preset,index)
+        '''Set OP mode or opens files to read commands from to play a preset
+        ARGS: preset:(str) name or preset(file)
+              index:(str) if preset has multiple options (think sweep directions), holds index of value that is converted into OP mode'''
 
+        # if type(preset) == int:
+        #     preset = self.preset_num2name(preset,index)
         if preset == 'flash_all':
             temp = self.OP_Mode
             self.OP_Mode = '80'
@@ -239,7 +243,9 @@ class USB_VR_PRTCL:
 
 
     def set_OP_Mode(self,value,level):
-        # Set operating mode (i.e. All off, turn on/off, single pulse, continous)
+        '''Set operating mode (i.e. All off, turn on/off, single pulse, continous)
+        ARGS: value: 0 or 1 setting each option either on or off
+              level: which part of the mode to set(i.e. single/continuous, high or low freq)'''
         if level == 1:
             if value == 1:
                 self.pulse_mode = 4
@@ -250,45 +256,55 @@ class USB_VR_PRTCL:
         elif level == 3:
             self.lf_mod = value
         self.OP_Mode = '%0*X'%(2,self.pulse_mode+self.hf_mod+self.lf_mod)
-        # print(self.OP_Mode)
+        print(self.OP_Mode)
 
 
     def set_ACT_Mode(self,mode):
-        # Set actuation mode (i.e.Unipolar, bipolar)
+        '''Set actuation mode (i.e.Unipolar, bipolar)
+        ARGS: mode: value to set mode to'''
         self.ACT_Mode = '%0*X'%(2,mode)
 
 
     def set_ACT_Cnt(self,num_blks):
-        # set number of blocks of 32 actuators
+        '''Set number of blocks of 32 actuators
+        ARGS: num_blks: number of actuator blocks'''
         self.ACT_BLKS = '%0*X'%(2,num_blks)
 
 
     def set_one_pulse_duration(self,time,mode):
+        '''Set duration of single pulse on and pause times
+        ARGS: time: time on/off
+              mode: set time to pulse on time or pause time'''
         try:
             time = int(time)
         except ValueError:
             print('Must enter a number')
+        print(time)
         t = '%0*X'%(4,time)
         if mode == 'on':
-            self.t_pulse = t[6:]+t[4:6]+t[2:4]+t[0:2]
+            self.t_pulse = t#[6:]+t[4:6]+t[2:4]+t[0:2]
         else:
-            self.t_pause = t[6:]+t[4:6]+t[2:4]+t[0:2]
+            self.t_pause = t#[6:]+t[4:6]+t[2:4]+t[0:2]
         # self.set_Timing()
 
 
     def set_pulse_freq(self,freq,mode):
+        '''Set frequency of pulsing
+        ARGS: freq: frequency
+              mode: set frequency of high or low modulation'''
+        print(freq)
         T = int((1/freq)*1000)
         if mode == 'high':
             t = '%0*X'%(4,T)
-            self.T_high = t[2:4]+t[0:2]
+            self.T_high = t#[2:4]+t[0:2]
         else:
             t = '%0*X'%(4,T)
-            self.T_low = t[2:4]+t[0:2]
+            self.T_low = t#[2:4]+t[0:2]
         # self.set_Timing()
 
 
     def set_Timing(self):
-        # Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)
+        '''Set timing for actuation (i.e. single or continous pulse with high and/or low freq modulation)'''
         # Blk9(0x24) Blk10(0x28) Blk11(0x2C)
         #LSB first
         self.Alloff()
@@ -314,15 +330,16 @@ class USB_VR_PRTCL:
             dc = int(dc)
         except ValueError:
             print('Must enter a number')
+        print(dc)
         if mode == 'high':
             t_h = self.T_high[2:4]+self.T_high[0:2] # value is stored reversed, so it needs to be flipped again
-            temp = int((dc/100)*int(t_h,16)) # DC percentage times the high freq period
+            temp = int((dc/100)*int(self.T_high,16)) # DC percentage times the high freq period
             temp = '%0*X'%(4,temp) # convert to hex string
             self.DC_high = temp#[2:4]+temp[0:2] # Store in reverse for sending command
             # print(self.DC_high)
         else:
             t_l = self.T_low[2:4]+self.T_low[0:2]
-            temp = int((dc/100.0)*int(t_l,16))
+            temp = int((dc/100.0)*int(self.T_low,16))
             temp = '%0*X'%(4,temp)
             self.DC_low = temp#[2:4]+temp[0:2]
             # print(self.DC_low)
@@ -394,6 +411,7 @@ class USB_VR_PRTCL:
                 # blk4 = blk4[6:]+blk4[4:6]+blk4[2:4]+blk4[0:2]
 
             # Blk 0
+            print(self.OP_Mode)
             blk0 = '00' + self.ACT_BLKS + self.ACT_Mode + self.OP_Mode
             cmd0 = self.UID+ '000104' + blk0#+'0000'
                     #|UID     |BlkAdr |data |padding
